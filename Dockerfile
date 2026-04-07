@@ -1,5 +1,6 @@
-FROM php:8.3-cli
+FROM php:8.2-apache
 
+# Instalar dependencias del sistema
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -12,19 +13,17 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_pgsql pgsql exif zip gd \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*   
+    && rm -rf /var/lib/apt/lists/*
 
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Habilitar mod_rewrite de Apache (necesario para Laravel)
+RUN a2enmod rewrite
 
-WORKDIR /app
+# Copiar archivos del proyecto
+COPY . /var/www/html
 
-COPY . .
+# Dar permisos correctos
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
 
-RUN composer install --optimize-autoloader --no-interaction
-RUN php artisan config:clear || true
-RUN php artisan route:clear || true
-RUN php artisan view:clear || true
-
-EXPOSE 8080
-
-CMD php artisan serve --host=0.0.0.0 --port=8080
+# Exponer puerto 80
+EXPOSE 80

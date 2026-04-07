@@ -1,3 +1,4 @@
+# force rebuild
 FROM php:8.2-apache
 
 # Instalar dependencias del sistema

@@ -11,6 +11,8 @@ RUN apt-get update && apt-get install -y \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
     libpq-dev \
+    nodejs \
+    npm \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_pgsql pgsql exif zip gd \
     && apt-get clean \
@@ -21,6 +23,8 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY . /app
 
 RUN composer install --no-dev --optimize-autoloader --no-interaction
+RUN npm install
+RUN npm run build
 
 EXPOSE 8080
 

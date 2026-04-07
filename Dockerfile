@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Habilitar mod_rewrite de Apache (necesario para Laravel)
-RUN a2enmod rewrite
+RUN a2dismod mpm_event && a2enmod mpm_prefork rewrite
 
 # Copiar archivos del proyecto
 COPY . /var/www/html

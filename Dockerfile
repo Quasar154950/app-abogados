@@ -1,7 +1,7 @@
-# force rebuild v3
-FROM php:8.2-apache
+FROM php:8.2-cli
 
-# Instalar dependencias del sistema
+WORKDIR /app
+
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -16,15 +16,8 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Habilitar mod_rewrite de Apache (necesario para Laravel)
-RUN a2enmod rewrite
+COPY . /app
 
-# Copiar archivos del proyecto
-COPY . /var/www/html
+EXPOSE 8080
 
-# Dar permisos correctos
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
-
-# Exponer puerto 80
-EXPOSE 80
+CMD sh -c "php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"

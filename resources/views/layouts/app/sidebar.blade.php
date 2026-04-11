@@ -122,7 +122,7 @@
         </flux:header>
 
         {{-- CONTENIDO PRINCIPAL A ANCHO COMPLETO --}}
-        <flux:main class="w-full max-w-none px-4 lg:px-6">
+        <flux:main class="w-full max-w-none px-2 sm:px-3 lg:px-6">
             <div class="w-full max-w-none">
                 {{ $slot }}
             </div>

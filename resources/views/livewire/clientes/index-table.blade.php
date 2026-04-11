@@ -1,12 +1,12 @@
 <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 bg-white dark:bg-neutral-900 shadow-sm font-sans">
     
-    {{-- BUSCADOR --}}
+    {{-- BUSCADOR CON LUPA REDONDEADA INTERNA (ESTILO MODERNO) --}}
     <div class="mb-8 flex flex-wrap gap-3 text-left items-center">
         
-        {{-- CONTENEDOR DEL BUSCADOR --}}
+        {{-- Contenedor principal (El marco del buscador) --}}
         <div class="flex-1 max-w-md flex items-center bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-xl p-1 focus-within:ring-2 focus-within:ring-blue-500 transition shadow-sm">
             
-            {{-- INPUT --}}
+            {{-- EL INPUT --}}
             <input 
                 wire:model.live.debounce.300ms="busqueda" 
                 type="text" 
@@ -14,13 +14,13 @@
                 class="flex-1 bg-transparent pl-3 py-1.5 border-none focus:ring-0 outline-none text-sm text-neutral-800 dark:text-neutral-200"
             >
 
-            {{-- LUPA --}}
+            {{-- LA LUPITA: Redondeada y "dentro" del marco --}}
             <div class="flex items-center justify-center bg-neutral-100 dark:bg-neutral-800 text-neutral-500 rounded-lg px-3 py-1.5 ml-1 border border-transparent dark:border-neutral-700">
                 🔍
             </div>
         </div>
 
-        {{-- BOTÓN LIMPIAR --}}
+        {{-- BOTÓN DE LIMPIEZA (LA ESCOBITA) --}}
         <button type="button"
                 wire:click="$set('busqueda', '')"
                 class="inline-flex items-center gap-2 rounded-xl bg-neutral-200 dark:bg-neutral-800 px-4 py-2 text-sm font-medium text-neutral-600 dark:text-neutral-300 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer shadow-sm">
@@ -28,7 +28,7 @@
         </button>
     </div>
 
-    {{-- MENSAJE --}}
+    {{-- MENSAJE DE ÉXITO (Con Alpine.js para que desaparezca solo) --}}
     @if(session('success'))
         <div x-data="{ show: true }" 
              x-show="show" 
@@ -38,7 +38,7 @@
         </div>
     @endif
 
-    {{-- TABLA --}}
+    {{-- TABLA DE CLIENTES --}}
     @if($clientes->isEmpty())
         <div class="text-center py-10">
             <p class="text-neutral-500 italic">No se encontraron clientes activos.</p>
@@ -58,38 +58,22 @@
                 <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800">
                     @foreach($clientes as $cliente)
                         <tr wire:key="cliente-{{ $cliente->id }}" class="hover:bg-neutral-50 dark:hover:bg-neutral-800/40 transition">
-                            
                             <td class="p-3 text-sm text-neutral-500 font-mono">#{{ $cliente->id }}</td>
-
-                            <td class="p-3 text-sm font-bold text-neutral-800 dark:text-neutral-200">
-                                {{ $cliente->nombre }}
-                            </td>
-
-                            <td class="p-3 text-sm text-neutral-600 dark:text-neutral-400 font-medium">
-                                {{ $cliente->telefono }}
-                            </td>
-
-                            <td class="p-3 text-sm text-neutral-600 dark:text-neutral-400">
-                                {{ $cliente->email }}
-                            </td>
+                            <td class="p-3 text-sm font-bold text-neutral-800 dark:text-neutral-200">{{ $cliente->nombre }}</td>
+                            <td class="p-3 text-sm text-neutral-600 dark:text-neutral-400 font-medium">{{ $cliente->telefono }}</td>
+                            <td class="p-3 text-sm text-neutral-600 dark:text-neutral-400">{{ $cliente->email }}</td>
                             
-                            {{-- ACCIONES --}}
                             <td class="p-3 text-right">
-                                <div class="flex flex-wrap items-center justify-end gap-1 sm:gap-2">
-
+                                <div class="flex items-center justify-end gap-1">
                                     {{-- VER --}}
                                     <a href="{{ route('clientes.show', $cliente->id) }}" 
                                        class="p-2 rounded-lg text-neutral-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition cursor-pointer" 
-                                       title="Ver Detalle">
-                                        👁️
-                                    </a>
+                                       title="Ver Detalle">👁️</a>
                                     
                                     {{-- EDITAR --}}
                                     <a href="{{ route('clientes.edit', $cliente->id) }}" 
                                        class="p-2 rounded-lg text-neutral-500 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 transition cursor-pointer" 
-                                       title="Editar">
-                                        ✏️
-                                    </a>
+                                       title="Editar">✏️</a>
                                     
                                     {{-- ARCHIVAR --}}
                                     <button 
@@ -108,10 +92,8 @@
                                         title="Eliminar Permanentemente">
                                         🗑️
                                     </button>
-
                                 </div>
                             </td>
-
                         </tr>
                     @endforeach
                 </tbody>
@@ -125,6 +107,7 @@
     @endif
 </div>
 
+{{-- Estilos para asegurar que los botones de paginación muestren el cursor de la mano --}}
 <style>
     nav[role="navigation"] a, 
     nav[role="navigation"] button {

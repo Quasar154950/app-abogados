@@ -9,7 +9,7 @@
         x-on:keydown.window.meta.k.prevent="$dispatch('open-global-search')"
         class="min-h-screen bg-white dark:bg-zinc-800"
     >
-        <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+        <flux:sidebar sticky collapsible="mobile" class="fixed inset-y-0 left-0 z-50 w-64 -translate-x-full lg:translate-x-0 border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.header>
                 <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
                 <flux:sidebar.collapse class="lg:hidden" />

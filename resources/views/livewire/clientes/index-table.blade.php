@@ -1,34 +1,34 @@
-<div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 bg-white dark:bg-neutral-900 shadow-sm font-sans">
+<div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm font-sans">
     
-    {{-- BUSCADOR CON LUPA REDONDEADA INTERNA (ESTILO MODERNO) --}}
-    <div class="mb-8 flex flex-wrap gap-3 text-left items-center">
+    {{-- BUSCADOR CON LUPA REDONDEADA INTERNA --}}
+    <div class="mb-6 md:mb-8 flex items-center gap-2 text-left">
         
-        {{-- Contenedor principal (El marco del buscador) --}}
-        <div class="flex-1 max-w-md flex items-center bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-xl p-1 focus-within:ring-2 focus-within:ring-blue-500 transition shadow-sm">
+        {{-- Contenedor principal del buscador --}}
+        <div class="flex-1 min-w-0 flex items-center bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-xl p-1 focus-within:ring-2 focus-within:ring-blue-500 transition shadow-sm">
             
-            {{-- EL INPUT --}}
+            {{-- INPUT --}}
             <input 
                 wire:model.live.debounce.300ms="busqueda" 
                 type="text" 
                 placeholder="Buscar por nombre, email o teléfono..."
-                class="flex-1 bg-transparent pl-3 py-1.5 border-none focus:ring-0 outline-none text-sm text-neutral-800 dark:text-neutral-200"
+                class="flex-1 min-w-0 bg-transparent pl-3 py-1.5 border-none focus:ring-0 outline-none text-sm text-neutral-800 dark:text-neutral-200"
             >
 
-            {{-- LA LUPITA: Redondeada y "dentro" del marco --}}
-            <div class="flex items-center justify-center bg-neutral-100 dark:bg-neutral-800 text-neutral-500 rounded-lg px-3 py-1.5 ml-1 border border-transparent dark:border-neutral-700">
+            {{-- LUPITA --}}
+            <div class="flex items-center justify-center bg-neutral-100 dark:bg-neutral-800 text-neutral-500 rounded-lg px-3 py-1.5 ml-1 border border-transparent dark:border-neutral-700 shrink-0">
                 🔍
             </div>
         </div>
 
-        {{-- BOTÓN DE LIMPIEZA (LA ESCOBITA) --}}
+        {{-- BOTÓN LIMPIAR --}}
         <button type="button"
                 wire:click="$set('busqueda', '')"
-                class="inline-flex items-center gap-2 rounded-xl bg-neutral-200 dark:bg-neutral-800 px-4 py-2 text-sm font-medium text-neutral-600 dark:text-neutral-300 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer shadow-sm">
+                class="shrink-0 inline-flex items-center gap-2 rounded-xl bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-sm font-medium text-neutral-600 dark:text-neutral-300 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer shadow-sm whitespace-nowrap">
             🧹 Limpiar
         </button>
     </div>
 
-    {{-- MENSAJE DE ÉXITO (Con Alpine.js para que desaparezca solo) --}}
+    {{-- MENSAJE DE ÉXITO --}}
     @if(session('success'))
         <div x-data="{ show: true }" 
              x-show="show" 
@@ -65,17 +65,14 @@
                             
                             <td class="p-3 text-right">
                                 <div class="flex items-center justify-end gap-1">
-                                    {{-- VER --}}
                                     <a href="{{ route('clientes.show', $cliente->id) }}" 
                                        class="p-2 rounded-lg text-neutral-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition cursor-pointer" 
                                        title="Ver Detalle">👁️</a>
                                     
-                                    {{-- EDITAR --}}
                                     <a href="{{ route('clientes.edit', $cliente->id) }}" 
                                        class="p-2 rounded-lg text-neutral-500 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 transition cursor-pointer" 
                                        title="Editar">✏️</a>
                                     
-                                    {{-- ARCHIVAR --}}
                                     <button 
                                          wire:click="archivar({{ $cliente->id }})" 
                                          wire:confirm="¿Quieres archivar a este cliente?"
@@ -84,7 +81,6 @@
                                         📦
                                     </button>
 
-                                    {{-- ELIMINAR --}}
                                     <button 
                                         wire:click="delete({{ $cliente->id }})" 
                                         wire:confirm="¿Estás seguro de que deseas eliminar permanentemente a este cliente?"
@@ -107,7 +103,6 @@
     @endif
 </div>
 
-{{-- Estilos para asegurar que los botones de paginación muestren el cursor de la mano --}}
 <style>
     nav[role="navigation"] a, 
     nav[role="navigation"] button {

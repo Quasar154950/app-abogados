@@ -15,7 +15,6 @@
                 <flux:sidebar.collapse class="lg:hidden" />
             </flux:sidebar.header>
 
-            {{-- Buscador unificado en el Sidebar --}}
             <div class="px-3 mt-4 mb-2">
                 <button 
                     x-on:click="$dispatch('open-global-search')"
@@ -122,8 +121,8 @@
         </flux:header>
 
         {{-- CONTENIDO PRINCIPAL A ANCHO COMPLETO --}}
-        <flux:main class="w-full max-w-none px-1 sm:px-2 lg:px-6">
-            <div class="w-full max-w-none">
+        <flux:main class="w-full max-w-none !px-0 lg:!px-6">
+            <div class="w-full max-w-none px-2 sm:px-3 lg:px-0">
                 {{ $slot }}
             </div>
         </flux:main>

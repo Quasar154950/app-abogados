@@ -3,8 +3,11 @@
     <div class="space-y-6 text-left">
 
         {{-- Encabezado (Esto se queda acá porque es parte de la página, no de la tabla) --}}
-        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 bg-white dark:bg-neutral-900 shadow-sm font-sans">
-            <h1 class="text-2xl font-bold text-neutral-800 dark:text-neutral-100 italic text-left">Clientes</h1>
+        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm font-sans">
+            <h1 class="text-xl md:text-2xl font-bold text-neutral-800 dark:text-neutral-100 italic text-left">
+                Clientes
+            </h1>
+
             <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed text-left">
                 Listado de clientes registrados en el sistema.
             </p>

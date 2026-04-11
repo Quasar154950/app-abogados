@@ -9,12 +9,13 @@
         x-on:keydown.window.meta.k.prevent="$dispatch('open-global-search')"
         class="min-h-screen bg-white dark:bg-zinc-800"
     >
-        <flux:sidebar sticky collapsible="mobile" class="fixed inset-y-0 left-0 z-50 w-64 -translate-x-full lg:translate-x-0 border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+        <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.header>
                 <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
                 <flux:sidebar.collapse class="lg:hidden" />
             </flux:sidebar.header>
 
+            {{-- Buscador sidebar --}}
             <div class="px-3 mt-4 mb-2">
                 <button 
                     x-on:click="$dispatch('open-global-search')"
@@ -67,6 +68,7 @@
             <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
         </flux:sidebar>
 
+        {{-- HEADER MOBILE --}}
         <flux:header class="lg:hidden">
             <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
@@ -120,9 +122,9 @@
             </flux:dropdown>
         </flux:header>
 
-        {{-- CONTENIDO PRINCIPAL A ANCHO COMPLETO --}}
-        <flux:main class="w-full max-w-none !ml-0 !px-0 lg:!px-6">
-            <div class="w-full max-w-none px-2 sm:px-3 lg:px-0">
+        {{-- CONTENIDO PRINCIPAL --}}
+        <flux:main class="w-full max-w-none px-2 sm:px-3 lg:px-6">
+            <div class="w-full max-w-none">
                 {{ $slot }}
             </div>
         </flux:main>
@@ -130,5 +132,16 @@
         <livewire:actions.global-search />
 
         @fluxScripts
+
+        {{-- 🔥 FIX DEFINITIVO MOBILE --}}
+        <style>
+            @media (max-width: 1023px) {
+                [data-flux-main] {
+                    margin-left: 0 !important;
+                    padding-left: 0 !important;
+                }
+            }
+        </style>
+
     </body>
 </html>

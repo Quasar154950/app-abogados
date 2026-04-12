@@ -18,7 +18,7 @@
 
         {{-- 2. BLOQUE: INFORMACIÓN DEL CLIENTE --}}
         <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <p class="text-[10px] font-bold uppercase text-neutral-500 mb-1">Nombre</p>
                     <p class="text-lg font-semibold">{{ $cliente->nombre }}</p>

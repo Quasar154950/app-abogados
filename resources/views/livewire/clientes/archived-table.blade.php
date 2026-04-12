@@ -1,9 +1,9 @@
 <div class="space-y-6">
     {{-- CABECERA PROFESIONAL --}}
-    <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 bg-white dark:bg-neutral-900 shadow-sm">
+    <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm">
         <div class="flex items-center gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-neutral-800 dark:text-neutral-200">Clientes Archivados</h1>
+                <h1 class="text-xl md:text-2xl font-bold text-neutral-800 dark:text-neutral-200">Clientes Archivados</h1>
                 <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
                     Lista de clientes que han sido movidos al archivo. Podés restaurarlos o eliminarlos permanentemente.
                 </p>
@@ -12,25 +12,25 @@
     </div>
 
     {{-- CUERPO DEL BUSCADOR Y TABLA --}}
-    <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 bg-white dark:bg-neutral-900 shadow-sm font-sans">
+    <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm font-sans">
         
         {{-- BUSCADOR CON LUPA REDONDEADA INTERNA --}}
-        <div class="mb-8 flex flex-wrap gap-3 text-left items-center">
-            <div class="flex-1 max-w-md flex items-center bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-xl p-1 focus-within:ring-2 focus-within:ring-blue-500 transition shadow-sm">
+        <div class="mb-6 md:mb-8 flex items-center gap-2 text-left">
+            <div class="flex-1 min-w-0 flex items-center bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-xl p-1 focus-within:ring-2 focus-within:ring-blue-500 transition shadow-sm">
                 <input 
                     wire:model.live.debounce.300ms="busqueda" 
                     type="text" 
                     placeholder="Buscar en el archivo..."
-                    class="flex-1 bg-transparent pl-3 py-1.5 border-none focus:ring-0 outline-none text-sm text-neutral-800 dark:text-neutral-200"
+                    class="flex-1 min-w-0 bg-transparent pl-3 py-1.5 border-none focus:ring-0 outline-none text-sm text-neutral-800 dark:text-neutral-200"
                 >
-                <div class="flex items-center justify-center bg-neutral-100 dark:bg-neutral-800 text-neutral-500 rounded-lg px-3 py-1.5 ml-1 border border-transparent dark:border-neutral-700">
+                <div class="flex items-center justify-center bg-neutral-100 dark:bg-neutral-800 text-neutral-500 rounded-lg px-3 py-1.5 ml-1 border border-transparent dark:border-neutral-700 shrink-0">
                     🔍
                 </div>
             </div>
 
             <button type="button"
                     wire:click="$set('busqueda', '')"
-                    class="inline-flex items-center gap-2 rounded-xl bg-neutral-200 dark:bg-neutral-800 px-4 py-2 text-sm font-medium text-neutral-600 dark:text-neutral-300 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer shadow-sm">
+                    class="shrink-0 inline-flex items-center gap-2 rounded-xl bg-neutral-200 dark:bg-neutral-800 px-3 py-2 text-sm font-medium text-neutral-600 dark:text-neutral-300 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer shadow-sm whitespace-nowrap">
                 🧹 Limpiar
             </button>
         </div>
@@ -62,7 +62,7 @@
                         @foreach($clientes as $cliente)
                             <tr wire:key="archived-{{ $cliente->id }}" class="hover:bg-neutral-50 dark:hover:bg-neutral-800/40 transition">
                                 <td class="p-3 text-sm text-neutral-500 font-mono">#{{ $cliente->id }}</td>
-                                <td class="p-3 text-sm font-bold text-neutral-800 dark:text-neutral-200">{{ $cliente->nombre }}</td>
+                                <td class="p-3 text-sm font-bold text-neutral-800 dark:text-neutral-200 whitespace-nowrap">{{ $cliente->nombre }}</td>
                                 <td class="p-3 text-sm text-neutral-600 dark:text-neutral-400 font-medium">{{ $cliente->telefono }}</td>
                                 <td class="p-3 text-sm text-neutral-600 dark:text-neutral-400">{{ $cliente->email }}</td>
                                 <td class="p-3 text-right">
@@ -83,7 +83,7 @@
             </div>
         @endif
 
-        {{-- BOTÓN VOLVER (UNICO) --}}
+        {{-- BOTÓN VOLVER (ÚNICO) --}}
         <div class="mt-8 pt-6 border-t border-neutral-200 dark:border-neutral-700">
             <a href="{{ route('clientes.index') }}"
                class="inline-flex items-center gap-2 rounded-lg bg-neutral-200 dark:bg-neutral-800 px-4 py-2 text-sm font-medium text-neutral-600 dark:text-neutral-300 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer shadow-sm">

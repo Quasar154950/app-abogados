@@ -19,7 +19,7 @@
         <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 bg-white dark:bg-neutral-900 shadow-sm">
 
             {{-- MOTOR DE FILTRADO COMBINADO --}}
-            <form method="GET" action="{{ route('seguimientos.index') }}" class=<form method="GET" action="{{ route('seguimientos.index') }}" class="mb-8 grid grid-cols-1 gap-3 w-full">"mb-8 grid grid-cols-1 gap-3 max-w-md">
+            <form method="GET" action="{{ route('seguimientos.index') }}" class="mb-8 grid grid-cols-1 gap-3 w-full">
                 
                 {{-- Filtro Cliente --}}
                 <div>

@@ -13,20 +13,24 @@
             </p>
 
             <div class="mt-4 flex flex-wrap gap-2">
-                <a href="{{ route('clientes.create') }}"
-                   class="inline-flex items-center justify-center gap-2 rounded-lg bg-green-600 px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold text-white hover:bg-green-700 transition shadow-sm cursor-pointer whitespace-nowrap">
-                    <span>➕</span>
-                    <span class="sm:hidden">Nuevo</span>
-                    <span class="hidden sm:inline">Agregar nuevo cliente</span>
-                </a>
 
-                <a href="{{ route('clientes.archivados') }}"
-                   class="inline-flex items-center justify-center gap-2 rounded-lg bg-neutral-900 px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold text-white hover:opacity-90 transition shadow-sm cursor-pointer whitespace-nowrap">
-                    <span>📦</span>
-                    <span class="sm:hidden">Archivados</span>
-                    <span class="hidden sm:inline">Ver archivados</span>
-                </a>
-            </div>
+    <a href="{{ route('clientes.create') }}"
+       class="inline-flex items-center justify-center gap-2 rounded-lg bg-green-600 px-3 py-2 text-sm font-bold text-white hover:bg-green-700 transition shadow-sm cursor-pointer">
+        <span>➕</span>
+        <span class="truncate max-w-[130px] sm:max-w-none">
+            Agregar nuevo cliente
+        </span>
+    </a>
+
+    <a href="{{ route('clientes.archivados') }}"
+       class="inline-flex items-center justify-center gap-2 rounded-lg bg-neutral-900 px-3 py-2 text-sm font-bold text-white hover:opacity-90 transition shadow-sm cursor-pointer">
+        <span>📦</span>
+        <span class="truncate max-w-[120px] sm:max-w-none">
+            Ver archivados
+        </span>
+    </a>
+
+</div>
         </div>
 
         <livewire:clientes.index-table />

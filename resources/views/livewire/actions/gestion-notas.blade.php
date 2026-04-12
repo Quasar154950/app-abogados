@@ -24,42 +24,40 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-left">
             @forelse($notas as $nota)
                 <div wire:key="nota-{{ $nota->id }}" 
-                     class="rounded-lg p-3 shadow-sm transition-all"
+                     class="rounded-lg p-3 flex items-start gap-4 shadow-sm transition-all"
                      style="{{ $nota->is_pinned ? 'border: 2px solid #eab308; background-color: #fefce8;' : 'border: 1px solid #e5e7eb; background-color: #f9fafb;' }}">
+                    
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm {{ $nota->is_pinned ? 'text-yellow-900 font-medium' : 'text-neutral-700' }} font-normal">
+                            @if($nota->is_pinned) 📌 @endif {{ $nota->contenido }}
+                        </p>
+                        <p class="text-[10px] text-neutral-400 mt-1 uppercase font-bold tracking-tighter">
+                            {{ $nota->created_at->format('d/m/Y H:i') }}
+                        </p>
+                    </div>
 
-                    <div class="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm {{ $nota->is_pinned ? 'text-yellow-900 font-medium' : 'text-neutral-700' }} font-normal break-words">
-                                @if($nota->is_pinned) 📌 @endif {{ $nota->contenido }}
-                            </p>
-                            <p class="text-[10px] text-neutral-400 mt-1 uppercase font-bold tracking-tighter">
-                                {{ $nota->created_at->format('d/m/Y H:i') }}
-                            </p>
-                        </div>
+                    <div class="flex gap-1 items-center shrink-0 ml-auto">
+                        {{-- Fijar/Desfijar --}}
+                        <button wire:click="togglePin({{ $nota->id }})" 
+                                class="p-1.5 text-yellow-600 hover:scale-125 transition cursor-pointer opacity-70 hover:opacity-100" 
+                                title="{{ $nota->is_pinned ? 'Quitar chincheta' : 'Fijar nota arriba' }}">
+                            📌
+                        </button>
 
-                        <div class="flex gap-1 items-center shrink-0 self-end md:self-start">
-                            {{-- Fijar/Desfijar --}}
-                            <button wire:click="togglePin({{ $nota->id }})" 
-                                    class="p-1.5 text-yellow-600 hover:scale-125 transition cursor-pointer opacity-70 hover:opacity-100" 
-                                    title="{{ $nota->is_pinned ? 'Quitar chincheta' : 'Fijar nota arriba' }}">
-                                📌
-                            </button>
+                        {{-- Editar --}}
+                        <a href="{{ route('notas.edit', $nota->id) }}" 
+                           class="p-1.5 text-yellow-600 hover:scale-125 transition cursor-pointer opacity-70 hover:opacity-100" 
+                           title="Editar nota">
+                           ✏️
+                        </a>
 
-                            {{-- Editar --}}
-                            <a href="{{ route('notas.edit', $nota->id) }}" 
-                               class="p-1.5 text-yellow-600 hover:scale-125 transition cursor-pointer opacity-70 hover:opacity-100" 
-                               title="Editar nota">
-                               ✏️
-                            </a>
-
-                            {{-- Eliminar --}}
-                            <button wire:click="borrar({{ $nota->id }})" 
-                                    wire:confirm="¿Estás seguro de que deseas borrar esta nota?" 
-                                    class="p-1.5 text-red-600 hover:scale-125 transition cursor-pointer opacity-70 hover:opacity-100" 
-                                    title="Eliminar nota">
-                                🗑️
-                            </button>
-                        </div>
+                        {{-- Eliminar --}}
+                        <button wire:click="borrar({{ $nota->id }})" 
+                                wire:confirm="¿Estás seguro de que deseas borrar esta nota?" 
+                                class="p-1.5 text-red-600 hover:scale-125 transition cursor-pointer opacity-70 hover:opacity-100" 
+                                title="Eliminar nota">
+                            🗑️
+                        </button>
                     </div>
                 </div>
             @empty

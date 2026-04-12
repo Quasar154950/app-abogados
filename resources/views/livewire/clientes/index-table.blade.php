@@ -59,7 +59,7 @@
                     @foreach($clientes as $cliente)
                         <tr wire:key="cliente-{{ $cliente->id }}" class="hover:bg-neutral-50 dark:hover:bg-neutral-800/40 transition">
                             <td class="p-3 text-sm text-neutral-500 font-mono">#{{ $cliente->id }}</td>
-                            <td class="p-3 text-sm font-bold text-neutral-800 dark:text-neutral-200">{{ $cliente->nombre }}</td>
+                            <td class="p-3 text-sm font-bold text-neutral-800 dark:text-neutral-200 whitespace-nowrap">{{ $cliente->nombre }}</td>
                             <td class="p-3 text-sm text-neutral-600 dark:text-neutral-400 font-medium">{{ $cliente->telefono }}</td>
                             <td class="p-3 text-sm text-neutral-600 dark:text-neutral-400">{{ $cliente->email }}</td>
                             

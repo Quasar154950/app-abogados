@@ -13,21 +13,21 @@
             </p>
 
             <div class="mt-4 flex gap-2">
-
     <a href="{{ route('clientes.create') }}"
-       class="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-green-600 px-2 py-2 text-xs sm:text-sm font-bold text-white hover:bg-green-700 transition shadow-sm cursor-pointer">
-        <span>➕</span>
-        <span class="sm:hidden">Nuevo</span>
-        <span class="hidden sm:inline">Agregar nuevo cliente</span>
+       class="flex-1 inline-flex items-center gap-1 rounded-lg bg-green-600 px-2 py-2 text-[11px] sm:text-sm font-bold text-white hover:bg-green-700 transition shadow-sm cursor-pointer whitespace-nowrap overflow-hidden">
+        <span class="shrink-0 text-[10px] sm:text-base">➕</span>
+        <span class="truncate">
+            Agregar nuevo cliente
+        </span>
     </a>
 
     <a href="{{ route('clientes.archivados') }}"
-       class="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-neutral-900 px-2 py-2 text-xs sm:text-sm font-bold text-white hover:opacity-90 transition shadow-sm cursor-pointer">
-        <span>📦</span>
-        <span class="sm:hidden">Archivados</span>
-        <span class="hidden sm:inline">Ver archivados</span>
+       class="flex-1 inline-flex items-center gap-1 rounded-lg bg-neutral-900 px-2 py-2 text-[11px] sm:text-sm font-bold text-white hover:opacity-90 transition shadow-sm cursor-pointer whitespace-nowrap overflow-hidden">
+        <span class="shrink-0 text-[10px] sm:text-base">📦</span>
+        <span class="truncate">
+            Ver archivados
+        </span>
     </a>
-
 </div>
         </div>
 

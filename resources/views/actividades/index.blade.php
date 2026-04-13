@@ -11,7 +11,6 @@
                 </p>
             </div>
 
-            {{-- Botón de Vaciar (Solo aparece si hay datos) --}}
             @if(!$actividades->isEmpty())
                 <form action="{{ route('actividades.vaciar') }}" method="POST" onsubmit="return confirm('⚠️ ¿Estás seguro? Esta acción borrará TODO el historial permanentemente y no se puede deshacer.')">
                     @csrf
@@ -47,6 +46,7 @@
                         <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800">
                             @foreach($actividades as $act)
                                 <tr class="hover:bg-neutral-50 dark:hover:bg-neutral-800/40 transition text-sm">
+
                                     {{-- Fecha --}}
                                     <td class="p-3 text-xs text-neutral-500 font-sans whitespace-nowrap">
                                         {{ $act->created_at->format('d/m/Y H:i') }}
@@ -57,7 +57,7 @@
                                         {{ $act->user->name ?? 'Sistema' }}
                                     </td>
 
-                                    {{-- Acción (Badge dinámico) --}}
+                                    {{-- Acción --}}
                                     <td class="p-3 whitespace-nowrap">
                                         @php
                                             $colorAccion = match($act->accion) {
@@ -72,9 +72,20 @@
                                         </span>
                                     </td>
 
-                                    {{-- Modelo afectado --}}
+                                    {{-- Elemento (ANTES era Seguimiento, ahora Tarea) --}}
                                     <td class="p-3 text-neutral-600 dark:text-neutral-400 font-sans whitespace-nowrap">
-                                        <span class="font-bold">{{ class_basename($act->logueable_type) }}</span>
+                                        @php
+                                            $tipo = class_basename($act->logueable_type);
+
+                                            $nombre = match($tipo) {
+                                                'Seguimiento' => 'Tarea',
+                                                'Cliente' => 'Cliente',
+                                                'Nota' => 'Nota',
+                                                default => $tipo,
+                                            };
+                                        @endphp
+
+                                        <span class="font-bold">{{ $nombre }}</span>
                                         <span class="text-xs text-neutral-400">#{{ $act->logueable_id }}</span>
                                     </td>
 
@@ -103,6 +114,7 @@
                                             <span class="text-xs italic text-red-500">🗑️ Registro eliminado permanentemente</span>
                                         @endif
                                     </td>
+
                                 </tr>
                             @endforeach
                         </tbody>

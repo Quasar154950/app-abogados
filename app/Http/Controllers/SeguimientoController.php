@@ -15,8 +15,7 @@ class SeguimientoController extends Controller
      */
     public function index(Request $request)
     {
-       
-    $filtros = $request->all();
+        $filtros = $request->all();
 
         $query = Seguimiento::with(['cliente', 'etiqueta', 'expediente']);
 
@@ -48,7 +47,8 @@ class SeguimientoController extends Controller
                 $query->whereDate('fecha_recordatorio', now()->today());
             }
         }
-            $seguimientos = $query
+
+        $seguimientos = $query
             ->latest()
             ->paginate(15)
             ->withQueryString();
@@ -91,7 +91,7 @@ class SeguimientoController extends Controller
             'fecha_recordatorio' => $request->fecha_recordatorio ?: null,
         ]);
 
-        return back()->with('success', 'Tarea del caso agregada correctamente');
+        return back()->with('success', 'Tarea agregada correctamente');
     }
 
     /**
@@ -130,7 +130,7 @@ class SeguimientoController extends Controller
 
         return redirect()
             ->route('clientes.show', $seguimiento->cliente_id)
-            ->with('success', 'Tarea del caso actualizada');
+            ->with('success', 'Tarea actualizada correctamente');
     }
 
     /**
@@ -143,7 +143,7 @@ class SeguimientoController extends Controller
 
         return redirect()
             ->route('clientes.show', $clienteId)
-            ->with('success', 'Tarea del caso eliminada');
+            ->with('success', 'Tarea eliminada correctamente');
     }
 
     /**

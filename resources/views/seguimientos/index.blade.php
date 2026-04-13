@@ -113,21 +113,18 @@
                                         {{ $seg->cliente->nombre }}
                                     </td>
 
-                                    <td class="p-3 text-sm font-sans max-w-[220px]">
-                                        @if($seg->expediente)
-                                            <span
-    title="{{ $seg->expediente->titulo }}"
-    class="inline-flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold uppercase shadow-sm bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 max-w-[180px]"
->
-    📁 
-    <span class="truncate">
-        {{ $seg->expediente->titulo }}
-    </span>
-</span>
-                                        @else
-                                            <span class="text-neutral-400 italic text-xs whitespace-nowrap">Sin expediente</span>
-                                        @endif
-                                    </td>
+                                    <td class="p-3 text-sm font-sans whitespace-nowrap">
+    @if($seg->expediente)
+        <span
+            title="{{ $seg->expediente->titulo }}"
+            class="inline-flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold uppercase shadow-sm bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 whitespace-nowrap"
+        >
+            📁 {{ $seg->expediente->titulo }}
+        </span>
+    @else
+        <span class="text-neutral-400 italic text-xs whitespace-nowrap">Sin expediente</span>
+    @endif
+</td>
 
                                     <td class="p-3 text-sm font-sans">
                                         @if($seg->cliente->telefono)

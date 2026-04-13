@@ -109,17 +109,20 @@
                         <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800">
                             @foreach($seguimientos as $seg)
                                 <tr class="hover:bg-neutral-50 dark:hover:bg-neutral-800/40 transition">
-                                    <td class="p-3 text-sm font-bold text-neutral-700 dark:text-neutral-200 font-sans">
+                                    <td class="p-3 text-sm font-bold text-neutral-700 dark:text-neutral-200 font-sans whitespace-nowrap">
                                         {{ $seg->cliente->nombre }}
                                     </td>
 
-                                    <td class="p-3 text-sm font-sans">
+                                    <td class="p-3 text-sm font-sans max-w-[220px]">
                                         @if($seg->expediente)
-                                            <span class="inline-flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold uppercase shadow-sm bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                                            <span
+                                                title="{{ $seg->expediente->titulo }}"
+                                                class="inline-flex max-w-full items-center gap-1 px-2 py-1 rounded text-[10px] font-bold uppercase shadow-sm bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 overflow-hidden text-ellipsis whitespace-nowrap"
+                                            >
                                                 📁 {{ $seg->expediente->titulo }}
                                             </span>
                                         @else
-                                            <span class="text-neutral-400 italic text-xs">Sin expediente</span>
+                                            <span class="text-neutral-400 italic text-xs whitespace-nowrap">Sin expediente</span>
                                         @endif
                                     </td>
 

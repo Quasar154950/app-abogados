@@ -114,17 +114,17 @@
                                     </td>
 
                                     <td class="p-3 text-sm font-sans whitespace-nowrap">
-    @if($seg->expediente)
-        <span
-            title="{{ $seg->expediente->caratula }}"
-            class="inline-flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold uppercase shadow-sm bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 whitespace-nowrap"
-        >
-            📁 {{ $seg->expediente->caratula }}
-        </span>
-    @else
-        <span class="text-neutral-400 italic text-xs whitespace-nowrap">Sin expediente</span>
-    @endif
-</td>
+                                        @if($seg->expediente)
+                                            <span
+                                                title="Tarea del expediente: {{ $seg->expediente->caratula }}"
+                                                class="inline-flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold uppercase shadow-sm bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 whitespace-nowrap"
+                                            >
+                                                📁 {{ $seg->expediente->caratula }}
+                                            </span>
+                                        @else
+                                            <span class="text-neutral-400 italic text-xs whitespace-nowrap">Tarea del cliente</span>
+                                        @endif
+                                    </td>
 
                                     <td class="p-3 text-sm font-sans">
                                         @if($seg->cliente->telefono)
@@ -185,7 +185,7 @@
 
                                             <a href="{{ route('seguimientos.edit', $seg->id) }}" 
                                                class="p-2 rounded-lg text-neutral-400 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 transition cursor-pointer" 
-                                               title="Editar tarea del caso">
+                                               title="{{ $seg->expediente ? 'Editar tarea del expediente' : 'Editar tarea del cliente' }}">
                                                 ✏️
                                             </a>
 

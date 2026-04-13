@@ -40,7 +40,7 @@
                                 <th class="p-3 text-left">Fecha</th>
                                 <th class="p-3 text-left">Usuario</th>
                                 <th class="p-3 text-left">Acción</th>
-                                <th class="p-3 text-left">Módulo / ID</th>
+                                <th class="p-3 text-left">Elemento</th>
                                 <th class="p-3 text-left">Detalle de Cambios</th>
                             </tr>
                         </thead>
@@ -48,17 +48,17 @@
                             @foreach($actividades as $act)
                                 <tr class="hover:bg-neutral-50 dark:hover:bg-neutral-800/40 transition text-sm">
                                     {{-- Fecha --}}
-                                    <td class="p-3 text-xs text-neutral-500 font-sans">
+                                    <td class="p-3 text-xs text-neutral-500 font-sans whitespace-nowrap">
                                         {{ $act->created_at->format('d/m/Y H:i') }}
                                     </td>
 
                                     {{-- Usuario --}}
-                                    <td class="p-3 font-bold text-neutral-700 dark:text-neutral-200 font-sans">
+                                    <td class="p-3 font-bold text-neutral-700 dark:text-neutral-200 font-sans whitespace-nowrap">
                                         {{ $act->user->name ?? 'Sistema' }}
                                     </td>
 
                                     {{-- Acción (Badge dinámico) --}}
-                                    <td class="p-3">
+                                    <td class="p-3 whitespace-nowrap">
                                         @php
                                             $colorAccion = match($act->accion) {
                                                 'created' => 'bg-green-600',
@@ -73,7 +73,7 @@
                                     </td>
 
                                     {{-- Modelo afectado --}}
-                                    <td class="p-3 text-neutral-600 dark:text-neutral-400 font-sans">
+                                    <td class="p-3 text-neutral-600 dark:text-neutral-400 font-sans whitespace-nowrap">
                                         <span class="font-bold">{{ class_basename($act->logueable_type) }}</span>
                                         <span class="text-xs text-neutral-400">#{{ $act->logueable_id }}</span>
                                     </td>
@@ -85,17 +85,11 @@
                                                 @foreach($act->despues as $campo => $nuevoValor)
                                                     @if(!in_array($campo, ['updated_at', 'created_at']))
                                                         <div class="bg-neutral-50 dark:bg-neutral-800/50 p-1 rounded border border-neutral-100 dark:border-neutral-700">
-                                                            {{-- Nombre del campo traducido (Ya viene del Trait) --}}
                                                             <span class="font-bold text-neutral-600 dark:text-neutral-300">{{ $campo }}:</span>
-                                                            
-                                                            {{-- Valor Anterior --}}
                                                             <span class="text-red-400 line-through px-1">
                                                                 {{ $act->antes[$campo] ?? '...' }}
                                                             </span>
-
                                                             <span class="text-neutral-400 mx-1">→</span>
-                                                            
-                                                            {{-- Valor Nuevo --}}
                                                             <span class="text-green-500 font-bold">
                                                                 {{ $nuevoValor }}
                                                             </span>

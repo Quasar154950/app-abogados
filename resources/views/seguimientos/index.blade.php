@@ -116,10 +116,10 @@
                                     <td class="p-3 text-sm font-sans whitespace-nowrap">
     @if($seg->expediente)
         <span
-            title="{{ $seg->expediente->titulo }}"
+            title="{{ $seg->expediente->caratula }}"
             class="inline-flex items-center gap-1 px-2 py-1 rounded text-[10px] font-bold uppercase shadow-sm bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 whitespace-nowrap"
         >
-            📁 {{ $seg->expediente->titulo }}
+            📁 {{ $seg->expediente->caratula }}
         </span>
     @else
         <span class="text-neutral-400 italic text-xs whitespace-nowrap">Sin expediente</span>

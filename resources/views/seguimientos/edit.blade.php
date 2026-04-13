@@ -1,12 +1,25 @@
-<x-layouts::app :title="__('Editar Tarea del Caso')">
+<x-layouts::app :title="$seguimiento->expediente ? 'Editar Tarea del Expediente' : 'Editar Tarea del Cliente'">
 
     <div class="space-y-6 pb-10 text-left">
 
         <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 bg-white dark:bg-neutral-900 shadow-sm">
-            <h1 class="text-2xl font-bold text-gray-800 dark:text-neutral-200">Editar Tarea del Caso</h1>
-            <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-                Modificá el contenido de la tarea y su categorización.
-            </p>
+            
+            @if($seguimiento->expediente)
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-neutral-200">
+                    Editar Tarea del Expediente
+                </h1>
+                <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+                    Modificá la tarea asociada al expediente "{{ $seguimiento->expediente->caratula }}".
+                </p>
+            @else
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-neutral-200">
+                    Editar Tarea del Cliente
+                </h1>
+                <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+                    Modificá la tarea general del cliente "{{ $seguimiento->cliente->nombre }}".
+                </p>
+            @endif
+
         </div>
 
         @if(session('success'))

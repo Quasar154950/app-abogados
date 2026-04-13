@@ -44,7 +44,7 @@
                     </flux:sidebar.item>
 
                     <flux:sidebar.item icon="clipboard-document-list" :href="route('seguimientos.index')" :current="request()->routeIs('seguimientos.*')" wire:navigate>
-                        Seguimientos
+                        Tareas
                     </flux:sidebar.item>
 
                     <flux:sidebar.item icon="clock" :href="route('actividades.index')" :current="request()->routeIs('actividades.*')" wire:navigate>

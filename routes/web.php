@@ -18,7 +18,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             abort(403);
         }
 
-        return app(DashboardController::class)->index();
+        return 'PANEL ABOGADO OK - ' . auth()->user()->name;
     })->name('dashboard');
 
     // Buscador global

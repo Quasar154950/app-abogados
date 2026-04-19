@@ -13,7 +13,13 @@ Route::view('/', 'welcome')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('dashboard', function () {
+        if (auth()->user()?->role !== 'abogado') {
+            abort(403);
+        }
+
+        return app(DashboardController::class)->index();
+    })->name('dashboard');
 
     // Buscador global
     Route::get('search', [SearchController::class, 'index'])->name('global.search');
@@ -56,5 +62,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('historial', [ActividadController::class, 'index'])->name('actividades.index');
     Route::delete('historial/vaciar', [ActividadController::class, 'vaciar'])->name('actividades.vaciar');
 });
+
+// Panel cliente
+Route::middleware(['auth'])->get('/cliente/dashboard', function () {
+    if (auth()->user()?->role !== 'cliente') {
+        abort(403);
+    }
+
+    return view('cliente.dashboard');
+})->name('cliente.dashboard');
 
 require __DIR__ . '/settings.php';

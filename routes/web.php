@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ExpedienteController;
 use App\Http\Controllers\DashboardController;
@@ -75,6 +76,20 @@ Route::middleware(['auth'])->get('/cliente/dashboard', function () {
             </form>
         </div>
     ';
+});
+
+// 🧪 TEST LOGIN DIRECTO ISMAEL
+Route::get('/test-ismael-login', function () {
+    $user = \App\Models\User::where('email', 'cliente1@prueba.com')->first();
+
+    if (! $user) {
+        abort(404, 'Usuario no encontrado');
+    }
+
+    Auth::login($user);
+    request()->session()->regenerate();
+
+    return redirect('/cliente/dashboard');
 });
 
 require __DIR__ . '/settings.php';

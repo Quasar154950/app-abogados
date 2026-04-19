@@ -18,7 +18,24 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(\Laravel\Fortify\Contracts\LoginResponse::class, function () {
+            return new class implements \Laravel\Fortify\Contracts\LoginResponse {
+                public function toResponse($request)
+                {
+                    $user = auth()->user();
+
+                    if ($request->wantsJson()) {
+                        return new \Illuminate\Http\JsonResponse(['two_factor' => false]);
+                    }
+
+                    if ($user && $user->role === 'cliente') {
+                        return redirect('/cliente/dashboard');
+                    }
+
+                    return redirect('/dashboard');
+                }
+            };
+        });
     }
 
     /**

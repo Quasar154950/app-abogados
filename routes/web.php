@@ -10,6 +10,11 @@ use App\Http\Controllers\SeguimientoController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ActividadController;
 
+// 🧪 TEST SIMPLE
+Route::get('/zzz-test', function () {
+    return 'ZZZ TEST OK';
+});
+
 Route::view('/', 'welcome')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {

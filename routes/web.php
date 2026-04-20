@@ -88,7 +88,7 @@ Route::get('/test-ismael-login', function () {
     $user = \App\Models\User::where('email', 'cliente1@prueba.com')->first();
 
     if (! $user) {
-        abort(404, 'Usuario no encontrado');
+        return 'NO EXISTE cliente1@prueba.com EN LA BASE DE DATOS DE RAILWAY';
     }
 
     Auth::login($user);

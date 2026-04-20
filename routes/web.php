@@ -49,13 +49,14 @@ Route::get('/fix-role', function () {
     return 'ROLE ACTUALIZADO OK';
 });
 
-// 🧪 EJECUTAR MIGRACIONES EN RAILWAY
-Route::get('/run-migrations', function () {
+// 🧪 EJECUTAR SOLO LA MIGRACIÓN DE ROLE
+Route::get('/run-role-migration', function () {
     Artisan::call('migrate', [
-        '--force' => true
+        '--force' => true,
+        '--path' => 'database/migrations/2026_04_19_221035_add_role_to_users_table.php',
     ]);
 
-    return 'MIGRACIONES EJECUTADAS';
+    return 'MIGRACION ROLE EJECUTADA';
 });
 
 Route::view('/', 'welcome')->name('home');

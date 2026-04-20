@@ -15,6 +15,25 @@ Route::get('/zzz-test', function () {
     return 'ZZZ TEST OK';
 });
 
+// 🧪 CREAR CLIENTE DE PRUEBA EN RAILWAY
+Route::get('/crear-cliente-prueba', function () {
+    $user = \App\Models\User::where('email', 'cliente1@prueba.com')->first();
+
+    if ($user) {
+        return 'EL USUARIO YA EXISTE';
+    }
+
+    \App\Models\User::create([
+        'name' => 'Ismael Cliente',
+        'email' => 'cliente1@prueba.com',
+        'password' => bcrypt('12345678'),
+        'role' => 'cliente',
+        'email_verified_at' => now(),
+    ]);
+
+    return 'USUARIO CLIENTE CREADO OK';
+});
+
 Route::view('/', 'welcome')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {

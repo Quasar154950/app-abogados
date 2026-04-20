@@ -68,11 +68,11 @@ Route::middleware(['auth'])->get('/cliente/dashboard', function () {
     return view('cliente.dashboard');
 })->name('cliente.dashboard');
 
-// 🧪 EJECUTAR MIGRACIÓN CLIENTE → USER
+// 🧪 EJECUTAR MIGRACIÓN CLIENTE → USER (CORREGIDA)
 Route::get('/run-cliente-user-migration', function () {
     Artisan::call('migrate', [
         '--force' => true,
-        '--path' => 'database/migrations/2026_04_19_221035_add_user_id_to_clientes_table.php',
+        '--path' => 'database/migrations/2026_04_19_225202_add_user_id_to_clientes_table.php',
     ]);
 
     return 'MIGRACION CLIENTE-USER EJECUTADA';

@@ -82,15 +82,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('historial/vaciar', [ActividadController::class, 'vaciar'])->name('actividades.vaciar');
 });
 
-// 🔵 PANEL CLIENTE
+// 🔵 PANEL CLIENTE (AHORA MUESTRA EL ROLE)
 Route::middleware(['auth'])->get('/cliente/dashboard', function () {
-    if (auth()->user()?->role !== 'cliente') {
-        abort(403);
-    }
-
     return '
         <div style="font-family: Arial, sans-serif; padding: 30px;">
             <h1>Panel Cliente OK - ' . auth()->user()->name . '</h1>
+            <p><strong>Email:</strong> ' . auth()->user()->email . '</p>
+            <p><strong>Role:</strong> ' . (auth()->user()->role ?? 'NULL') . '</p>
 
             <form method="POST" action="/logout" style="margin-top: 20px;">
                 <input type="hidden" name="_token" value="' . csrf_token() . '">

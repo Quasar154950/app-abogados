@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\Cliente;
 
 class User extends Authenticatable
 {
@@ -20,7 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role', // 👈 ESTA ES LA CLAVE
+        'role',
     ];
 
     /**
@@ -54,5 +56,10 @@ class User extends Authenticatable
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    public function cliente(): HasOne
+    {
+        return $this->hasOne(Cliente::class);
     }
 }

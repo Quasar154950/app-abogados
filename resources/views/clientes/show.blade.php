@@ -36,6 +36,37 @@
                     <p class="text-lg">{{ $cliente->direccion }}</p>
                 </div>
             </div>
+
+            {{-- VINCULAR USUARIO CLIENTE --}}
+            <div class="mt-6 pt-6 border-t border-neutral-200 dark:border-neutral-700">
+                <p class="text-[10px] font-bold uppercase text-neutral-500 mb-2">Acceso del cliente</p>
+
+                <form method="POST" action="{{ route('clientes.asignarUsuario', $cliente->id) }}" class="flex flex-col md:flex-row md:items-end gap-3">
+                    @csrf
+
+                    <div class="flex-1">
+                        <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
+                            Usuario vinculado
+                        </label>
+
+                        <select name="user_id"
+                                class="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm dark:bg-neutral-900 dark:border-neutral-700">
+                            <option value="">-- Sin usuario asignado --</option>
+
+                            @foreach($usuarios as $usuario)
+                                <option value="{{ $usuario->id }}" {{ $cliente->user_id == $usuario->id ? 'selected' : '' }}>
+                                    {{ $usuario->name }} ({{ $usuario->email }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <button type="submit"
+                            class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm text-white font-bold hover:bg-blue-700 transition cursor-pointer active:scale-[0.98]">
+                        ✔ Guardar vínculo
+                    </button>
+                </form>
+            </div>
         </div>
 
         {{-- 3. BLOQUE: DOCUMENTACIÓN DEL CLIENTE --}}

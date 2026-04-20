@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Cliente;
 use App\Models\Etiqueta;
+use App\Models\User;
 use Carbon\Carbon;
 
 class ClienteController extends Controller
@@ -14,14 +15,12 @@ class ClienteController extends Controller
      */
     public function index()
     {
-        // Usamos paginate para que la vista pueda usar {{ $clientes->links() }}
         $clientes = Cliente::where('archivado', false)->paginate(10);
         return view('clientes.index', compact('clientes'));
     }
 
     /**
      * Muestra el listado de clientes ARCHIVADOS.
-     * CORRECCIÓN: Se usa paginate(10) para que exista el método ->links() en la vista.
      */
     public function archivados()
     {
@@ -74,8 +73,9 @@ class ClienteController extends Controller
     public function show(Request $request, string $id)
     {
         $cliente = Cliente::with(['notas', 'seguimientos.etiqueta'])->findOrFail($id);
-        $etiquetas = Etiqueta::all(); 
-        
+        $etiquetas = Etiqueta::all();
+        $usuarios = User::where('role', 'cliente')->get();
+
         $estadoFiltro = $request->query('estado');
         $hoy = Carbon::today();
 
@@ -95,14 +95,14 @@ class ClienteController extends Controller
 
                 if ($s->fecha_recordatorio) {
                     $fecha = Carbon::parse($s->fecha_recordatorio)->startOfDay();
-                    if ($fecha->lt($hoy)) $prioFecha = 0; 
-                    elseif ($fecha->isSameDay($hoy)) $prioFecha = 1; 
-                    else $prioFecha = 2; 
+                    if ($fecha->lt($hoy)) $prioFecha = 0;
+                    elseif ($fecha->isSameDay($hoy)) $prioFecha = 1;
+                    else $prioFecha = 2;
                 } else {
-                    $prioFecha = 3; 
+                    $prioFecha = 3;
                 }
 
-                $prioImportancia = match($s->prioridad) {
+                $prioImportancia = match ($s->prioridad) {
                     'alta' => 0,
                     'media' => 1,
                     'baja' => 2,
@@ -112,7 +112,24 @@ class ClienteController extends Controller
                 return [$prioEstado, $prioFecha, $prioImportancia, -$s->created_at->timestamp];
             });
 
-        return view('clientes.show', compact('cliente', 'seguimientosFiltrados', 'stats', 'estadoFiltro', 'etiquetas'));
+        return view('clientes.show', compact('cliente', 'seguimientosFiltrados', 'stats', 'estadoFiltro', 'etiquetas', 'usuarios'));
+    }
+
+    /**
+     * Asigna un usuario cliente al cliente.
+     */
+    public function asignarUsuario(Request $request, string $id)
+    {
+        $request->validate([
+            'user_id' => 'nullable|exists:users,id',
+        ]);
+
+        $cliente = Cliente::findOrFail($id);
+        $cliente->update([
+            'user_id' => $request->user_id,
+        ]);
+
+        return back()->with('success', 'Usuario asignado correctamente.');
     }
 
     /**
@@ -129,8 +146,8 @@ class ClienteController extends Controller
 
         $cliente->seguimientos()->create([
             'descripcion' => $request->descripcion,
-            'etiqueta_id' => $request->etiqueta_id, 
-            'user_id' => auth()->id() ?? 1, 
+            'etiqueta_id' => $request->etiqueta_id,
+            'user_id' => auth()->id() ?? 1,
             'estado' => 'pendiente',
             'prioridad' => $request->prioridad ?? 'media',
             'fecha_recordatorio' => $request->fecha_recordatorio,
@@ -180,7 +197,7 @@ class ClienteController extends Controller
     }
 
     /**
-     * Elimina un cliente (Soft Delete o permanente según tu modelo).
+     * Elimina un cliente.
      */
     public function destroy(string $id)
     {
@@ -191,7 +208,7 @@ class ClienteController extends Controller
     }
 
     /**
-     * Archiva un cliente (columna archivado = true).
+     * Archiva un cliente.
      */
     public function archivar(string $id)
     {
@@ -202,7 +219,7 @@ class ClienteController extends Controller
     }
 
     /**
-     * Desarchiva un cliente (columna archivado = false).
+     * Desarchiva un cliente.
      */
     public function desarchivar(string $id)
     {

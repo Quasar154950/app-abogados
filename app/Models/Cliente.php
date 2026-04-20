@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Nota;
 use App\Models\Seguimiento;
 use App\Models\Expediente;
+use App\Models\User;
 use App\Traits\RegistraActividad;
 
 // Spatie
@@ -15,6 +16,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 // Relaciones tipadas
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Cliente extends Model implements HasMedia
 {
@@ -27,7 +29,8 @@ class Cliente extends Model implements HasMedia
         'telefono',
         'email',
         'direccion',
-        'archivado', 
+        'archivado',
+        'user_id',
     ];
 
     /**
@@ -56,6 +59,11 @@ class Cliente extends Model implements HasMedia
     }
 
     // RELACIONES
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function notas(): HasMany
     {

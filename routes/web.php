@@ -22,6 +22,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('clientes/archivados', [ClienteController::class, 'archivados'])->name('clientes.archivados');
     Route::resource('clientes', ClienteController::class);
 
+    // 👉 NUEVA RUTA (asignar usuario al cliente)
+    Route::post('clientes/{cliente}/asignar-usuario', [ClienteController::class, 'asignarUsuario'])->name('clientes.asignarUsuario');
+
     // Archivo de clientes
     Route::patch('clientes/{cliente}/archivar', [ClienteController::class, 'archivar'])->name('clientes.archivar');
     Route::patch('clientes/{cliente}/desarchivar', [ClienteController::class, 'desarchivar'])->name('clientes.desarchivar');

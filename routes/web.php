@@ -64,18 +64,7 @@ Route::middleware(['auth'])->get('/cliente/dashboard', function () {
         abort(403);
     }
 
-    return '
-        <div style="font-family: Arial, sans-serif; padding: 30px;">
-            <h1>Panel Cliente OK - ' . auth()->user()->name . '</h1>
-
-            <form method="POST" action="/logout" style="margin-top: 20px;">
-                <input type="hidden" name="_token" value="' . csrf_token() . '">
-                <button type="submit" style="padding: 10px 16px; background: #dc2626; color: white; border: none; border-radius: 8px; cursor: pointer;">
-                    Cerrar sesión
-                </button>
-            </form>
-        </div>
-    ';
-});
+    return view('cliente.dashboard');
+})->name('cliente.dashboard');
 
 require __DIR__ . '/settings.php';

@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ExpedienteController;
 use App\Http\Controllers\DashboardController;
@@ -10,54 +9,6 @@ use App\Http\Controllers\NotaController;
 use App\Http\Controllers\SeguimientoController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ActividadController;
-
-// 🧪 TEST SIMPLE
-Route::get('/zzz-test', function () {
-    return 'ZZZ TEST OK';
-});
-
-// 🧪 CREAR CLIENTE DE PRUEBA
-Route::get('/crear-cliente-prueba', function () {
-    $user = \App\Models\User::where('email', 'cliente1@prueba.com')->first();
-
-    if ($user) {
-        return 'EL USUARIO YA EXISTE';
-    }
-
-    \App\Models\User::create([
-        'name' => 'Ismael Cliente',
-        'email' => 'cliente1@prueba.com',
-        'password' => bcrypt('12345678'),
-        'role' => 'cliente',
-        'email_verified_at' => now(),
-    ]);
-
-    return 'USUARIO CLIENTE CREADO OK';
-});
-
-// 🧪 ARREGLAR ROLE
-Route::get('/fix-role', function () {
-    $user = \App\Models\User::where('email', 'cliente1@prueba.com')->first();
-
-    if (! $user) {
-        return 'NO EXISTE';
-    }
-
-    $user->role = 'cliente';
-    $user->save();
-
-    return 'ROLE ACTUALIZADO OK';
-});
-
-// 🧪 EJECUTAR SOLO LA MIGRACIÓN DE ROLE
-Route::get('/run-role-migration', function () {
-    Artisan::call('migrate', [
-        '--force' => true,
-        '--path' => 'database/migrations/2026_04_19_221035_add_role_to_users_table.php',
-    ]);
-
-    return 'MIGRACION ROLE EJECUTADA';
-});
 
 Route::view('/', 'welcome')->name('home');
 
@@ -109,11 +60,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // 🔵 PANEL CLIENTE
 Route::middleware(['auth'])->get('/cliente/dashboard', function () {
+    if (auth()->user()?->role !== 'cliente') {
+        abort(403);
+    }
+
     return '
         <div style="font-family: Arial, sans-serif; padding: 30px;">
             <h1>Panel Cliente OK - ' . auth()->user()->name . '</h1>
-            <p><strong>Email:</strong> ' . auth()->user()->email . '</p>
-            <p><strong>Role:</strong> ' . (auth()->user()->role ?? 'NULL') . '</p>
 
             <form method="POST" action="/logout" style="margin-top: 20px;">
                 <input type="hidden" name="_token" value="' . csrf_token() . '">
@@ -123,20 +76,6 @@ Route::middleware(['auth'])->get('/cliente/dashboard', function () {
             </form>
         </div>
     ';
-});
-
-// 🧪 LOGIN DIRECTO
-Route::get('/test-ismael-login', function () {
-    $user = \App\Models\User::where('email', 'cliente1@prueba.com')->first();
-
-    if (! $user) {
-        return 'NO EXISTE cliente1@prueba.com EN LA BASE DE DATOS DE RAILWAY';
-    }
-
-    Auth::login($user);
-    request()->session()->regenerate();
-
-    return redirect('/cliente/dashboard');
 });
 
 require __DIR__ . '/settings.php';

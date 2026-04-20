@@ -68,7 +68,7 @@ Route::middleware(['auth'])->get('/cliente/dashboard', function () {
     return view('cliente.dashboard');
 })->name('cliente.dashboard');
 
-// 🧪 EJECUTAR MIGRACIÓN CLIENTE → USER (CORREGIDA)
+// 🧪 EJECUTAR MIGRACIÓN CLIENTE → USER
 Route::get('/run-cliente-user-migration', function () {
     Artisan::call('migrate', [
         '--force' => true,
@@ -76,6 +76,26 @@ Route::get('/run-cliente-user-migration', function () {
     ]);
 
     return 'MIGRACION CLIENTE-USER EJECUTADA';
+});
+
+// 🧪 VINCULAR CLIENTE CON USUARIO
+Route::get('/vincular-cliente', function () {
+    $user = \App\Models\User::where('email', 'cliente1@prueba.com')->first();
+
+    if (! $user) {
+        return 'USUARIO NO EXISTE';
+    }
+
+    $cliente = \App\Models\Cliente::first();
+
+    if (! $cliente) {
+        return 'NO HAY CLIENTES';
+    }
+
+    $cliente->user_id = $user->id;
+    $cliente->save();
+
+    return 'CLIENTE VINCULADO OK';
 });
 
 require __DIR__ . '/settings.php';

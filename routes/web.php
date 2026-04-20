@@ -15,7 +15,7 @@ Route::get('/zzz-test', function () {
     return 'ZZZ TEST OK';
 });
 
-// 🧪 CREAR CLIENTE DE PRUEBA EN RAILWAY
+// 🧪 CREAR CLIENTE DE PRUEBA
 Route::get('/crear-cliente-prueba', function () {
     $user = \App\Models\User::where('email', 'cliente1@prueba.com')->first();
 
@@ -32,6 +32,20 @@ Route::get('/crear-cliente-prueba', function () {
     ]);
 
     return 'USUARIO CLIENTE CREADO OK';
+});
+
+// 🧪 ARREGLAR ROLE DEL CLIENTE
+Route::get('/fix-role', function () {
+    $user = \App\Models\User::where('email', 'cliente1@prueba.com')->first();
+
+    if (! $user) {
+        return 'NO EXISTE';
+    }
+
+    $user->role = 'cliente';
+    $user->save();
+
+    return 'ROLE ACTUALIZADO OK';
 });
 
 Route::view('/', 'welcome')->name('home');
@@ -82,7 +96,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('historial/vaciar', [ActividadController::class, 'vaciar'])->name('actividades.vaciar');
 });
 
-// 🔵 PANEL CLIENTE (AHORA MUESTRA EL ROLE)
+// 🔵 PANEL CLIENTE (muestra datos para debug)
 Route::middleware(['auth'])->get('/cliente/dashboard', function () {
     return '
         <div style="font-family: Arial, sans-serif; padding: 30px;">
@@ -100,7 +114,7 @@ Route::middleware(['auth'])->get('/cliente/dashboard', function () {
     ';
 });
 
-// 🧪 TEST LOGIN DIRECTO ISMAEL
+// 🧪 TEST LOGIN DIRECTO
 Route::get('/test-ismael-login', function () {
     $user = \App\Models\User::where('email', 'cliente1@prueba.com')->first();
 

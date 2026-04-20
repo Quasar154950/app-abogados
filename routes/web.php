@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ExpedienteController;
 use App\Http\Controllers\DashboardController;
@@ -66,5 +67,15 @@ Route::middleware(['auth'])->get('/cliente/dashboard', function () {
 
     return view('cliente.dashboard');
 })->name('cliente.dashboard');
+
+// 🧪 EJECUTAR MIGRACIÓN CLIENTE → USER
+Route::get('/run-cliente-user-migration', function () {
+    Artisan::call('migrate', [
+        '--force' => true,
+        '--path' => 'database/migrations/2026_04_19_221035_add_user_id_to_clientes_table.php',
+    ]);
+
+    return 'MIGRACION CLIENTE-USER EJECUTADA';
+});
 
 require __DIR__ . '/settings.php';

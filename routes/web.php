@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ExpedienteController;
 use App\Http\Controllers\DashboardController;
@@ -34,7 +35,7 @@ Route::get('/crear-cliente-prueba', function () {
     return 'USUARIO CLIENTE CREADO OK';
 });
 
-// 🧪 ARREGLAR ROLE DEL CLIENTE
+// 🧪 ARREGLAR ROLE
 Route::get('/fix-role', function () {
     $user = \App\Models\User::where('email', 'cliente1@prueba.com')->first();
 
@@ -46,6 +47,15 @@ Route::get('/fix-role', function () {
     $user->save();
 
     return 'ROLE ACTUALIZADO OK';
+});
+
+// 🧪 EJECUTAR MIGRACIONES EN RAILWAY
+Route::get('/run-migrations', function () {
+    Artisan::call('migrate', [
+        '--force' => true
+    ]);
+
+    return 'MIGRACIONES EJECUTADAS';
 });
 
 Route::view('/', 'welcome')->name('home');
@@ -96,7 +106,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('historial/vaciar', [ActividadController::class, 'vaciar'])->name('actividades.vaciar');
 });
 
-// 🔵 PANEL CLIENTE (muestra datos para debug)
+// 🔵 PANEL CLIENTE
 Route::middleware(['auth'])->get('/cliente/dashboard', function () {
     return '
         <div style="font-family: Arial, sans-serif; padding: 30px;">
@@ -114,7 +124,7 @@ Route::middleware(['auth'])->get('/cliente/dashboard', function () {
     ';
 });
 
-// 🧪 TEST LOGIN DIRECTO
+// 🧪 LOGIN DIRECTO
 Route::get('/test-ismael-login', function () {
     $user = \App\Models\User::where('email', 'cliente1@prueba.com')->first();
 

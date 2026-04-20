@@ -10,9 +10,9 @@
 <body class="bg-zinc-100">
 
     @php
-        $cliente = \App\Models\Cliente::where('user_id', auth()->id())
-            ->with('expedientes')
-            ->first();
+        $cliente = auth()->user()->cliente_id
+            ? \App\Models\Cliente::with('expedientes')->find(auth()->user()->cliente_id)
+            : null;
     @endphp
 
     <div class="min-h-screen p-6">

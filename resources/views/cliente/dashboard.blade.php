@@ -10,9 +10,9 @@
 <body class="bg-zinc-100">
 
     @php
-        $cliente = auth()->user()->cliente_id
-            ? \App\Models\Cliente::with('expedientes')->find(auth()->user()->cliente_id)
-            : null;
+        $cliente = \App\Models\Cliente::with('expedientes')
+            ->where('id', auth()->user()->cliente_id)
+            ->first();
     @endphp
 
     <div class="min-h-screen p-6">
@@ -20,7 +20,7 @@
 
             <div class="bg-white rounded-xl shadow-md p-6 mb-6">
                 <h1 class="text-2xl font-bold text-zinc-800 mb-2">
-                    Bienvenido, {{ auth()->user()->name }}
+                    Bienvenido, {{ $cliente ? $cliente->nombre : auth()->user()->name }}
                 </h1>
 
                 <p class="text-zinc-600 mb-6">
@@ -32,14 +32,14 @@
                     <div class="border rounded-lg p-4">
                         <p class="text-sm text-zinc-500">Nombre</p>
                         <p class="font-semibold text-zinc-800">
-                            {{ auth()->user()->name }}
+                            {{ $cliente ? $cliente->nombre : auth()->user()->name }}
                         </p>
                     </div>
 
                     <div class="border rounded-lg p-4">
                         <p class="text-sm text-zinc-500">Email</p>
                         <p class="font-semibold text-zinc-800">
-                            {{ auth()->user()->email }}
+                            {{ $cliente ? $cliente->email : auth()->user()->email }}
                         </p>
                     </div>
 

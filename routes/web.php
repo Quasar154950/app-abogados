@@ -78,3 +78,11 @@ Route::middleware(['auth', 'role:cliente'])->get('/cliente/dashboard', function 
 })->name('cliente.dashboard');
 
 require __DIR__ . '/settings.php';
+use App\Models\User;
+
+Route::get('/debug-usuarios-railway', function () {
+    return User::whereIn('email', [
+        'fernandogarciadelrio76@gmail.com',
+        'cliente1@prueba.com',
+    ])->get(['id', 'name', 'email', 'role', 'email_verified_at']);
+});

@@ -14,6 +14,20 @@
             <x-alert-success>{{ session('success') }}</x-alert-success>
         @endif
 
+        @if(session('nueva_password'))
+            <div class="rounded-xl border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 p-4">
+                <p class="text-sm font-bold text-blue-700 dark:text-blue-300 mb-2">
+                    🔑 Nueva contraseña generada
+                </p>
+                <p class="text-sm text-neutral-700 dark:text-neutral-300">
+                    Guardá esta contraseña y compartila con el cliente:
+                </p>
+                <p class="mt-2 inline-block rounded-lg bg-white dark:bg-neutral-900 border border-blue-200 dark:border-blue-700 px-3 py-2 text-sm font-mono font-bold text-blue-700 dark:text-blue-300">
+                    {{ session('nueva_password') }}
+                </p>
+            </div>
+        @endif
+
         <x-alert-error />
 
         {{-- 2. BLOQUE: INFORMACIÓN DEL CLIENTE --}}
@@ -37,37 +51,104 @@
                 </div>
             </div>
 
-            {{-- VINCULAR USUARIO CLIENTE --}}
-            <div class="mt-6 pt-6 border-t border-neutral-200 dark:border-neutral-700">
-                <p class="text-[10px] font-bold uppercase text-neutral-500 mb-2">Acceso del cliente</p>
+            {{-- ACCESO DEL CLIENTE --}}
+<div class="mt-6 pt-6 border-t border-neutral-200 dark:border-neutral-700">
+    <p class="text-[10px] font-bold uppercase text-neutral-500 mb-2">Acceso del cliente</p>
 
-                <form method="POST" action="{{ route('clientes.asignarUsuario', $cliente->id) }}" class="flex flex-col md:flex-row md:items-end gap-3">
-                    @csrf
+    @if($cliente->user)
+        <div class="rounded-xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-4">
+            <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                <div class="flex-1">
+                    <p class="text-sm font-bold text-green-700 dark:text-green-300 mb-1">
+                        ✅ Acceso creado
+                    </p>
+                    <p class="text-sm text-neutral-700 dark:text-neutral-300">
+                        Este cliente ya tiene un usuario vinculado.
+                    </p>
 
-                    <div class="flex-1">
-                        <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
-                            Usuario vinculado
-                        </label>
+                    <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="rounded-lg border border-green-200 dark:border-green-800 bg-white/70 dark:bg-neutral-900/40 px-3 py-2">
+                            <p class="text-[10px] font-bold uppercase text-neutral-500 mb-1">Usuario</p>
+                            <p class="text-sm font-semibold text-neutral-800 dark:text-neutral-100">
+                                {{ $cliente->user->name }}
+                            </p>
+                        </div>
 
-                        <select name="user_id"
-                                class="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm dark:bg-neutral-900 dark:border-neutral-700">
-                            <option value="">-- Sin usuario asignado --</option>
-
-                            @foreach($usuarios as $usuario)
-                                <option value="{{ $usuario->id }}" {{ $cliente->user_id == $usuario->id ? 'selected' : '' }}>
-                                    {{ $usuario->name }} ({{ $usuario->email }})
-                                </option>
-                            @endforeach
-                        </select>
+                        <div class="rounded-lg border border-green-200 dark:border-green-800 bg-white/70 dark:bg-neutral-900/40 px-3 py-2">
+                            <p class="text-[10px] font-bold uppercase text-neutral-500 mb-1">Email de acceso</p>
+                            <p class="text-sm font-semibold text-neutral-800 dark:text-neutral-100 break-all">
+                                {{ $cliente->user->email }}
+                            </p>
+                        </div>
                     </div>
+                </div>
 
-                    <button type="submit"
-                            class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm text-white font-bold hover:bg-blue-700 transition cursor-pointer active:scale-[0.98]">
-                        ✔ Guardar vínculo
-                    </button>
-                </form>
+                <div class="flex flex-col gap-2 shrink-0">
+                    <form method="POST" action="{{ route('clientes.resetPassword', $cliente->id) }}">
+                        @csrf
+                        <button type="submit"
+                                class="inline-flex items-center justify-center gap-2 rounded-lg bg-yellow-500 px-4 py-2 text-sm text-white font-bold hover:bg-yellow-600 transition cursor-pointer active:scale-[0.98] w-full">
+                            🔑 Restablecer contraseña
+                        </button>
+                    </form>
+
+                    <form method="POST"
+                          action="{{ route('clientes.quitarAcceso', $cliente->id) }}"
+                          onsubmit="return confirm('¿Seguro que querés quitar el acceso de este cliente?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                                class="inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm text-white font-bold hover:bg-red-700 transition cursor-pointer active:scale-[0.98] w-full">
+                            🗑 Quitar acceso
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
+    @else
+        <div class="mb-3">
+            <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">
+                Crear acceso nuevo para este cliente
+            </label>
+            <p class="text-sm text-neutral-500 dark:text-neutral-400">
+                Generá un email y contraseña para que el cliente pueda ingresar a su panel.
+            </p>
+        </div>
+
+        <form method="POST" action="{{ route('clientes.crearAcceso', $cliente->id) }}" class="space-y-3">
+            @csrf
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div>
+                    <input type="email"
+                           name="email_acceso"
+                           placeholder="Email de acceso"
+                           value="{{ old('email_acceso') }}"
+                           class="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm dark:bg-neutral-900 dark:border-neutral-700">
+                </div>
+
+                <div>
+                    <input type="password"
+                           name="password_acceso"
+                           placeholder="Contraseña"
+                           class="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm dark:bg-neutral-900 dark:border-neutral-700">
+                </div>
+
+                <div>
+                    <input type="password"
+                           name="password_acceso_confirmation"
+                           placeholder="Confirmar contraseña"
+                           class="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm dark:bg-neutral-900 dark:border-neutral-700">
+                </div>
+            </div>
+
+            <button type="submit"
+                    class="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm text-white font-bold hover:bg-green-700 transition cursor-pointer active:scale-[0.98]">
+                ✔ Crear acceso cliente
+            </button>
+        </form>
+    @endif
+</div>
 
         {{-- 3. BLOQUE: DOCUMENTACIÓN DEL CLIENTE --}}
         <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">

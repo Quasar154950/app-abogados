@@ -7,6 +7,8 @@ use App\Models\Cliente;
 use App\Models\Etiqueta;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class ClienteController extends Controller
 {
@@ -72,7 +74,12 @@ class ClienteController extends Controller
      */
     public function show(Request $request, string $id)
     {
-        $cliente = Cliente::with(['notas', 'seguimientos.etiqueta'])->findOrFail($id);
+        $cliente = Cliente::with([
+            'user',
+            'notas',
+            'seguimientos.etiqueta',
+        ])->findOrFail($id);
+
         $etiquetas = Etiqueta::all();
         $usuarios = User::where('role', 'cliente')->get();
 
@@ -95,9 +102,14 @@ class ClienteController extends Controller
 
                 if ($s->fecha_recordatorio) {
                     $fecha = Carbon::parse($s->fecha_recordatorio)->startOfDay();
-                    if ($fecha->lt($hoy)) $prioFecha = 0;
-                    elseif ($fecha->isSameDay($hoy)) $prioFecha = 1;
-                    else $prioFecha = 2;
+
+                    if ($fecha->lt($hoy)) {
+                        $prioFecha = 0;
+                    } elseif ($fecha->isSameDay($hoy)) {
+                        $prioFecha = 1;
+                    } else {
+                        $prioFecha = 2;
+                    }
                 } else {
                     $prioFecha = 3;
                 }
@@ -112,11 +124,18 @@ class ClienteController extends Controller
                 return [$prioEstado, $prioFecha, $prioImportancia, -$s->created_at->timestamp];
             });
 
-        return view('clientes.show', compact('cliente', 'seguimientosFiltrados', 'stats', 'estadoFiltro', 'etiquetas', 'usuarios'));
+        return view('clientes.show', compact(
+            'cliente',
+            'seguimientosFiltrados',
+            'stats',
+            'estadoFiltro',
+            'etiquetas',
+            'usuarios'
+        ));
     }
 
     /**
-     * Asigna un usuario cliente al cliente.
+     * Asigna un usuario cliente ya existente al cliente.
      */
     public function asignarUsuario(Request $request, string $id)
     {
@@ -125,11 +144,93 @@ class ClienteController extends Controller
         ]);
 
         $cliente = Cliente::findOrFail($id);
+
         $cliente->update([
             'user_id' => $request->user_id,
         ]);
 
         return back()->with('success', 'Usuario asignado correctamente.');
+    }
+
+    /**
+     * Crea un usuario cliente nuevo y lo vincula automáticamente al cliente.
+     */
+    public function crearAcceso(Request $request, string $id)
+    {
+        $cliente = Cliente::findOrFail($id);
+
+        if ($cliente->user_id) {
+            return back()->with('error', 'Este cliente ya tiene un acceso creado.');
+        }
+
+        $request->validate([
+            'email_acceso' => 'required|email|max:255|unique:users,email',
+            'password_acceso' => 'required|string|min:6|confirmed',
+        ], [
+            'email_acceso.required' => 'El email de acceso es obligatorio.',
+            'email_acceso.email' => 'El email de acceso no es válido.',
+            'email_acceso.unique' => 'Ese email ya está en uso.',
+            'password_acceso.required' => 'La contraseña es obligatoria.',
+            'password_acceso.min' => 'La contraseña debe tener al menos 6 caracteres.',
+            'password_acceso.confirmed' => 'La confirmación de contraseña no coincide.',
+        ]);
+
+        $user = User::create([
+            'name' => $cliente->nombre,
+            'email' => $request->email_acceso,
+            'password' => $request->password_acceso,
+            'role' => 'cliente',
+        ]);
+
+        $cliente->update([
+            'user_id' => $user->id,
+        ]);
+
+        return back()->with('success', 'Acceso del cliente creado y vinculado correctamente.');
+    }
+
+    /**
+     * Restablece la contraseña del usuario asociado al cliente.
+     */
+    public function resetPassword(string $id)
+    {
+        $cliente = Cliente::with('user')->findOrFail($id);
+
+        if (!$cliente->user) {
+            return back()->with('error', 'Este cliente no tiene un usuario asociado.');
+        }
+
+        $nuevaPassword = Str::password(10);
+
+        $cliente->user->update([
+            'password' => $nuevaPassword,
+        ]);
+
+        return back()
+            ->with('success', 'Contraseña restablecida correctamente.')
+            ->with('nueva_password', $nuevaPassword);
+    }
+
+    /**
+     * Quita el acceso del cliente eliminando el usuario vinculado.
+     */
+    public function quitarAcceso(string $id)
+    {
+        $cliente = Cliente::with('user')->findOrFail($id);
+
+        if (!$cliente->user) {
+            return back()->with('error', 'Este cliente no tiene acceso vinculado.');
+        }
+
+        $user = $cliente->user;
+
+        $cliente->update([
+            'user_id' => null,
+        ]);
+
+        $user->delete();
+
+        return back()->with('success', 'Acceso del cliente eliminado correctamente.');
     }
 
     /**

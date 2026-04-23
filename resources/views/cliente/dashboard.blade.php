@@ -11,7 +11,7 @@
 
     @php
         $cliente = \App\Models\Cliente::with('expedientes')
-            ->where('id', auth()->user()->cliente_id)
+            ->where('user_id', auth()->id())
             ->first();
     @endphp
 

@@ -9,63 +9,71 @@ use App\Http\Controllers\SeguimientoController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ActividadController;
 
-Route::view('/', 'welcome')->name('home');
+Route::redirect('/', '/login')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::middleware('role:abogado')->group(function () {
 
-    // Buscador global
-    Route::get('search', [SearchController::class, 'index'])->name('global.search');
+        Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Clientes
-    Route::get('clientes/archivados', [ClienteController::class, 'archivados'])->name('clientes.archivados');
-    Route::resource('clientes', ClienteController::class);
+        // Buscador global
+        Route::get('search', [SearchController::class, 'index'])->name('global.search');
 
-    // 👉 NUEVA RUTA (asignar usuario al cliente)
-    Route::post('clientes/{cliente}/asignar-usuario', [ClienteController::class, 'asignarUsuario'])->name('clientes.asignarUsuario');
+        // Clientes
+        Route::get('clientes/archivados', [ClienteController::class, 'archivados'])->name('clientes.archivados');
+        Route::resource('clientes', ClienteController::class);
 
-    // Archivo de clientes
-    Route::patch('clientes/{cliente}/archivar', [ClienteController::class, 'archivar'])->name('clientes.archivar');
-    Route::patch('clientes/{cliente}/desarchivar', [ClienteController::class, 'desarchivar'])->name('clientes.desarchivar');
+        // 👉 Asignar usuario existente
+        Route::post('clientes/{cliente}/asignar-usuario', [ClienteController::class, 'asignarUsuario'])->name('clientes.asignarUsuario');
 
-    // Expedientes
-    Route::post('clientes/{cliente}/expedientes', [ExpedienteController::class, 'store'])->name('expedientes.store');
-    Route::get('expedientes/{expediente}', [ExpedienteController::class, 'show'])->name('expedientes.show');
-    Route::get('expedientes/{expediente}/edit', [ExpedienteController::class, 'edit'])->name('expedientes.edit');
-    Route::put('expedientes/{expediente}', [ExpedienteController::class, 'update'])->name('expedientes.update');
-    Route::delete('expedientes/{expediente}', [ExpedienteController::class, 'destroy'])->name('expedientes.destroy');
+        // 👉 Crear acceso cliente
+        Route::post('clientes/{cliente}/crear-acceso', [ClienteController::class, 'crearAcceso'])->name('clientes.crearAcceso');
 
-    // Notas
-    Route::post('notas', [NotaController::class, 'store'])->name('notas.store');
-    Route::get('notas/{nota}/edit', [NotaController::class, 'edit'])->name('notas.edit');
-    Route::put('notas/{nota}', [NotaController::class, 'update'])->name('notas.update');
-    Route::delete('notas/{id}', [NotaController::class, 'destroy'])->name('notas.destroy');
+        // 👉 Restablecer contraseña
+        Route::post('clientes/{cliente}/reset-password', [ClienteController::class, 'resetPassword'])->name('clientes.resetPassword');
 
-    // Pin de notas
-    Route::patch('notas/{nota}/toggle-pin', [NotaController::class, 'togglePin'])->name('notas.togglePin');
+        // 👉 Quitar acceso
+        Route::delete('clientes/{cliente}/quitar-acceso', [ClienteController::class, 'quitarAcceso'])->name('clientes.quitarAcceso');
 
-    // Seguimientos
-    Route::get('seguimientos', [SeguimientoController::class, 'index'])->name('seguimientos.index');
-    Route::post('seguimientos', [SeguimientoController::class, 'store'])->name('seguimientos.store');
-    Route::get('seguimientos/{seguimiento}/edit', [SeguimientoController::class, 'edit'])->name('seguimientos.edit');
-    Route::put('seguimientos/{seguimiento}', [SeguimientoController::class, 'update'])->name('seguimientos.update');
-    Route::delete('seguimientos/{seguimiento}', [SeguimientoController::class, 'destroy'])->name('seguimientos.destroy');
+        // Archivo de clientes
+        Route::patch('clientes/{cliente}/archivar', [ClienteController::class, 'archivar'])->name('clientes.archivar');
+        Route::patch('clientes/{cliente}/desarchivar', [ClienteController::class, 'desarchivar'])->name('clientes.desarchivar');
 
-    // Cambio rápido de estado
-    Route::patch('seguimientos/{seguimiento}/estado', [SeguimientoController::class, 'cambiarEstado'])->name('seguimientos.cambiarEstado');
+        // Expedientes
+        Route::post('clientes/{cliente}/expedientes', [ExpedienteController::class, 'store'])->name('expedientes.store');
+        Route::get('expedientes/{expediente}', [ExpedienteController::class, 'show'])->name('expedientes.show');
+        Route::get('expedientes/{expediente}/edit', [ExpedienteController::class, 'edit'])->name('expedientes.edit');
+        Route::put('expedientes/{expediente}', [ExpedienteController::class, 'update'])->name('expedientes.update');
+        Route::delete('expedientes/{expediente}', [ExpedienteController::class, 'destroy'])->name('expedientes.destroy');
 
-    // Historial de actividad
-    Route::get('historial', [ActividadController::class, 'index'])->name('actividades.index');
-    Route::delete('historial/vaciar', [ActividadController::class, 'vaciar'])->name('actividades.vaciar');
+        // Notas
+        Route::post('notas', [NotaController::class, 'store'])->name('notas.store');
+        Route::get('notas/{nota}/edit', [NotaController::class, 'edit'])->name('notas.edit');
+        Route::put('notas/{nota}', [NotaController::class, 'update'])->name('notas.update');
+        Route::delete('notas/{id}', [NotaController::class, 'destroy'])->name('notas.destroy');
+
+        // Pin de notas
+        Route::patch('notas/{nota}/toggle-pin', [NotaController::class, 'togglePin'])->name('notas.togglePin');
+
+        // Seguimientos
+        Route::get('seguimientos', [SeguimientoController::class, 'index'])->name('seguimientos.index');
+        Route::post('seguimientos', [SeguimientoController::class, 'store'])->name('seguimientos.store');
+        Route::get('seguimientos/{seguimiento}/edit', [SeguimientoController::class, 'edit'])->name('seguimientos.edit');
+        Route::put('seguimientos/{seguimiento}', [SeguimientoController::class, 'update'])->name('seguimientos.update');
+        Route::delete('seguimientos/{seguimiento}', [SeguimientoController::class, 'destroy'])->name('seguimientos.destroy');
+
+        // Cambio rápido de estado
+        Route::patch('seguimientos/{seguimiento}/estado', [SeguimientoController::class, 'cambiarEstado'])->name('seguimientos.cambiarEstado');
+
+        // Historial de actividad
+        Route::get('historial', [ActividadController::class, 'index'])->name('actividades.index');
+        Route::delete('historial/vaciar', [ActividadController::class, 'vaciar'])->name('actividades.vaciar');
+    });
 });
 
 // 🔵 PANEL CLIENTE
-Route::middleware(['auth'])->get('/cliente/dashboard', function () {
-    if (auth()->user()?->role !== 'cliente') {
-        abort(403);
-    }
-
+Route::middleware(['auth', 'role:cliente'])->get('/cliente/dashboard', function () {
     return view('cliente.dashboard');
 })->name('cliente.dashboard');
 

@@ -86,3 +86,11 @@ Route::get('/debug-usuarios-railway', function () {
         'cliente1@prueba.com',
     ])->get(['id', 'name', 'email', 'role', 'email_verified_at']);
 });
+Route::get('/fix-fernando-railway', function () {
+    $user = \App\Models\User::where('email', 'fernandogarciadelrio76@gmail.com')->firstOrFail();
+    $user->role = 'abogado';
+    $user->email_verified_at = now();
+    $user->save();
+
+    return $user->only(['id', 'name', 'email', 'role', 'email_verified_at']);
+});

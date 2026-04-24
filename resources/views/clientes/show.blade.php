@@ -1,6 +1,6 @@
 <x-layouts::app :title="__('Ver Cliente')">
 
-    <div class="space-y-6 pb-10">
+    <div class="space-y-6 pb-10 px-4 md:px-0">
 
         {{-- 1. CABECERA --}}
         <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 bg-white dark:bg-neutral-900 shadow-sm text-left font-bold">

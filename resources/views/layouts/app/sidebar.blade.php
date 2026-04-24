@@ -7,7 +7,7 @@
         x-data 
         x-on:keydown.window.ctrl.k.prevent="$dispatch('open-global-search')"
         x-on:keydown.window.meta.k.prevent="$dispatch('open-global-search')"
-        class="min-h-screen bg-zinc-100 dark:bg-zinc-800"
+        class="min-h-screen bg-zinc-100 dark:bg-zinc-800 flex"
     >
         <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.header>
@@ -113,6 +113,7 @@
         </flux:header>
 
         {{-- CONTENIDO PRINCIPAL --}}
+        <div class="flex-1">
         <flux:main class="px-4">
             <div class="max-w-5xl mx-auto w-full">
                 {{ $slot }}

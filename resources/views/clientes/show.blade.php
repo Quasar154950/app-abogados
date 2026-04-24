@@ -115,7 +115,7 @@
             </p>
         </div>
 
-        <form method="POST" action="{{ route('clientes.crearAcceso', $cliente->id) }}" class="space-y-3">
+        <form method="POST" action="{{ route('clientes.crearAcceso', $cliente->id) }}" class="space-y-3" autocomplete="off">
             @csrf
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -123,6 +123,7 @@
                     <input type="email"
                            name="email_acceso"
                            placeholder="Email de acceso"
+                           autocomplete="off"
                            value="{{ old('email_acceso') }}"
                            class="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm dark:bg-neutral-900 dark:border-neutral-700">
                 </div>
@@ -131,6 +132,7 @@
                     <input type="password"
                            name="password_acceso"
                            placeholder="Contraseña"
+                           autocomplete="new-password"
                            class="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm dark:bg-neutral-900 dark:border-neutral-700">
                 </div>
 
@@ -138,6 +140,7 @@
                     <input type="password"
                            name="password_acceso_confirmation"
                            placeholder="Confirmar contraseña"
+                           autocomplete="new-password"
                            class="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm dark:bg-neutral-900 dark:border-neutral-700">
                 </div>
             </div>

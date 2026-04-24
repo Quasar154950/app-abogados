@@ -24,16 +24,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('clientes/archivados', [ClienteController::class, 'archivados'])->name('clientes.archivados');
         Route::resource('clientes', ClienteController::class);
 
-        // 👉 Asignar usuario existente
+        // Acceso del cliente
         Route::post('clientes/{cliente}/asignar-usuario', [ClienteController::class, 'asignarUsuario'])->name('clientes.asignarUsuario');
-
-        // 👉 Crear acceso cliente
         Route::post('clientes/{cliente}/crear-acceso', [ClienteController::class, 'crearAcceso'])->name('clientes.crearAcceso');
-
-        // 👉 Restablecer contraseña
         Route::post('clientes/{cliente}/reset-password', [ClienteController::class, 'resetPassword'])->name('clientes.resetPassword');
-
-        // 👉 Quitar acceso
         Route::delete('clientes/{cliente}/quitar-acceso', [ClienteController::class, 'quitarAcceso'])->name('clientes.quitarAcceso');
 
         // Archivo de clientes
@@ -52,8 +46,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('notas/{nota}/edit', [NotaController::class, 'edit'])->name('notas.edit');
         Route::put('notas/{nota}', [NotaController::class, 'update'])->name('notas.update');
         Route::delete('notas/{id}', [NotaController::class, 'destroy'])->name('notas.destroy');
-
-        // Pin de notas
         Route::patch('notas/{nota}/toggle-pin', [NotaController::class, 'togglePin'])->name('notas.togglePin');
 
         // Seguimientos
@@ -62,8 +54,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('seguimientos/{seguimiento}/edit', [SeguimientoController::class, 'edit'])->name('seguimientos.edit');
         Route::put('seguimientos/{seguimiento}', [SeguimientoController::class, 'update'])->name('seguimientos.update');
         Route::delete('seguimientos/{seguimiento}', [SeguimientoController::class, 'destroy'])->name('seguimientos.destroy');
-
-        // Cambio rápido de estado
         Route::patch('seguimientos/{seguimiento}/estado', [SeguimientoController::class, 'cambiarEstado'])->name('seguimientos.cambiarEstado');
 
         // Historial de actividad
@@ -72,25 +62,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-// 🔵 PANEL CLIENTE
+// Panel cliente
 Route::middleware(['auth', 'role:cliente'])->get('/cliente/dashboard', function () {
     return view('cliente.dashboard');
 })->name('cliente.dashboard');
 
 require __DIR__ . '/settings.php';
-use App\Models\User;
-
-Route::get('/debug-usuarios-railway', function () {
-    return User::whereIn('email', [
-        'fernandogarciadelrio76@gmail.com',
-        'cliente1@prueba.com',
-    ])->get(['id', 'name', 'email', 'role', 'email_verified_at']);
-});
-Route::get('/fix-fernando-railway', function () {
-    $user = \App\Models\User::where('email', 'fernandogarciadelrio76@gmail.com')->firstOrFail();
-    $user->role = 'abogado';
-    $user->email_verified_at = now();
-    $user->save();
-
-    return $user->only(['id', 'name', 'email', 'role', 'email_verified_at']);
-});

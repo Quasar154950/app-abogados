@@ -118,7 +118,7 @@
         <form method="POST" action="{{ route('clientes.crearAcceso', $cliente->id) }}" class="space-y-3" autocomplete="off">
             @csrf
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 px-1">
                 <div>
                     <input type="email"
                            name="email_acceso"

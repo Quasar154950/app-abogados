@@ -113,25 +113,15 @@
         </flux:header>
 
         {{-- CONTENIDO PRINCIPAL --}}
-            <flux:main class="px-4">
-            <div class="max-w-5xl mx-auto w-full">
-                {{ $slot }}
-            </div>
-        </flux:main>
+<flux:main class="w-full">
+    <div class="w-full max-w-5xl mx-auto px-4">
+        {{ $slot }}
+    </div>
+</flux:main>
 
         <livewire:actions.global-search />
 
         @fluxScripts
 
-        {{-- 🔥 FIX DEFINITIVO MOBILE --}}
-        <style>
-            @media (max-width: 1023px) {
-                [data-flux-main] {
-                    margin-left: 0 !important;
-                    padding-left: 0 !important;
-                }
-            }
-        </style>
-
-    </body>
+       </body>
 </html>

@@ -70,14 +70,26 @@
                     <div class="space-y-4">
                         @foreach ($cliente->expedientes as $expediente)
                             <div class="border rounded-lg p-4">
-                                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
+
+                                <div class="flex items-center justify-between gap-3 mb-3">
+
                                     <h3 class="text-lg font-semibold text-zinc-800">
                                         📁 {{ $expediente->caratula ?: 'Sin carátula' }}
                                     </h3>
 
-                                    <span class="inline-block text-sm bg-purple-100 text-purple-700 px-3 py-1 rounded-full">
-                                        {{ $expediente->estado ?: 'Sin estado' }}
-                                    </span>
+                                    <div class="flex items-center gap-2">
+                                        <span class="inline-block text-sm bg-purple-100 text-purple-700 px-3 py-1 rounded-full">
+                                            {{ $expediente->estado ?: 'Sin estado' }}
+                                        </span>
+
+                                        <a href="{{ route('cliente.expedientes.imprimir', $expediente->id) }}"
+   target="_blank"
+   class="text-zinc-400 hover:text-green-600 transition cursor-pointer"
+   title="Imprimir expediente">
+    🖨️
+</a>
+                                    </div>
+
                                 </div>
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
@@ -118,6 +130,7 @@
                                         </p>
                                     </div>
                                 @endif
+
                             </div>
                         @endforeach
                     </div>

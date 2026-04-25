@@ -74,4 +74,10 @@ class ExpedienteController extends Controller
             ->route('clientes.show', $clienteId)
             ->with('success', 'Expediente y sus tareas asociadas eliminados correctamente.');
     }
+
+    // IMPRIMIR
+    public function imprimir(Expediente $expediente)
+    {
+        return view('expedientes.imprimir', compact('expediente'));
+    }
 }

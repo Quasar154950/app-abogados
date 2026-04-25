@@ -1,16 +1,16 @@
-<x-layouts::app :title="__('Ver Cliente')">
+<x-layouts::app :title="'Expediente de ' . $cliente->nombre">
 
     <div class="space-y-6 pb-10 px-4 md:px-0 w-full max-w-full overflow-x-hidden">
 
         {{-- 1. CABECERA --}}
         <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 bg-white dark:bg-neutral-900 shadow-sm text-left font-bold">
-            <h1 class="text-2xl font-bold">Ficha del Cliente</h1>
-            <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400 font-normal">
-                Información del cliente, documentación y seguimiento general.
-            </p>
-        </div>
-
-        @if(session('success'))
+                    <h1 class="text-2xl font-bold">Ficha del Cliente</h1>
+                    <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400 font-normal">
+                        Información del cliente, documentación y seguimiento general.
+                    </p>
+                </div>
+                
+                @if(session('success'))
             <x-alert-success>{{ session('success') }}</x-alert-success>
         @endif
 
@@ -265,7 +265,7 @@
             @else
                 <div class="space-y-3">
                     @foreach($cliente->expedientes as $expediente)
-                        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 bg-neutral-50 dark:bg-neutral-800/40 shadow-sm">
+                        <div id="expediente-{{ $expediente->id }}" class="expediente-print rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 bg-neutral-50 dark:bg-neutral-800/40 shadow-sm">
                             <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
 
                                 <div class="flex-1">
@@ -331,7 +331,7 @@
                                     @endif
 
                                     {{-- TAREAS DEL EXPEDIENTE --}}
-                                    <div class="mt-4 border-t border-neutral-200 dark:border-neutral-700 pt-4">
+                                    <div class="mt-4 border-t border-neutral-200 dark:border-neutral-700 pt-4 no-print">
                                         <h4 class="text-sm font-bold text-neutral-700 dark:text-neutral-200 mb-3">
                                             ⚖️ Tareas vinculadas
                                         </h4>
@@ -431,16 +431,35 @@
                                 </div>
 
                                 {{-- ACCIONES --}}
-                                <div class="flex items-center gap-2 shrink-0">
+<div class="flex items-center gap-2 shrink-0">
 
-                                    {{-- VER --}}
-                                    <a href="{{ route('expedientes.show', $expediente->id) }}"
-                                       class="p-2 rounded-lg text-neutral-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition cursor-pointer"
-                                       title="Ver expediente">
-                                        👁️
-                                    </a>
+{{-- VER --}}
+    <a href="{{ route('expedientes.show', $expediente->id) }}"
+       class="p-2 rounded-lg text-neutral-400 hover:text-blue-600 hover:bg-blue-50 transition"
+       title="Ver expediente">
+        👁️
+    </a>
 
-                                </div>
+    {{-- IMPRIMIR --}}
+    <a href="{{ route('expedientes.imprimir', $expediente->id) }}"
+       target="_blank"
+       class="p-2 rounded-lg text-neutral-400 hover:text-green-600 hover:bg-green-50 transition"
+       title="Imprimir expediente">
+        🖨️
+    </a>
+
+    {{-- WHATSAPP --}}
+    <a href="https://wa.me/549{{ preg_replace('/\D/', '', $cliente->telefono) }}?text={{ urlencode('Hola ' . $cliente->nombre . ', soy Marcela Vairo. Te comparto información sobre tu expediente: ' . $expediente->caratula) }}"
+       target="_blank"
+       class="p-2 rounded-lg hover:bg-green-50 transition"
+       title="Enviar WhatsApp">
+
+        <img src="/images/whatsapp.png" style="height:18px; margin-top:1px;">
+    </a>
+
+</div>
+
+</div>
                             </div>
                         </div>
                     @endforeach

@@ -31,7 +31,7 @@
         <x-alert-error />
 
         {{-- 2. BLOQUE: INFORMACIÓN DEL CLIENTE --}}
-        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">
+        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <p class="text-[10px] font-bold uppercase text-neutral-500 mb-1">Nombre</p>
@@ -155,7 +155,7 @@
         </div>
 
         {{-- 3. BLOQUE: DOCUMENTACIÓN DEL CLIENTE --}}
-        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">
+        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
                 📂 Documentación Adjunta
             </h2>
@@ -163,7 +163,7 @@
         </div>
 
         {{-- 4. BLOQUE: EXPEDIENTES --}}
-        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">
+        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">
             <div class="mb-4">
                 <h2 class="text-xl font-bold">Expedientes</h2>
                 <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
@@ -468,7 +468,7 @@
         </div>
 
         {{-- 5. BLOQUE: TAREAS GENERALES DEL CLIENTE --}}
-        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">
+        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">
 
             <div class="mb-4">
                 <h2 class="text-xl font-bold">Tareas generales del cliente</h2>
@@ -512,7 +512,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             @livewire('actions.gestion-notas', ['cliente' => $cliente])
 
-            <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">
+            <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">
                 @livewire('seguimiento-formulario', ['cliente' => $cliente], key('seguimiento-formulario-cliente-' . $cliente->id))
             </div>
         </div>

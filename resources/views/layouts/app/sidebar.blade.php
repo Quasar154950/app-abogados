@@ -114,7 +114,7 @@
 
         {{-- CONTENIDO PRINCIPAL --}}
 <flux:main class="w-full">
-    <div class="w-full max-w-[1100px] mx-auto px-1 md:px-4">
+    <div class="w-full max-w-[1100px] mx-auto px-0 md:px-4">
         {{ $slot }}
     </div>
 </flux:main>

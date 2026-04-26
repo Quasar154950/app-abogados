@@ -128,21 +128,61 @@
                            class="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm dark:bg-neutral-900 dark:border-neutral-700">
                 </div>
 
-                <div>
-                    <input type="password"
-                           name="password_acceso"
-                           placeholder="Contraseña"
-                           autocomplete="new-password"
-                           class="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm dark:bg-neutral-900 dark:border-neutral-700">
-                </div>
+                <div x-data="{ show1: false }" class="relative">
+    <input :type="show1 ? 'text' : 'password'"
+           name="password_acceso"
+           placeholder="Contraseña"
+           autocomplete="new-password"
+           class="w-full rounded-lg border border-neutral-300 px-3 py-2 pr-10 text-sm dark:bg-neutral-900 dark:border-neutral-700">
 
-                <div>
-                    <input type="password"
-                           name="password_acceso_confirmation"
-                           placeholder="Confirmar contraseña"
-                           autocomplete="new-password"
-                           class="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm dark:bg-neutral-900 dark:border-neutral-700">
-                </div>
+    <button type="button"
+            @click="show1 = !show1"
+            class="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-700">
+
+        <svg x-show="!show1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+             stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M2.25 12s3.75-7.5 9.75-7.5S21.75 12 21.75 12s-3.75 7.5-9.75 7.5S2.25 12 2.25 12Z" />
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5Z" />
+        </svg>
+
+        <svg x-show="show1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+             stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M3 3l18 18M10.584 10.587A3 3 0 0 0 12 15a3 3 0 0 0 2.413-4.416M9.88 4.24A9.77 9.77 0 0 1 12 4.5c6 0 9.75 7.5 9.75 7.5a17.73 17.73 0 0 1-4.217 5.362M6.53 6.53C4.482 8.086 3 12 3 12s3.75 7.5 9.75 7.5c1.61 0 3.07-.33 4.36-.92" />
+        </svg>
+
+    </button>
+</div>
+
+<div x-data="{ show2: false }" class="relative">
+    <input :type="show2 ? 'text' : 'password'"
+           name="password_acceso_confirmation"
+           placeholder="Confirmar contraseña"
+           autocomplete="new-password"
+           class="w-full rounded-lg border border-neutral-300 px-3 py-2 pr-10 text-sm dark:bg-neutral-900 dark:border-neutral-700">
+
+    <button type="button"
+            @click="show2 = !show2"
+            class="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-700">
+
+        <svg x-show="!show2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+             stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M2.25 12s3.75-7.5 9.75-7.5S21.75 12 21.75 12s-3.75 7.5-9.75 7.5S2.25 12 2.25 12Z" />
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5Z" />
+        </svg>
+
+        <svg x-show="show2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+             stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M3 3l18 18M10.584 10.587A3 3 0 0 0 12 15a3 3 0 0 0 2.413-4.416M9.88 4.24A9.77 9.77 0 0 1 12 4.5c6 0 9.75 7.5 9.75 7.5a17.73 17.73 0 0 1-4.217 5.362M6.53 6.53C4.482 8.086 3 12 3 12s3.75 7.5 9.75 7.5c1.61 0 3.07-.33 4.36-.92" />
+        </svg>
+
+    </button>
+</div>
             </div>
 
             <button type="submit"

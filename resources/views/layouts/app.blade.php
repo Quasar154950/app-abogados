@@ -5,7 +5,7 @@
         x-on:keydown.window.meta.k.prevent="$dispatch('open-global-search')"
     >
         <flux:main class="px-4">
-            <div class="mx-auto w-full max-w-5xl">
+            <div class="w-full px-2 sm:px-3 md:mx-auto md:max-w-5xl md:px-4">
                 {{ $slot }}
             </div>
         </flux:main>

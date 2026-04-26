@@ -1,9 +1,9 @@
 <x-layouts::app :title="'Expediente de ' . $cliente->nombre">
 
-    <div class="space-y-6 pb-10 px-2 sm:px-4 md:px-0 w-full max-w-full overflow-x-hidden">
+    <div class="space-y-6 pb-10 px-0 w-full">
 
         {{-- 1. CABECERA --}}
-        <x-ui.panel class="text-left font-bold" style="outline: 2px solid red;">
+        <x-ui.panel class="text-left font-bold">
                     <h1 class="text-2xl font-bold">Ficha del Cliente</h1>
                     <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400 font-normal">
                         Información del cliente, documentación y seguimiento general.

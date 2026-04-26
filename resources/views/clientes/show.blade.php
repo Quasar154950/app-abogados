@@ -83,7 +83,7 @@
                     </div>
                 </div>
 
-                <div class="flex flex-col gap-2 shrink-0">
+                <div class="flex flex-col gap-2 w-full md:w-auto">
                     <form method="POST" action="{{ route('clientes.resetPassword', $cliente->id) }}">
                         @csrf
                         <button type="submit"

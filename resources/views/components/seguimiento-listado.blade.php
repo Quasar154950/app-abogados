@@ -79,8 +79,8 @@ new class extends Component
         : '¿Estás seguro de que deseas eliminar esta tarea del cliente?';
 @endphp
 
-<div>
-    <div class="space-y-4">
+<div class="w-full">
+    <div class="space-y-4 w-full">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-bold flex items-center gap-2 text-left text-neutral-400">
                 {{ $tituloListado }}
@@ -99,7 +99,7 @@ new class extends Component
                     </p>
                 </div>
             @else
-                <div class="space-y-4">
+                <div class="space-y-4 w-full">
                     @foreach($seguimientos as $seguimiento)
                         <div wire:key="seg-{{ $seguimiento->id }}" class="border rounded-xl p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800/40 transition shadow-sm bg-white dark:bg-neutral-900">
 

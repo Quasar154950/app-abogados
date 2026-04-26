@@ -517,15 +517,20 @@
             </div>
         </div>
 
-        {{-- BOTONES DE ACCIÓN FINAL --}}
-        <div class="flex gap-3 pt-6 border-t border-neutral-100 dark:border-neutral-800">
-            <a href="{{ route('clientes.index') }}" class="bg-neutral-200 dark:bg-neutral-800 px-4 py-2 rounded-lg text-sm font-bold hover:bg-neutral-300 transition cursor-pointer active:scale-95 shadow-sm border border-neutral-300 dark:border-neutral-700">
-                ← Volver al listado
-            </a>
-            <a href="{{ route('clientes.edit', $cliente->id) }}" class="bg-yellow-500 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-yellow-600 transition shadow-sm cursor-pointer active:scale-95">
-                ✏️ Editar Cliente
-            </a>
-        </div>
+{{-- BOTONES DE ACCIÓN FINAL --}}
+<div class="flex flex-col sm:flex-row gap-3 pt-6 border-t border-neutral-100 dark:border-neutral-800 -mx-4 md:mx-0">
+
+    <a href="{{ route('clientes.index') }}"
+       class="inline-flex items-center justify-center whitespace-nowrap bg-neutral-200 dark:bg-neutral-800 px-4 py-2 rounded-lg text-sm font-bold hover:bg-neutral-300 transition cursor-pointer active:scale-95 shadow-sm border border-neutral-300 dark:border-neutral-700 w-full sm:w-auto">
+        ← Volver al listado
+    </a>
+
+    <a href="{{ route('clientes.edit', $cliente->id) }}"
+       class="inline-flex items-center justify-center whitespace-nowrap bg-yellow-500 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-yellow-600 transition shadow-sm cursor-pointer active:scale-95 w-full sm:w-auto">
+        ✏️ Editar Cliente
+    </a>
+
+</div>
     </div>
 
 </x-layouts::app>

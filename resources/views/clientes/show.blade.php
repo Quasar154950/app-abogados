@@ -8,7 +8,7 @@
                     <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400 font-normal">
                         Información del cliente, documentación y seguimiento general.
                     </p>
-                </div>
+                </x-ui.panel>
                 
                 @if(session('success'))
             <x-alert-success>{{ session('success') }}</x-alert-success>
@@ -31,7 +31,7 @@
         <x-alert-error />
 
         {{-- 2. BLOQUE: INFORMACIÓN DEL CLIENTE --}}
-        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">
+        <x-ui.panel class="text-left">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <p class="text-[10px] font-bold uppercase text-neutral-500 mb-1">Nombre</p>
@@ -152,7 +152,7 @@
         </form>
     @endif
 </div>
-        </div>
+        </x-ui.panel>
 
         {{-- 3. BLOQUE: DOCUMENTACIÓN DEL CLIENTE --}}
         <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">

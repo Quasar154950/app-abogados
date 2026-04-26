@@ -467,46 +467,53 @@
             @endif
         </x-ui.panel>
 
-        {{-- 5. BLOQUE: TAREAS GENERALES DEL CLIENTE --}}
-        <x-ui.panel class="text-left">
+{{-- 5. BLOQUE: TAREAS GENERALES DEL CLIENTE --}}
+<x-ui.panel class="text-left">
 
-            <div class="mb-4">
-                <h2 class="text-xl font-bold">Tareas generales del cliente</h2>
-                <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-                    Gestión de tareas generales del cliente (no asociadas a expedientes).
-                </p>
-            </div>
-            
-            {{-- Filtros Reactivos --}}
-            <div class="flex gap-2 flex-wrap mb-6 border-b border-neutral-100 dark:border-neutral-800 pb-4">
+    <div class="mb-4">
+        <h2 class="text-xl font-bold">Tareas generales del cliente</h2>
+        <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+            Gestión de tareas generales del cliente (no asociadas a expedientes).
+        </p>
+    </div>
+
+    {{-- 👇 NUEVA TARJETA INTERNA --}}
+    <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 bg-neutral-50 dark:bg-neutral-800/40 shadow-sm">
+
+        {{-- Filtros --}}
+        <div class="flex gap-2 flex-wrap mb-6 border-b border-neutral-100 dark:border-neutral-800 pb-4">
     
-                <button 
-                    x-on:click="$dispatch('filtrar-estado', { estado: '' })"
-                    class="inline-flex items-center gap-2 rounded-lg bg-neutral-200 dark:bg-neutral-800 px-3 py-1.5 text-sm font-bold cursor-pointer active:scale-95 transition hover:bg-neutral-300 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200">
-                    🗂️ Todas
-                </button>
+            <button 
+                x-on:click="$dispatch('filtrar-estado', { estado: '' })"
+                class="inline-flex items-center gap-2 rounded-lg bg-neutral-200 dark:bg-neutral-800 px-3 py-1.5 text-sm font-bold cursor-pointer active:scale-95 transition hover:bg-neutral-300 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200">
+                🗂️ Todas
+            </button>
 
-                <button 
-                    x-on:click="$dispatch('filtrar-estado', { estado: 'pendiente' })"
-                    class="inline-flex items-center gap-2 rounded-lg bg-yellow-500 px-3 py-1.5 text-sm text-white font-bold cursor-pointer active:scale-95 transition hover:bg-yellow-600">
-                    🟡 Pendientes
-                </button>
+            <button 
+                x-on:click="$dispatch('filtrar-estado', { estado: 'pendiente' })"
+                class="inline-flex items-center gap-2 rounded-lg bg-yellow-500 px-3 py-1.5 text-sm text-white font-bold cursor-pointer active:scale-95 transition hover:bg-yellow-600">
+                🟡 Pendientes
+            </button>
 
-                <button 
-                    x-on:click="$dispatch('filtrar-estado', { estado: 'en_curso' })"
-                    class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white font-bold cursor-pointer active:scale-95 transition hover:bg-blue-700">
-                    🔵 En curso
-                </button>
+            <button 
+                x-on:click="$dispatch('filtrar-estado', { estado: 'en_curso' })"
+                class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white font-bold cursor-pointer active:scale-95 transition hover:bg-blue-700">
+                🔵 En curso
+            </button>
 
-                <button 
-                    x-on:click="$dispatch('filtrar-estado', { estado: 'resuelto' })"
-                    class="inline-flex items-center gap-2 rounded-lg bg-green-600 px-3 py-1.5 text-sm text-white font-bold cursor-pointer active:scale-95 transition hover:bg-green-700">
-                    🟢 Completadas
-                </button>
-            </div>
+            <button 
+                x-on:click="$dispatch('filtrar-estado', { estado: 'resuelto' })"
+                class="inline-flex items-center gap-2 rounded-lg bg-green-600 px-3 py-1.5 text-sm text-white font-bold cursor-pointer active:scale-95 transition hover:bg-green-700">
+                🟢 Completadas
+            </button>
+        </div>
 
-            @livewire('seguimiento-listado', ['cliente' => $cliente], key('seguimiento-listado-cliente-' . $cliente->id))
-        </x-ui.panel>
+        {{-- LISTADO --}}
+        @livewire('seguimiento-listado', ['cliente' => $cliente], key('seguimiento-listado-cliente-' . $cliente->id))
+
+    </div>
+
+</x-ui.panel>
 
         {{-- 6. GESTIÓN INTEGRAL DE NOTAS Y TAREAS --}}
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">

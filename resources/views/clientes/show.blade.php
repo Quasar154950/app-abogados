@@ -155,15 +155,15 @@
         </x-ui.panel>
 
         {{-- 3. BLOQUE: DOCUMENTACIÓN DEL CLIENTE --}}
-        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">
+        <x-ui.panel class="text-left">
             <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
                 📂 Documentación Adjunta
             </h2>
             @livewire('actions.gestion-archivos', ['model' => $cliente])
-        </div>
+        </x-ui.panel>
 
         {{-- 4. BLOQUE: EXPEDIENTES --}}
-        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">
+        <x-ui.panel class="text-left">
             <div class="mb-4">
                 <h2 class="text-xl font-bold">Expedientes</h2>
                 <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
@@ -465,10 +465,10 @@
                     @endforeach
                 </div>
             @endif
-        </div>
+        </x-ui.panel>
 
         {{-- 5. BLOQUE: TAREAS GENERALES DEL CLIENTE --}}
-        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">
+        <x-ui.panel class="text-left">
 
             <div class="mb-4">
                 <h2 class="text-xl font-bold">Tareas generales del cliente</h2>
@@ -506,7 +506,7 @@
             </div>
 
             @livewire('seguimiento-listado', ['cliente' => $cliente], key('seguimiento-listado-cliente-' . $cliente->id))
-        </div>
+        </x-ui.panel>
 
         {{-- 6. GESTIÓN INTEGRAL DE NOTAS Y TAREAS --}}
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">

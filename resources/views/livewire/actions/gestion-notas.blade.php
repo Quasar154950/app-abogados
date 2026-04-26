@@ -1,6 +1,6 @@
-<div class="space-y-6">
+<div class="space-y-6 w-full">
     {{-- Formulario --}}
-    <div class="rounded-xl border border-neutral-200 p-6 bg-white shadow-sm dark:bg-neutral-900 dark:border-neutral-700">
+    <div class="rounded-xl border border-neutral-200 p-4 md:p-6 bg-white shadow-sm dark:bg-neutral-900 dark:border-neutral-700 w-full">
         <h2 class="text-xl font-bold mb-4 text-left dark:text-white text-neutral-800">Agregar Nota</h2>
         
         <textarea wire:model="contenido" rows="3" 
@@ -18,7 +18,7 @@
     </div>
 
     {{-- Listado --}}
-    <div class="rounded-xl border border-neutral-200 p-6 bg-white shadow-sm dark:bg-neutral-900 dark:border-neutral-700">
+    <div class="rounded-xl border border-neutral-200 p-4 md:p-6 bg-white shadow-sm dark:bg-neutral-900 dark:border-neutral-700 w-full">
         <h2 class="text-xl font-bold mb-4 text-neutral-400 text-left">Historial de Notas</h2>
         
         <div class="grid grid-cols-1 gap-3 text-left">

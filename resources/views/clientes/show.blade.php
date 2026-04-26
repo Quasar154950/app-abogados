@@ -468,7 +468,7 @@
         </div>
 
         {{-- 5. BLOQUE: TAREAS GENERALES DEL CLIENTE --}}
-        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">
+        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 -mx-4 md:mx-0 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">
 
             <div class="mb-4">
                 <h2 class="text-xl font-bold">Tareas generales del cliente</h2>
@@ -509,7 +509,7 @@
         </div>
 
         {{-- 6. GESTIÓN INTEGRAL DE NOTAS Y TAREAS --}}
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="-mx-4 md:mx-0 grid grid-cols-1 lg:grid-cols-2 gap-6">
             @livewire('actions.gestion-notas', ['cliente' => $cliente])
 
             <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">

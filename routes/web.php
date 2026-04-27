@@ -62,5 +62,14 @@ Route::middleware(['auth', 'role:cliente'])->get('/cliente/dashboard', function 
 
 Route::middleware(['auth', 'role:cliente'])->get('/cliente/expedientes/{expediente}/imprimir', [ExpedienteController::class, 'imprimir'])
     ->name('cliente.expedientes.imprimir');
+use Illuminate\Support\Facades\Storage;
 
+Route::get('/test-cloudinary', function () {
+    $result = Storage::disk('cloudinary')->put(
+        'test-railway.jpg',
+        file_get_contents(public_path('favicon.ico'))
+    );
+
+    return $result ? 'OK' : 'ERROR';
+});
 require __DIR__ . '/settings.php';

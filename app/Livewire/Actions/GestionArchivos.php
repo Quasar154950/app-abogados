@@ -10,8 +10,8 @@ class GestionArchivos extends Component
 {
     use WithFileUploads;
 
-    public $model;    
-    public $archivo;  
+    public $model;
+    public $archivo;
 
     public function mount($model)
     {
@@ -20,14 +20,22 @@ class GestionArchivos extends Component
 
     public function guardarArchivo()
     {
-        // VALIDACIÓN MEJORADA: Ahora solo permite lo que querés
         $this->validate([
             'archivo' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png,xls,xlsx|max:10240',
         ]);
 
-        // Guardamos con Spatie (Mantiene tu lógica)
+        $nombreOriginal = $this->archivo->getClientOriginalName();
+
+        $nombreSinExtension = pathinfo($nombreOriginal, PATHINFO_FILENAME);
+
+        $nombreLimpio = str($nombreSinExtension)
+            ->ascii()
+            ->replaceMatches('/[^A-Za-z0-9_\-]/', '_')
+            ->toString();
+
         $this->model->addMedia($this->archivo->getRealPath())
-            ->usingFileName($this->archivo->getClientOriginalName())
+            ->usingName($nombreOriginal)
+            ->usingFileName($nombreLimpio)
             ->toMediaCollection('archivos');
 
         $this->archivo = null;
@@ -38,15 +46,15 @@ class GestionArchivos extends Component
     public function eliminarArchivo($id)
     {
         $media = Media::find($id);
+
         if ($media) {
-            $media->delete(); // Spatie borra el archivo del disco automáticamente
+            $media->delete();
             session()->flash('success', '🗑️ Archivo eliminado correctamente.');
         }
     }
 
     public function render()
     {
-        // Refrescamos la colección para que se vea el cambio inmediatamente
         return view('livewire.actions.gestion-archivos', [
             'archivos' => $this->model->getMedia('archivos')
         ]);

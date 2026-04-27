@@ -1,4 +1,11 @@
 <?php return array (
+  'codebar-ag/laravel-flysystem-cloudinary' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'CodebarAg\\FlysystemCloudinary\\FlysystemCloudinaryServiceProvider',
+    ),
+  ),
   'codezero/browser-locale' => 
   array (
     'providers' => 

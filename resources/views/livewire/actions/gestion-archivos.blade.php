@@ -29,7 +29,7 @@
         @error('archivo') <span class="text-red-500 text-xs block mt-2 font-bold text-center italic">{{ $message }}</span> @enderror
     </div>
 
-    {{-- Botón de Confirmación (CON MANITO Y EFECTO CLIC) --}}
+    {{-- Botón de Confirmación --}}
     @if($archivo)
         <button wire:click="guardarArchivo" 
                 wire:loading.attr="disabled" 
@@ -54,12 +54,12 @@
                     ✕
                 </button>
 
-                {{-- Link invisible para la manito de abrir (CON CARTELITO) --}}
-                <a href="{{ $doc->getUrl() }}" target="_blank" class="absolute inset-0 z-10 cursor-pointer" title="Ver archivo"></a>
+                {{-- LINK PARA ABRIR ARCHIVO --}}
+                <a href="{{ $doc->getFullUrl() }}" target="_blank" class="absolute inset-0 z-10 cursor-pointer" title="Ver archivo"></a>
                 
-                {{-- Vista previa según tipo --}}
+                {{-- Vista previa --}}
                 @if(str_contains($doc->mime_type, 'image'))
-                    <img src="{{ $doc->getUrl() }}" class="w-16 h-16 object-cover rounded shadow-sm">
+                    <img src="{{ $doc->getFullUrl() }}" class="w-16 h-16 object-cover rounded shadow-sm">
                 @elseif(str_contains($doc->mime_type, 'pdf'))
                     <div class="text-4xl">📕</div>
                     <span class="text-[10px] font-bold text-red-600">PDF</span>
@@ -74,7 +74,7 @@
                     <span class="text-[10px] font-bold text-gray-500">DOC</span>
                 @endif
 
-                {{-- Nombre del archivo (CON HOVER DE COLOR Y CARTELITO) --}}
+                {{-- Nombre del archivo --}}
                 <p class="text-[10px] mt-2 text-center text-gray-500 dark:text-neutral-400 truncate w-full px-1 group-hover:text-blue-600 transition-colors font-medium" 
                    title="Ver archivo: {{ $doc->file_name }}">
                     {{ $doc->file_name }}

@@ -44,6 +44,14 @@
     {{-- Listado de Archivos --}}
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         @forelse($archivos as $doc)
+            @php
+                $url = $doc->getFullUrl();
+
+                if (!str_contains($doc->mime_type, 'image') && !str_contains($doc->mime_type, 'pdf')) {
+                    $url = str_replace('/image/upload/', '/raw/upload/', $url);
+                }
+            @endphp
+
             <div class="relative group border rounded-md p-3 flex flex-col items-center bg-white dark:bg-neutral-800 hover:shadow-md transition border-gray-100 dark:border-neutral-700">
                 
                 {{-- BOTÓN ELIMINAR --}}
@@ -55,11 +63,11 @@
                 </button>
 
                 {{-- LINK PARA ABRIR ARCHIVO --}}
-                <a href="{{ $doc->getFullUrl() }}" target="_blank" class="absolute inset-0 z-10 cursor-pointer" title="Ver archivo"></a>
+                <a href="{{ $url }}" target="_blank" class="absolute inset-0 z-10 cursor-pointer" title="Ver archivo"></a>
                 
                 {{-- Vista previa --}}
                 @if(str_contains($doc->mime_type, 'image'))
-                    <img src="{{ $doc->getFullUrl() }}" class="w-16 h-16 object-cover rounded shadow-sm">
+                    <img src="{{ $url }}" class="w-16 h-16 object-cover rounded shadow-sm">
                 @elseif(str_contains($doc->mime_type, 'pdf'))
                     <div class="text-4xl">📕</div>
                     <span class="text-[10px] font-bold text-red-600">PDF</span>

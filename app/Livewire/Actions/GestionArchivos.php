@@ -28,15 +28,23 @@ class GestionArchivos extends Component
 
         $nombreSinExtension = pathinfo($nombreOriginal, PATHINFO_FILENAME);
 
-        $nombreLimpio = str($nombreSinExtension)
-            ->ascii()
-            ->replaceMatches('/[^A-Za-z0-9_\-]/', '_')
-            ->toString();
+        $extension = strtolower($this->archivo->getClientOriginalExtension());
 
-        $this->model->addMedia($this->archivo->getRealPath())
-            ->usingName($nombreOriginal)
-            ->usingFileName($nombreLimpio)
-            ->toMediaCollection('archivos');
+$nombreLimpio = str($nombreSinExtension)
+    ->ascii()
+    ->replaceMatches('/[^A-Za-z0-9_\-]/', '_')
+    ->toString();
+
+$esRaw = in_array($extension, ['doc', 'docx', 'xls', 'xlsx']);
+
+$nombreFinal = $esRaw
+    ? $nombreLimpio . '.' . $extension
+    : $nombreLimpio;
+
+$this->model->addMedia($this->archivo->getRealPath())
+    ->usingName($nombreOriginal)
+    ->usingFileName($nombreFinal)
+    ->toMediaCollection('archivos');
 
         $this->archivo = null;
 

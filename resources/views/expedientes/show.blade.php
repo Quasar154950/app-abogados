@@ -90,32 +90,33 @@
             </div>
 
             {{-- Filtros Reactivos --}}
-            <div class="flex gap-2 flex-wrap mb-6 border-b border-neutral-100 dark:border-neutral-800 pb-4">
+<div class="flex gap-2 overflow-x-auto md:overflow-visible whitespace-nowrap md:whitespace-normal md:flex-wrap mb-6 border-b border-neutral-100 dark:border-neutral-800 pb-4">
 
-                <button
-                    x-on:click="$dispatch('filtrar-estado', { estado: '' })"
-                    class="inline-flex items-center gap-2 rounded-lg bg-neutral-200 dark:bg-neutral-800 px-3 py-1.5 text-sm font-bold cursor-pointer active:scale-95 transition hover:bg-neutral-300 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200">
-                    🗂️ Todas
-                </button>
+    <button
+        x-on:click="$dispatch('filtrar-estado', { estado: '' })"
+        class="shrink-0 inline-flex items-center gap-2 rounded-lg bg-neutral-200 dark:bg-neutral-800 px-3 py-1.5 text-sm font-bold cursor-pointer active:scale-95 transition hover:bg-neutral-300 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200">
+        🗂️ Todas
+    </button>
 
-                <button
-                    x-on:click="$dispatch('filtrar-estado', { estado: 'pendiente' })"
-                    class="inline-flex items-center gap-2 rounded-lg bg-yellow-500 px-3 py-1.5 text-sm text-white font-bold cursor-pointer active:scale-95 transition hover:bg-yellow-600">
-                    🟡 Pendientes
-                </button>
+    <button
+        x-on:click="$dispatch('filtrar-estado', { estado: 'pendiente' })"
+        class="shrink-0 inline-flex items-center gap-2 rounded-lg bg-yellow-500 px-3 py-1.5 text-sm text-white font-bold cursor-pointer active:scale-95 transition hover:bg-yellow-600">
+        🟡 Pendientes
+    </button>
 
-                <button
-                    x-on:click="$dispatch('filtrar-estado', { estado: 'en_curso' })"
-                    class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white font-bold cursor-pointer active:scale-95 transition hover:bg-blue-700">
-                    🔵 En curso
-                </button>
+    <button
+        x-on:click="$dispatch('filtrar-estado', { estado: 'en_curso' })"
+        class="shrink-0 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm text-white font-bold cursor-pointer active:scale-95 transition hover:bg-blue-700">
+        🔵 En curso
+    </button>
 
-                <button
-                    x-on:click="$dispatch('filtrar-estado', { estado: 'resuelto' })"
-                    class="inline-flex items-center gap-2 rounded-lg bg-green-600 px-3 py-1.5 text-sm text-white font-bold cursor-pointer active:scale-95 transition hover:bg-green-700">
-                    🟢 Completadas
-                </button>
-            </div>
+    <button
+        x-on:click="$dispatch('filtrar-estado', { estado: 'resuelto' })"
+        class="shrink-0 inline-flex items-center gap-2 rounded-lg bg-green-600 px-3 py-1.5 text-sm text-white font-bold cursor-pointer active:scale-95 transition hover:bg-green-700">
+        🟢 Completadas
+    </button>
+
+</div>
 
             @livewire('seguimiento-listado', ['expediente' => $expediente], key('seguimiento-listado-expediente-' . $expediente->id))
 

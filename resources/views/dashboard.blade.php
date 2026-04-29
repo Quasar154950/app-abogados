@@ -27,25 +27,27 @@
         <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 bg-white dark:bg-neutral-900 shadow-sm font-sans">
             <h2 class="text-lg font-bold text-neutral-800 dark:text-neutral-100 italic">Gestión del Estudio</h2>
 
-            <div class="mt-4 flex flex-wrap gap-2.5">
-                <a href="{{ route('clientes.index') }}"
-                   class="inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-bold shadow-sm transition cursor-pointer active:scale-95"
-                   style="background-color: #2563eb; color: #ffffff !important;">
-                    👁️ Ver clientes
-                </a>
+            <div class="mt-4 flex gap-2.5 overflow-x-auto md:overflow-visible whitespace-nowrap md:whitespace-normal md:flex-wrap">
 
-                <a href="{{ route('seguimientos.index') }}"
-                   class="inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-bold shadow-sm transition cursor-pointer active:scale-95"
-                   style="background-color: #262626; color: #ffffff !important; min-width: 170px; gap: 8px;">
-                    🔍 Ver tareas
-                </a>
+    <a href="{{ route('clientes.index') }}"
+       class="shrink-0 inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-bold shadow-sm transition cursor-pointer active:scale-95"
+       style="background-color: #2563eb; color: #ffffff !important;">
+        👁️ Ver clientes
+    </a>
 
-                <a href="{{ route('clientes.create') }}"
-                   class="inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-bold shadow-sm transition cursor-pointer active:scale-95"
-                   style="background-color: #16a34a; color: #ffffff !important;">
-                    ➕ Nuevo cliente
-                </a>
-            </div>
+    <a href="{{ route('seguimientos.index') }}"
+       class="shrink-0 inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-bold shadow-sm transition cursor-pointer active:scale-95"
+       style="background-color: #262626; color: #ffffff !important; min-width: 170px; gap: 8px;">
+        🔍 Ver tareas
+    </a>
+
+    <a href="{{ route('clientes.create') }}"
+       class="shrink-0 inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-bold shadow-sm transition cursor-pointer active:scale-95"
+       style="background-color: #16a34a; color: #ffffff !important;">
+        ➕ Nuevo cliente
+    </a>
+
+</div>
         </div>
 
         {{-- NOTAS FIJADAS CON LIVEWIRE --}}

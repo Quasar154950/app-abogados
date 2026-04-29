@@ -4,7 +4,7 @@
 
         {{-- CABECERA --}}
         <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-6 bg-white dark:bg-neutral-900 shadow-sm">
-            <h1 class="text-2xl font-bold italic font-sans">Listado de Tareas del Caso</h1>
+            <h1 class="text-2xl font-bold italic font-sans">Gestión de Tareas</h1>
             <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400 font-sans">
                 Gestiona y filtra las tareas, recordatorios y estados vinculados a tus clientes.
             </p>

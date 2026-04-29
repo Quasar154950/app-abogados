@@ -37,7 +37,7 @@
                 <a href="{{ route('seguimientos.index') }}"
                    class="inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-bold shadow-sm transition cursor-pointer active:scale-95"
                    style="background-color: #262626; color: #ffffff !important; min-width: 170px; gap: 8px;">
-                    🔍 Ver tareas del caso
+                    🔍 Ver tareas
                 </a>
 
                 <a href="{{ route('clientes.create') }}"

@@ -5,12 +5,16 @@
     {{ $title ?? '' }}
 </title>
 
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+{{-- FAVICON PERSONALIZADO --}}
+<link rel="icon" href="/images/logo.png">
+<link rel="apple-touch-icon" href="/images/logo.png">
 
+{{-- FUENTES --}}
 <link rel="preconnect" href="https://fonts.bunny.net">
 <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
+{{-- ESTILOS Y JS --}}
 @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+{{-- MODO OSCURO / APARIENCIA --}}
 @fluxAppearance

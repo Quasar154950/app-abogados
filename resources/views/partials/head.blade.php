@@ -6,8 +6,8 @@
 </title>
 
 {{-- FAVICON PERSONALIZADO --}}
-<link rel="icon" href="/images/logo.png">
-<link rel="apple-touch-icon" href="/images/logo.png">
+<link rel="icon" href="/images/logo.png?v=2">
+<link rel="apple-touch-icon" href="/images/logo.png?v=2">
 
 {{-- FUENTES --}}
 <link rel="preconnect" href="https://fonts.bunny.net">

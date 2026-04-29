@@ -1,4 +1,4 @@
-<x-layouts::auth :title="__('Portal del Cliente')">
+<x-layouts::auth :title="__('Acceso al sistema')">
     <div class="flex flex-col gap-6">
 
         {{-- LOGO GRANDE --}}
@@ -8,8 +8,8 @@
 
         {{-- TITULO --}}
         <x-auth-header 
-            :title="__('Portal del Cliente')" 
-            :description="__('Ingresá con tu email y contraseña para acceder a tus expedientes')" 
+            :title="__('Acceso al sistema')" 
+            :description="__('Ingresá con tu email y contraseña para continuar')" 
         />
 
         <!-- Session Status -->

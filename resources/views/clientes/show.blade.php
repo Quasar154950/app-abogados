@@ -555,13 +555,16 @@
 
 </x-ui.panel>
 
-        {{-- 6. GESTIÓN INTEGRAL DE NOTAS Y TAREAS --}}
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            @livewire('actions.gestion-notas', ['cliente' => $cliente])
+{{-- 6. GESTIÓN INTEGRAL DE TAREAS Y NOTAS --}}
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-            <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">
-                @livewire('seguimiento-formulario', ['cliente' => $cliente], key('seguimiento-formulario-cliente-' . $cliente->id))
-            </div>
+    <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">
+        @livewire('seguimiento-formulario', ['cliente' => $cliente], key('seguimiento-formulario-cliente-' . $cliente->id))
+    </div>
+
+    @livewire('actions.gestion-notas', ['cliente' => $cliente])
+
+</div>
         </div>
 
 {{-- BOTONES DE ACCIÓN FINAL --}}

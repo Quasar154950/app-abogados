@@ -31,6 +31,7 @@ class Cliente extends Model implements HasMedia
         'direccion',
         'archivado',
         'user_id',
+        'abogado_id', // 🔥 SOLUCIÓN
     ];
 
     /**

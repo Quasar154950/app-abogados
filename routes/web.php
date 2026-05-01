@@ -72,4 +72,11 @@ Route::get('/test-cloudinary', function () {
 
     return $result ? 'OK' : 'ERROR';
 });
+Route::get('/fix-db', function () {
+    \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+
+    \App\Models\Cliente::query()->update(['abogado_id' => 1]);
+
+    return 'Base actualizada correctamente';
+});
 require __DIR__ . '/settings.php';

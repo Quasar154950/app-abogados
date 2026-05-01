@@ -72,5 +72,17 @@ Route::get('/test-cloudinary', function () {
 
     return $result ? 'OK' : 'ERROR';
 });
+Route::get('/create-soporte', function () {
+    \App\Models\User::updateOrCreate(
+        ['email' => 'soporte@tuempresa.com'],
+        [
+            'name' => 'Soporte Técnico',
+            'password' => \Illuminate\Support\Facades\Hash::make('Soporte1234'),
+            'role' => 'abogado',
+            'email_verified_at' => now(),
+        ]
+    );
 
+    return 'Soporte creado';
+});
 require __DIR__ . '/settings.php';

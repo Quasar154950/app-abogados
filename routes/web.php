@@ -72,19 +72,5 @@ Route::get('/test-cloudinary', function () {
 
     return $result ? 'OK' : 'ERROR';
 });
-Route::get('/fix-db', function () {
-    if (!\Illuminate\Support\Facades\Schema::hasColumn('clientes', 'abogado_id')) {
-        \Illuminate\Support\Facades\Schema::table('clientes', function (\Illuminate\Database\Schema\Blueprint $table) {
-            $table->foreignId('abogado_id')
-                ->nullable()
-                ->after('user_id')
-                ->constrained('users')
-                ->nullOnDelete();
-        });
-    }
 
-    \App\Models\Cliente::query()->update(['abogado_id' => 1]);
-
-    return 'Base actualizada correctamente';
-});
 require __DIR__ . '/settings.php';

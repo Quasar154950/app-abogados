@@ -11,7 +11,7 @@ use App\Http\Controllers\ActividadController;
 
 Route::redirect('/', '/login')->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'activo'])->group(function () {
 
     Route::middleware('role:abogado')->group(function () {
 
@@ -62,6 +62,7 @@ Route::middleware(['auth', 'role:cliente'])->get('/cliente/dashboard', function 
 
 Route::middleware(['auth', 'role:cliente'])->get('/cliente/expedientes/{expediente}/imprimir', [ExpedienteController::class, 'imprimir'])
     ->name('cliente.expedientes.imprimir');
+
 use Illuminate\Support\Facades\Storage;
 
 Route::get('/test-cloudinary', function () {

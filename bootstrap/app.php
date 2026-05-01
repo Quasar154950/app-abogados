@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
+            'activo' => \App\Http\Middleware\CheckActivo::class, // 👈 agregado
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

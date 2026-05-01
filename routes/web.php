@@ -72,17 +72,5 @@ Route::get('/test-cloudinary', function () {
 
     return $result ? 'OK' : 'ERROR';
 });
-Route::get('/create-demo2', function () {
-    \App\Models\User::updateOrCreate(
-        ['email' => 'demo2@estudio.com'],
-        [
-            'name' => 'Estudio Demo 2',
-            'password' => \Illuminate\Support\Facades\Hash::make('Demo1234'),
-            'role' => 'abogado',
-            'email_verified_at' => now(),
-        ]
-    );
 
-    return 'Demo2 creado';
-});
 require __DIR__ . '/settings.php';

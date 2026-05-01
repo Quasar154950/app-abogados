@@ -73,5 +73,8 @@ Route::get('/test-cloudinary', function () {
 
     return $result ? 'OK' : 'ERROR';
 });
-
+Route::get('/migrar', function () {
+    \Artisan::call('migrate', ['--force' => true]);
+    return 'Migraciones ejecutadas';
+});
 require __DIR__ . '/settings.php';

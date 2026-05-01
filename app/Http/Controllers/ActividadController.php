@@ -9,8 +9,9 @@ class ActividadController extends Controller
 {
     public function index()
     {
-        // Traemos los logs, cargando la relación con el usuario y el objeto tocado (logueable)
-        $actividades = Actividad::with(['user', 'logueable'])
+        // 🔥 Solo actividades del usuario logueado
+        $actividades = Actividad::where('user_id', auth()->id())
+            ->with(['user', 'logueable'])
             ->latest()
             ->paginate(20);
 
@@ -18,14 +19,14 @@ class ActividadController extends Controller
     }
 
     /**
-     * Elimina todos los registros del historial.
+     * Elimina SOLO el historial del usuario actual
      */
     public function vaciar()
     {
-        // El método truncate vacía la tabla y resetea los IDs a 1
-        Actividad::truncate();
+        // 🔥 No borrar todo el sistema
+        Actividad::where('user_id', auth()->id())->delete();
 
         return redirect()->route('actividades.index')
-            ->with('success', 'El historial de actividad ha sido vaciado por completo.');
+            ->with('success', 'Tu historial de actividad ha sido eliminado.');
     }
 }

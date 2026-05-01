@@ -7,10 +7,11 @@ use App\Models\Nota;
 
 class DashboardNotasFijadas extends Component
 {
-    // Quitar / poner pin desde el dashboard
     public function togglePin($id)
     {
-        $nota = Nota::find($id);
+        $nota = Nota::whereHas('cliente', function ($q) {
+            $q->where('abogado_id', auth()->id());
+        })->find($id);
 
         if (!$nota) {
             return;
@@ -25,7 +26,10 @@ class DashboardNotasFijadas extends Component
     public function render()
     {
         return view('livewire.actions.dashboard-notas-fijadas', [
-            'notasFijadas' => Nota::where('is_pinned', true)
+            'notasFijadas' => Nota::whereHas('cliente', function ($q) {
+                    $q->where('abogado_id', auth()->id());
+                })
+                ->where('is_pinned', true)
                 ->with('cliente')
                 ->latest('updated_at')
                 ->take(5)

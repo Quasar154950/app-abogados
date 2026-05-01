@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use App\Models\Nota;
 use App\Models\Seguimiento;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -13,42 +12,51 @@ class DashboardController extends Controller
     public function index()
     {
         $hoy = Carbon::today();
+        $abogadoId = auth()->id();
 
-        // --- 1. DATOS SUPERIORES ---
+        $totalClientesActivos = Cliente::where('abogado_id', $abogadoId)
+            ->where('archivado', false)
+            ->count();
 
-        $totalClientesActivos = Cliente::where('archivado', false)->count();
+        $conteoTotalNotas = Nota::whereHas('cliente', function ($q) use ($abogadoId) {
+            $q->where('abogado_id', $abogadoId);
+        })->count();
 
-        $conteoTotalNotas = Nota::count();
+        $conteoNotasDeHoy = Nota::whereHas('cliente', function ($q) use ($abogadoId) {
+            $q->where('abogado_id', $abogadoId);
+        })->whereDate('created_at', $hoy)->count();
 
-        $conteoNotasDeHoy = Nota::whereDate('created_at', $hoy)->count();
-
-        // Seguimientos pendientes / en curso para HOY
-        $cantHoy = Seguimiento::whereIn('estado', ['pendiente', 'en_curso'])
+        $cantHoy = Seguimiento::whereHas('cliente', function ($q) use ($abogadoId) {
+            $q->where('abogado_id', $abogadoId);
+        })
+            ->whereIn('estado', ['pendiente', 'en_curso'])
             ->whereDate('fecha_recordatorio', $hoy)
             ->count();
 
-        // Seguimientos vencidos
-        $cantVencidos = Seguimiento::whereIn('estado', ['pendiente', 'en_curso'])
+        $cantVencidos = Seguimiento::whereHas('cliente', function ($q) use ($abogadoId) {
+            $q->where('abogado_id', $abogadoId);
+        })
+            ->whereIn('estado', ['pendiente', 'en_curso'])
             ->whereNotNull('fecha_recordatorio')
             ->whereDate('fecha_recordatorio', '<', $hoy)
             ->count();
 
-        // Seguimientos resueltos HOY
-        $resueltosHoy = Seguimiento::where('estado', 'resuelto')
+        $resueltosHoy = Seguimiento::whereHas('cliente', function ($q) use ($abogadoId) {
+            $q->where('abogado_id', $abogadoId);
+        })
+            ->where('estado', 'resuelto')
             ->whereDate('updated_at', $hoy)
             ->count();
 
-        // --- 2. KPI 1: SALUD GENERAL ---
-        // Qué porcentaje de seguimientos activos NO está vencido
-
-        $totalActivos = Seguimiento::whereIn('estado', ['pendiente', 'en_curso'])->count();
+        $totalActivos = Seguimiento::whereHas('cliente', function ($q) use ($abogadoId) {
+            $q->where('abogado_id', $abogadoId);
+        })
+            ->whereIn('estado', ['pendiente', 'en_curso'])
+            ->count();
 
         $porcentajeSalud = ($totalActivos > 0)
             ? round((($totalActivos - $cantVencidos) / $totalActivos) * 100)
             : 100;
-
-        // --- 3. KPI 2: RENDIMIENTO DIARIO ---
-        // Qué porcentaje de lo de HOY fue resuelto HOY
 
         $totalMetaHoy = $cantHoy + $resueltosHoy;
 
@@ -60,40 +68,49 @@ class DashboardController extends Controller
             $sinActividadHoy = false;
         }
 
-        // --- 4. LISTAS DE ACCESO RÁPIDO ---
-
-        $notasFijadas = Nota::where('is_pinned', true)
+        $notasFijadas = Nota::whereHas('cliente', function ($q) use ($abogadoId) {
+            $q->where('abogado_id', $abogadoId);
+        })
+            ->where('is_pinned', true)
             ->with('cliente')
             ->latest()
             ->take(5)
             ->get();
 
-        $ultimosClientes = Cliente::where('archivado', false)
+        $ultimosClientes = Cliente::where('abogado_id', $abogadoId)
+            ->where('archivado', false)
             ->latest()
             ->take(5)
             ->get();
 
-        $vencidos = Seguimiento::whereIn('estado', ['pendiente', 'en_curso'])
+        $vencidos = Seguimiento::whereHas('cliente', function ($q) use ($abogadoId) {
+            $q->where('abogado_id', $abogadoId);
+        })
+            ->whereIn('estado', ['pendiente', 'en_curso'])
             ->whereNotNull('fecha_recordatorio')
             ->whereDate('fecha_recordatorio', '<', $hoy)
             ->with('cliente')
             ->get();
 
-        $paraHoy = Seguimiento::whereIn('estado', ['pendiente', 'en_curso'])
+        $paraHoy = Seguimiento::whereHas('cliente', function ($q) use ($abogadoId) {
+            $q->where('abogado_id', $abogadoId);
+        })
+            ->whereIn('estado', ['pendiente', 'en_curso'])
             ->whereNotNull('fecha_recordatorio')
             ->whereDate('fecha_recordatorio', $hoy)
             ->with('cliente')
             ->get();
 
-        $proximosRecordatorios = Seguimiento::whereIn('estado', ['pendiente', 'en_curso'])
+        $proximosRecordatorios = Seguimiento::whereHas('cliente', function ($q) use ($abogadoId) {
+            $q->where('abogado_id', $abogadoId);
+        })
+            ->whereIn('estado', ['pendiente', 'en_curso'])
             ->whereNotNull('fecha_recordatorio')
             ->whereDate('fecha_recordatorio', '>', $hoy)
             ->orderBy('fecha_recordatorio', 'asc')
             ->take(5)
             ->with('cliente')
             ->get();
-
-        // --- 5. RETORNO ---
 
         return view('dashboard', [
             'totalClientes'           => $totalClientesActivos,

@@ -19,7 +19,8 @@ class ArchivedTable extends Component
 
     public function desarchivar($id)
     {
-        $cliente = Cliente::find($id);
+        $cliente = Cliente::where('abogado_id', auth()->id())->find($id);
+
         if ($cliente) {
             $cliente->update(['archivado' => false]);
             session()->flash('success', 'Cliente restaurado a la lista activa.');
@@ -28,7 +29,8 @@ class ArchivedTable extends Component
 
     public function delete($id)
     {
-        $cliente = Cliente::find($id);
+        $cliente = Cliente::where('abogado_id', auth()->id())->find($id);
+
         if ($cliente) {
             $cliente->delete();
             session()->flash('success', 'Cliente eliminado definitivamente.');
@@ -38,11 +40,12 @@ class ArchivedTable extends Component
     public function render()
     {
         $clientes = Cliente::query()
-            ->where('archivado', true) // Solo los archivados
-            ->where(function($q) {
+            ->where('abogado_id', auth()->id())
+            ->where('archivado', true)
+            ->where(function ($q) {
                 $q->where('nombre', 'like', '%' . $this->busqueda . '%')
-                  ->orWhere('email', 'like', '%' . $this->busqueda . '%')
-                  ->orWhere('telefono', 'like', '%' . $this->busqueda . '%');
+                    ->orWhere('email', 'like', '%' . $this->busqueda . '%')
+                    ->orWhere('telefono', 'like', '%' . $this->busqueda . '%');
             })
             ->orderBy('updated_at', 'desc')
             ->paginate(10);

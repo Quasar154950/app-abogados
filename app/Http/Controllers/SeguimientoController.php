@@ -10,14 +10,14 @@ use App\Models\Expediente;
 
 class SeguimientoController extends Controller
 {
-    /**
-     * Muestra el listado general de tareas con filtros combinados
-     */
     public function index(Request $request)
     {
+        $abogadoId = auth()->id();
         $filtros = $request->all();
 
-        $query = Seguimiento::with(['cliente', 'etiqueta', 'expediente']);
+        $query = Seguimiento::whereHas('cliente', function ($q) use ($abogadoId) {
+            $q->where('abogado_id', $abogadoId);
+        })->with(['cliente', 'etiqueta', 'expediente']);
 
         if (!empty($filtros['cliente_id'])) {
             $query->where('cliente_id', $filtros['cliente_id']);
@@ -53,9 +53,14 @@ class SeguimientoController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        $clientes = Cliente::orderBy('nombre')->get();
+        // 🔥 SOLO datos del abogado
+        $clientes = Cliente::where('abogado_id', $abogadoId)->orderBy('nombre')->get();
+
+        $expedientes = Expediente::whereHas('cliente', function ($q) use ($abogadoId) {
+            $q->where('abogado_id', $abogadoId);
+        })->orderBy('caratula')->get();
+
         $etiquetas = Etiqueta::orderBy('nombre')->get();
-        $expedientes = Expediente::orderBy('caratula')->get();
 
         return view('seguimientos.index', compact(
             'seguimientos',
@@ -66,11 +71,10 @@ class SeguimientoController extends Controller
         ));
     }
 
-    /**
-     * Guarda una nueva tarea
-     */
     public function store(Request $request)
     {
+        $abogadoId = auth()->id();
+
         $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
             'expediente_id' => 'nullable|exists:expedientes,id',
@@ -81,8 +85,12 @@ class SeguimientoController extends Controller
             'fecha_recordatorio' => 'nullable|date',
         ]);
 
+        // 🔥 validar que el cliente pertenece al abogado
+        $cliente = Cliente::where('abogado_id', $abogadoId)
+            ->findOrFail($request->cliente_id);
+
         Seguimiento::create([
-            'cliente_id' => $request->cliente_id,
+            'cliente_id' => $cliente->id,
             'expediente_id' => $request->expediente_id ?: null,
             'descripcion' => $request->descripcion,
             'estado' => $request->estado,
@@ -94,22 +102,20 @@ class SeguimientoController extends Controller
         return back()->with('success', 'Tarea agregada correctamente');
     }
 
-    /**
-     * Formulario de edición
-     */
     public function edit(Seguimiento $seguimiento)
     {
+        $this->checkOwnership($seguimiento);
+
         $etiquetas = Etiqueta::all();
         $expedientes = $seguimiento->cliente->expedientes()->orderBy('caratula')->get();
 
         return view('seguimientos.edit', compact('seguimiento', 'etiquetas', 'expedientes'));
     }
 
-    /**
-     * Actualiza la tarea
-     */
     public function update(Request $request, Seguimiento $seguimiento)
     {
+        $this->checkOwnership($seguimiento);
+
         $request->validate([
             'expediente_id' => 'nullable|exists:expedientes,id',
             'descripcion' => 'required|string',
@@ -133,11 +139,10 @@ class SeguimientoController extends Controller
             ->with('success', 'Tarea actualizada correctamente');
     }
 
-    /**
-     * Elimina la tarea
-     */
     public function destroy(Seguimiento $seguimiento)
     {
+        $this->checkOwnership($seguimiento);
+
         $clienteId = $seguimiento->cliente_id;
         $seguimiento->delete();
 
@@ -146,11 +151,10 @@ class SeguimientoController extends Controller
             ->with('success', 'Tarea eliminada correctamente');
     }
 
-    /**
-     * Cambio rápido de estado desde botones
-     */
     public function cambiarEstado(Request $request, Seguimiento $seguimiento)
     {
+        $this->checkOwnership($seguimiento);
+
         $request->validate([
             'estado' => 'required|in:pendiente,en_curso,resuelto',
         ]);
@@ -160,5 +164,13 @@ class SeguimientoController extends Controller
         ]);
 
         return back()->with('success', 'Estado actualizado correctamente');
+    }
+
+    // 🔥 FUNCIÓN CLAVE DE SEGURIDAD
+    private function checkOwnership(Seguimiento $seguimiento)
+    {
+        if ($seguimiento->cliente->abogado_id !== auth()->id()) {
+            abort(403);
+        }
     }
 }

@@ -12,36 +12,29 @@ use Illuminate\Support\Str;
 
 class ClienteController extends Controller
 {
-    /**
-     * Muestra el listado de clientes activos con paginación.
-     */
     public function index()
     {
-        $clientes = Cliente::where('archivado', false)->paginate(10);
+        $clientes = Cliente::where('abogado_id', auth()->id())
+            ->where('archivado', false)
+            ->paginate(10);
+
         return view('clientes.index', compact('clientes'));
     }
 
-    /**
-     * Muestra el listado de clientes ARCHIVADOS.
-     */
     public function archivados()
     {
-        $clientes = Cliente::where('archivado', true)->paginate(10);
+        $clientes = Cliente::where('abogado_id', auth()->id())
+            ->where('archivado', true)
+            ->paginate(10);
 
         return view('clientes.archivados', compact('clientes'));
     }
 
-    /**
-     * Muestra el formulario para crear un nuevo cliente.
-     */
     public function create()
     {
         return view('clientes.create');
     }
 
-    /**
-     * Guarda un nuevo cliente en la base de datos.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -64,21 +57,21 @@ class ClienteController extends Controller
             'email' => $request->email,
             'direccion' => $request->direccion,
             'archivado' => false,
+            'abogado_id' => auth()->id(), // 🔥 clave
         ]);
 
         return redirect()->route('clientes.index')->with('success', 'Cliente creado correctamente.');
     }
 
-    /**
-     * Muestra el detalle del cliente, sus notas y seguimientos.
-     */
     public function show(Request $request, string $id)
     {
-        $cliente = Cliente::with([
-            'user',
-            'notas',
-            'seguimientos.etiqueta',
-        ])->findOrFail($id);
+        $cliente = Cliente::where('abogado_id', auth()->id())
+            ->with([
+                'user',
+                'notas',
+                'seguimientos.etiqueta',
+            ])
+            ->findOrFail($id);
 
         $etiquetas = Etiqueta::all();
         $usuarios = User::where('role', 'cliente')->get();
@@ -134,16 +127,13 @@ class ClienteController extends Controller
         ));
     }
 
-    /**
-     * Asigna un usuario cliente ya existente al cliente.
-     */
     public function asignarUsuario(Request $request, string $id)
     {
         $request->validate([
             'user_id' => 'nullable|exists:users,id',
         ]);
 
-        $cliente = Cliente::findOrFail($id);
+        $cliente = Cliente::where('abogado_id', auth()->id())->findOrFail($id);
 
         $cliente->update([
             'user_id' => $request->user_id,
@@ -152,12 +142,9 @@ class ClienteController extends Controller
         return back()->with('success', 'Usuario asignado correctamente.');
     }
 
-    /**
-     * Crea un usuario cliente nuevo y lo vincula automáticamente al cliente.
-     */
     public function crearAcceso(Request $request, string $id)
     {
-        $cliente = Cliente::findOrFail($id);
+        $cliente = Cliente::where('abogado_id', auth()->id())->findOrFail($id);
 
         if ($cliente->user_id) {
             return back()->with('error', 'Este cliente ya tiene un acceso creado.');
@@ -178,7 +165,7 @@ class ClienteController extends Controller
         $user = User::create([
             'name' => $cliente->nombre,
             'email' => $request->email_acceso,
-            'password' => $request->password_acceso,
+            'password' => Hash::make($request->password_acceso), // 🔥 corregido
             'role' => 'cliente',
         ]);
 
@@ -189,12 +176,11 @@ class ClienteController extends Controller
         return back()->with('success', 'Acceso del cliente creado y vinculado correctamente.');
     }
 
-    /**
-     * Restablece la contraseña del usuario asociado al cliente.
-     */
     public function resetPassword(string $id)
     {
-        $cliente = Cliente::with('user')->findOrFail($id);
+        $cliente = Cliente::where('abogado_id', auth()->id())
+            ->with('user')
+            ->findOrFail($id);
 
         if (!$cliente->user) {
             return back()->with('error', 'Este cliente no tiene un usuario asociado.');
@@ -203,7 +189,7 @@ class ClienteController extends Controller
         $nuevaPassword = Str::password(10);
 
         $cliente->user->update([
-            'password' => $nuevaPassword,
+            'password' => Hash::make($nuevaPassword), // 🔥 corregido
         ]);
 
         return back()
@@ -211,12 +197,11 @@ class ClienteController extends Controller
             ->with('nueva_password', $nuevaPassword);
     }
 
-    /**
-     * Quita el acceso del cliente eliminando el usuario vinculado.
-     */
     public function quitarAcceso(string $id)
     {
-        $cliente = Cliente::with('user')->findOrFail($id);
+        $cliente = Cliente::where('abogado_id', auth()->id())
+            ->with('user')
+            ->findOrFail($id);
 
         if (!$cliente->user) {
             return back()->with('error', 'Este cliente no tiene acceso vinculado.');
@@ -233,12 +218,9 @@ class ClienteController extends Controller
         return back()->with('success', 'Acceso del cliente eliminado correctamente.');
     }
 
-    /**
-     * Guarda un nuevo seguimiento asociado al cliente.
-     */
     public function storeSeguimiento(Request $request, string $id)
     {
-        $cliente = Cliente::findOrFail($id);
+        $cliente = Cliente::where('abogado_id', auth()->id())->findOrFail($id);
 
         $request->validate([
             'descripcion' => 'required|string',
@@ -248,7 +230,7 @@ class ClienteController extends Controller
         $cliente->seguimientos()->create([
             'descripcion' => $request->descripcion,
             'etiqueta_id' => $request->etiqueta_id,
-            'user_id' => auth()->id() ?? 1,
+            'user_id' => auth()->id(),
             'estado' => 'pendiente',
             'prioridad' => $request->prioridad ?? 'media',
             'fecha_recordatorio' => $request->fecha_recordatorio,
@@ -257,20 +239,16 @@ class ClienteController extends Controller
         return back()->with('success', 'Seguimiento registrado con éxito.');
     }
 
-    /**
-     * Muestra el formulario para editar un cliente.
-     */
     public function edit(string $id)
     {
-        $cliente = Cliente::findOrFail($id);
+        $cliente = Cliente::where('abogado_id', auth()->id())->findOrFail($id);
         return view('clientes.edit', compact('cliente'));
     }
 
-    /**
-     * Actualiza los datos del cliente.
-     */
     public function update(Request $request, string $id)
     {
+        $cliente = Cliente::where('abogado_id', auth()->id())->findOrFail($id);
+
         $request->validate([
             'nombre' => 'required|string|max:255',
             'telefono' => 'required|string|max:255',
@@ -285,8 +263,6 @@ class ClienteController extends Controller
             'direccion.required' => 'La dirección es obligatoria.',
         ]);
 
-        $cliente = Cliente::findOrFail($id);
-
         $cliente->update([
             'nombre' => $request->nombre,
             'telefono' => $request->telefono,
@@ -297,34 +273,25 @@ class ClienteController extends Controller
         return redirect()->route('clientes.index')->with('success', 'Cliente actualizado correctamente.');
     }
 
-    /**
-     * Elimina un cliente.
-     */
     public function destroy(string $id)
     {
-        $cliente = Cliente::findOrFail($id);
+        $cliente = Cliente::where('abogado_id', auth()->id())->findOrFail($id);
         $cliente->delete();
 
         return redirect()->route('clientes.index')->with('success', 'Cliente eliminado correctamente.');
     }
 
-    /**
-     * Archiva un cliente.
-     */
     public function archivar(string $id)
     {
-        $cliente = Cliente::findOrFail($id);
+        $cliente = Cliente::where('abogado_id', auth()->id())->findOrFail($id);
         $cliente->update(['archivado' => true]);
 
         return redirect()->route('clientes.index')->with('success', 'Cliente archivado correctamente.');
     }
 
-    /**
-     * Desarchiva un cliente.
-     */
     public function desarchivar(string $id)
     {
-        $cliente = Cliente::findOrFail($id);
+        $cliente = Cliente::where('abogado_id', auth()->id())->findOrFail($id);
         $cliente->update(['archivado' => false]);
 
         return redirect()->route('clientes.archivados')->with('success', 'Cliente restaurado correctamente.');

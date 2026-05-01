@@ -35,15 +35,22 @@ class DashboardSeguimientos extends Component
     public function cargarDatos(): void
     {
         $hoy = Carbon::today();
+        $abogadoId = auth()->id();
 
-        $this->vencidos = Seguimiento::with('cliente')
+        $this->vencidos = Seguimiento::whereHas('cliente', function ($q) use ($abogadoId) {
+                $q->where('abogado_id', $abogadoId);
+            })
+            ->with('cliente')
             ->where('estado', '!=', 'resuelto')
             ->whereNotNull('fecha_recordatorio')
             ->whereDate('fecha_recordatorio', '<', $hoy)
             ->orderBy('fecha_recordatorio')
             ->get();
 
-        $this->paraHoy = Seguimiento::with('cliente')
+        $this->paraHoy = Seguimiento::whereHas('cliente', function ($q) use ($abogadoId) {
+                $q->where('abogado_id', $abogadoId);
+            })
+            ->with('cliente')
             ->where('estado', '!=', 'resuelto')
             ->whereNotNull('fecha_recordatorio')
             ->whereDate('fecha_recordatorio', $hoy)
@@ -53,14 +60,22 @@ class DashboardSeguimientos extends Component
         $this->cantVencidos = $this->vencidos->count();
         $this->cantHoy = $this->paraHoy->count();
 
-        $activos = Seguimiento::where('estado', '!=', 'resuelto')->count();
+        $activos = Seguimiento::whereHas('cliente', function ($q) use ($abogadoId) {
+                $q->where('abogado_id', $abogadoId);
+            })
+            ->where('estado', '!=', 'resuelto')
+            ->count();
+
         $enTermino = max($activos - $this->cantVencidos, 0);
 
         $this->porcentaje = $activos > 0
             ? (int) round(($enTermino / $activos) * 100)
             : 100;
 
-        $this->resueltosHoy = Seguimiento::where('estado', 'resuelto')
+        $this->resueltosHoy = Seguimiento::whereHas('cliente', function ($q) use ($abogadoId) {
+                $q->where('abogado_id', $abogadoId);
+            })
+            ->where('estado', 'resuelto')
             ->whereDate('updated_at', $hoy)
             ->count();
 
@@ -78,7 +93,10 @@ class DashboardSeguimientos extends Component
     {
         $this->procesandoId = $seguimientoId;
 
-        $seguimiento = Seguimiento::find($seguimientoId);
+        $seguimiento = Seguimiento::whereHas('cliente', function ($q) {
+                $q->where('abogado_id', auth()->id());
+            })
+            ->find($seguimientoId);
 
         if (!$seguimiento) {
             $this->procesandoId = null;

@@ -7,41 +7,69 @@ use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('expedientes', function (Blueprint $table) {
-            $table->string('numero_expediente')->nullable()->after('cliente_id');
-            $table->string('juzgado')->nullable()->after('numero_expediente');
-            $table->string('caratula')->nullable()->after('juzgado');
-            $table->string('tipo')->nullable()->after('caratula');
+            if (!Schema::hasColumn('expedientes', 'numero_expediente')) {
+                $table->string('numero_expediente')->nullable()->after('cliente_id');
+            }
+
+            if (!Schema::hasColumn('expedientes', 'juzgado')) {
+                $table->string('juzgado')->nullable()->after('numero_expediente');
+            }
+
+            if (!Schema::hasColumn('expedientes', 'caratula')) {
+                $table->string('caratula')->nullable()->after('juzgado');
+            }
+
+            if (!Schema::hasColumn('expedientes', 'tipo')) {
+                $table->string('tipo')->nullable()->after('caratula');
+            }
         });
 
-        // Copiamos el valor viejo de "titulo" a "caratula"
-        DB::statement('UPDATE expedientes SET caratula = titulo WHERE caratula IS NULL');
+        if (
+            Schema::hasColumn('expedientes', 'titulo') &&
+            Schema::hasColumn('expedientes', 'caratula')
+        ) {
+            DB::statement('UPDATE expedientes SET caratula = titulo WHERE caratula IS NULL');
+        }
 
         Schema::table('expedientes', function (Blueprint $table) {
-            $table->dropColumn(['titulo', 'descripcion']);
+            if (Schema::hasColumn('expedientes', 'titulo')) {
+                $table->dropColumn('titulo');
+            }
+
+            if (Schema::hasColumn('expedientes', 'descripcion')) {
+                $table->dropColumn('descripcion');
+            }
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('expedientes', function (Blueprint $table) {
-            $table->string('titulo')->nullable();
-            $table->text('descripcion')->nullable();
+            if (!Schema::hasColumn('expedientes', 'titulo')) {
+                $table->string('titulo')->nullable();
+            }
+
+            if (!Schema::hasColumn('expedientes', 'descripcion')) {
+                $table->text('descripcion')->nullable();
+            }
         });
 
-        // Si volvemos atrás, recuperamos "titulo" desde "caratula"
-        DB::statement('UPDATE expedientes SET titulo = caratula WHERE titulo IS NULL');
+        if (
+            Schema::hasColumn('expedientes', 'titulo') &&
+            Schema::hasColumn('expedientes', 'caratula')
+        ) {
+            DB::statement('UPDATE expedientes SET titulo = caratula WHERE titulo IS NULL');
+        }
 
         Schema::table('expedientes', function (Blueprint $table) {
-            $table->dropColumn(['numero_expediente', 'juzgado', 'caratula', 'tipo']);
+            foreach (['numero_expediente', 'juzgado', 'caratula', 'tipo'] as $column) {
+                if (Schema::hasColumn('expedientes', $column)) {
+                    $table->dropColumn($column);
+                }
+            }
         });
     }
 };

@@ -56,11 +56,11 @@ Route::middleware(['auth', 'verified', 'activo'])->group(function () {
 });
 
 // Panel cliente
-Route::middleware(['auth', 'role:cliente'])->get('/cliente/dashboard', function () {
+Route::middleware(['auth', 'role:cliente', 'activo'])->get('/cliente/dashboard', function () {
     return view('cliente.dashboard');
 })->name('cliente.dashboard');
 
-Route::middleware(['auth', 'role:cliente'])->get('/cliente/expedientes/{expediente}/imprimir', [ExpedienteController::class, 'imprimir'])
+Route::middleware(['auth', 'role:cliente', 'activo'])->get('/cliente/expedientes/{expediente}/imprimir', [ExpedienteController::class, 'imprimir'])
     ->name('cliente.expedientes.imprimir');
 
 use Illuminate\Support\Facades\Storage;

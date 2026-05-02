@@ -275,6 +275,8 @@ class ClienteController extends Controller
 
 public function destroy(string $id)
 {
+    dd('ESTOY EN DESTROY NUEVO');
+
     $cliente = Cliente::where('abogado_id', auth()->id())->findOrFail($id);
 
     $userId = $cliente->user_id;

@@ -277,18 +277,20 @@ public function destroy(string $id)
 {
     $cliente = Cliente::where('abogado_id', auth()->id())->findOrFail($id);
 
-    // Guardamos el id del usuario antes de borrar el cliente
     $userId = $cliente->user_id;
 
-    // Primero borramos el cliente
     $cliente->delete();
 
-    // Después borramos el usuario asociado, si existía
+    $usuariosBorrados = 0;
+
     if ($userId) {
-        User::where('id', $userId)->delete();
+        $usuariosBorrados = User::where('id', $userId)->delete();
     }
 
-    return redirect()->route('clientes.index')->with('success', 'Cliente eliminado correctamente.');
+    return redirect()->route('clientes.index')->with(
+        'success',
+        'Cliente eliminado. user_id era: ' . ($userId ?? 'NULL') . ' | usuarios borrados: ' . $usuariosBorrados
+    );
 }
 
     public function archivar(string $id)

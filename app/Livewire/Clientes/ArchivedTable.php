@@ -3,6 +3,7 @@
 namespace App\Livewire\Clientes;
 
 use App\Models\Cliente;
+use App\Models\User; // 🔥 agregado
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -32,8 +33,15 @@ class ArchivedTable extends Component
         $cliente = Cliente::where('abogado_id', auth()->id())->find($id);
 
         if ($cliente) {
+            $userId = $cliente->user_id;
+
             $cliente->delete();
-            session()->flash('success', 'Cliente eliminado definitivamente.');
+
+            if ($userId) {
+                User::where('id', $userId)->delete();
+            }
+
+            session()->flash('success', 'Cliente y acceso eliminados definitivamente.');
         }
     }
 

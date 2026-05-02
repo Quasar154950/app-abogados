@@ -273,13 +273,24 @@ class ClienteController extends Controller
         return redirect()->route('clientes.index')->with('success', 'Cliente actualizado correctamente.');
     }
 
-    public function destroy(string $id)
-    {
-        $cliente = Cliente::where('abogado_id', auth()->id())->findOrFail($id);
-        $cliente->delete();
+public function destroy(string $id)
+{
+    $cliente = Cliente::where('abogado_id', auth()->id())
+        ->with('user')
+        ->findOrFail($id);
 
-        return redirect()->route('clientes.index')->with('success', 'Cliente eliminado correctamente.');
+    // 🔥 Si tiene usuario → desactivarlo
+    if ($cliente->user) {
+        $cliente->user->update([
+            'activo' => false,
+        ]);
     }
+
+    // 🔥 Luego borrar cliente
+    $cliente->delete();
+
+    return redirect()->route('clientes.index')->with('success', 'Cliente eliminado correctamente.');
+}
 
     public function archivar(string $id)
     {

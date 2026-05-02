@@ -275,7 +275,17 @@ class ClienteController extends Controller
 
 public function destroy(string $id)
 {
-    $cliente = Cliente::where('abogado_id', auth()->id())->findOrFail($id);
+    $cliente = Cliente::where('abogado_id', auth()->id())
+        ->findOrFail($id);
+
+    // 🔥 Desactivar usuario si existe
+    if ($cliente->user_id) {
+        User::where('id', $cliente->user_id)->update([
+            'activo' => false,
+        ]);
+    }
+
+    // 🔥 Borrar cliente
     $cliente->delete();
 
     return redirect()->route('clientes.index')->with('success', 'Cliente eliminado correctamente.');

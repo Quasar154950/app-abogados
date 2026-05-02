@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Carbon\Carbon;
 
 class CheckEstudioActivo
 {
@@ -22,6 +23,11 @@ class CheckEstudioActivo
 
         // Si está inactivo → lo bloqueamos
         if (!$user->activo) {
+            return response()->view('suspendido');
+        }
+
+        // Si tiene fecha de vencimiento y ya venció → lo bloqueamos
+        if ($user->fecha_vencimiento && Carbon::today()->gt(Carbon::parse($user->fecha_vencimiento))) {
             return response()->view('suspendido');
         }
 

@@ -16,6 +16,15 @@
         <p style="font-size:14px; color:#666;">
             Para regularizar el servicio, comunicate con el administrador.
         </p>
+
+        <!-- BOTÓN LOGOUT -->
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button style="margin-top:20px; padding:10px 18px; border:none; border-radius:8px; background:#b91c1c; color:white; font-weight:bold; cursor:pointer;">
+                Cerrar sesión
+            </button>
+        </form>
+
     </div>
 
 </body>

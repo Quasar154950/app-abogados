@@ -24,6 +24,7 @@ class User extends Authenticatable
         'password',
         'role',
         'activo',
+        'fecha_vencimiento',
     ];
 
     /**
@@ -44,6 +45,9 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+
+            'fecha_vencimiento' => 'datetime',
+            'activo' => 'boolean',
         ];
     }
 
@@ -62,5 +66,20 @@ class User extends Authenticatable
     public function cliente(): HasOne
     {
         return $this->hasOne(Cliente::class);
+    }
+
+    /**
+     * Renovar suscripción
+     */
+    public function renovarSuscripcion(int $dias = 30): void
+    {
+        $fechaBase = $this->fecha_vencimiento && $this->fecha_vencimiento->isFuture()
+            ? $this->fecha_vencimiento
+            : now();
+
+        $this->update([
+            'fecha_vencimiento' => $fechaBase->copy()->addDays($dias),
+            'activo' => true,
+        ]);
     }
 }

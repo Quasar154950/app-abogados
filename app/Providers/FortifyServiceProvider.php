@@ -28,11 +28,15 @@ class FortifyServiceProvider extends ServiceProvider
                         return new \Illuminate\Http\JsonResponse(['two_factor' => false]);
                     }
 
-                    if ($user && $user->role === 'cliente') {
-                        return redirect('/cliente/dashboard');
-                    }
+                    if ($user && $user->email === 'soporte@tuempresa.com') {
+                    return redirect('/soporte');
+                }
 
-                    return redirect('/dashboard');
+                if ($user && $user->role === 'cliente') {
+                    return redirect('/cliente/dashboard');
+                }
+
+                return redirect('/dashboard');
                 }
             };
         });

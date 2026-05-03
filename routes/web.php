@@ -8,6 +8,7 @@ use App\Http\Controllers\NotaController;
 use App\Http\Controllers\SeguimientoController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ActividadController;
+use App\Models\User;
 
 Route::redirect('/', '/login')->name('home');
 
@@ -17,6 +18,17 @@ Route::middleware(['auth', 'verified', 'activo'])->group(function () {
 
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+        Route::post('/renovar/{user}', function (User $user) {
+            $user->renovarSuscripcion();
+
+            return back()->with('ok', 'Suscripción renovada +30 días');
+        })->name('renovar.suscripcion');
+        Route::post('/toggle-activo/{user}', function (User $user) {
+        $user->activo = !$user->activo;
+        $user->save();
+
+    return back();
+})->name('toggle.activo');
         Route::get('search', [SearchController::class, 'index'])->name('global.search');
 
         Route::get('clientes/archivados', [ClienteController::class, 'archivados'])->name('clientes.archivados');
@@ -72,6 +84,16 @@ Route::get('/test-cloudinary', function () {
     );
 
     return $result ? 'OK' : 'ERROR';
+});
+
+Route::middleware(['auth'])->get('/soporte', function () {
+    $user = auth()->user();
+
+    if (!$user || $user->email !== 'soporte@tuempresa.com') {
+        abort(403);
+    }
+
+    return view('soporte.index');
 });
 
 require __DIR__ . '/settings.php';

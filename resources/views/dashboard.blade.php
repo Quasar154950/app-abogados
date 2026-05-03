@@ -2,12 +2,26 @@
 
     <div class="space-y-5 text-left">
 
-        {{-- 1. MENSAJE DE ÉXITO --}}
-        @if(session('success'))
-            <div class="p-3 rounded-xl bg-green-50 dark:bg-neutral-800 border border-green-200 dark:border-green-900/50 text-green-700 dark:text-green-400 text-sm font-bold shadow-sm flex items-center gap-2">
-                ✅ {{ session('success') }}
-            </div>
-        @endif
+{{-- 1. MENSAJE DE ÉXITO --}}
+@if(session('success'))
+        <div class="p-3 rounded-xl bg-green-50 dark:bg-neutral-800 border border-green-200 dark:border-green-900/50 text-green-700 dark:text-green-400 text-sm font-bold shadow-sm flex items-center gap-2">
+            ✅ {{ session('success') }}
+        </div>
+    @endif
+
+    @if(!is_null($diasRestantes))
+        <div class="p-3 rounded-xl border text-sm font-bold shadow-sm flex items-center gap-2
+            @if($diasRestantes > 10)
+                bg-green-50 text-green-700 border-green-200
+            @elseif($diasRestantes > 3)
+                bg-yellow-50 text-yellow-700 border-yellow-200
+            @else
+                bg-red-50 text-red-700 border-red-200
+            @endif
+        ">
+            ⏳ Te quedan {{ $diasRestantes }} días de suscripción
+        </div>
+    @endif
 
         {{-- CABECERA --}}
         <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 bg-white dark:bg-neutral-900 shadow-sm font-sans">
@@ -47,9 +61,19 @@
         ➕ Nuevo cliente
     </a>
 
-</div>
-        </div>
+    </div>
 
+@if(auth()->user()->email === 'soporte@tuempresa.com')
+    <form method="POST" action="{{ route('renovar.suscripcion', auth()->user()) }}" class="mt-4">
+        @csrf
+        <button class="shrink-0 inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-bold shadow-sm transition cursor-pointer active:scale-95"
+                style="background-color: #f59e0b; color: #ffffff !important;">
+            🔄 Renovar suscripción (+30 días)
+        </button>
+    </form>
+@endif
+
+</div>
         {{-- NOTAS FIJADAS CON LIVEWIRE --}}
         <livewire:actions.dashboard-notas-fijadas />
 

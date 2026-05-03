@@ -16,6 +16,16 @@ class CheckEstudioActivo
     {
         $user = auth()->user();
 
+        // Permitir logout aunque esté suspendido
+        if ($request->routeIs('logout')) {
+            return $next($request);
+        }
+
+        // Soporte NO se bloquea nunca
+        if ($user && $user->email === 'soporte@tuempresa.com') {
+            return $next($request);
+        }
+
         // Si no está logueado, dejamos pasar
         if (!$user) {
             return $next($request);
@@ -27,7 +37,7 @@ class CheckEstudioActivo
         }
 
         // Si tiene fecha de vencimiento y ya venció → lo bloqueamos
-        if ($user->fecha_vencimiento && Carbon::today()->gt(Carbon::parse($user->fecha_vencimiento))) {
+        if ($user->fecha_vencimiento && now()->greaterThan($user->fecha_vencimiento)) {
             return response()->view('suspendido');
         }
 

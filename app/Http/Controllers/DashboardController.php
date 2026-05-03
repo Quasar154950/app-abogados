@@ -14,6 +14,12 @@ class DashboardController extends Controller
         $hoy = Carbon::today();
         $abogadoId = auth()->id();
 
+        $usuario = auth()->user();
+
+        $diasRestantes = $usuario->fecha_vencimiento
+            ? max(0, now()->startOfDay()->diffInDays($usuario->fecha_vencimiento->startOfDay(), false))
+            : null;
+
         $totalClientesActivos = Cliente::where('abogado_id', $abogadoId)
             ->where('archivado', false)
             ->count();
@@ -113,6 +119,8 @@ class DashboardController extends Controller
             ->get();
 
         return view('dashboard', [
+            'diasRestantes'           => $diasRestantes,
+            
             'totalClientes'           => $totalClientesActivos,
             'historicoNotas'          => $conteoTotalNotas,
             'soloHoyNotas'            => $conteoNotasDeHoy,

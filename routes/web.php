@@ -95,5 +95,11 @@ Route::middleware(['auth'])->get('/soporte', function () {
 
     return view('soporte.index');
 });
+Route::get('/migrar', function () {
+    \Artisan::call('migrate', [
+        '--path' => 'database/migrations/2026_05_03_223923_add_branding_fields_to_users_table.php'
+    ]);
 
+    return 'Migración branding ejecutada';
+});
 require __DIR__ . '/settings.php';

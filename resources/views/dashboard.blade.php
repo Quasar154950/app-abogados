@@ -9,61 +9,67 @@
 
     <div class="space-y-5 text-left">
 
-{{-- 1. MENSAJE DE ÉXITO --}}
-@if(session('success'))
-        <div class="p-3 rounded-xl bg-green-50 dark:bg-neutral-800 border border-green-200 dark:border-green-900/50 text-green-700 dark:text-green-400 text-sm font-bold shadow-sm flex items-center gap-2">
-            ✅ {{ session('success') }}
-        </div>
-@endif
-
-{{-- 🔥 AVISO SaaS --}}
-@if(!is_null($diasRestantes) && $diasRestantes <= 7)
-
-    @php
-        if ($diasRestantes > 3) {
-            $bg = '#fef9c3';
-            $color = '#92400e';
-            $border = '#fde68a';
-            $badge = 'Por vencer';
-            $badgeColor = '#f59e0b';
-        } else {
-            $bg = '#fee2e2';
-            $color = '#991b1b';
-            $border = '#fecaca';
-            $badge = 'Urgente';
-            $badgeColor = '#dc2626';
-        }
-    @endphp
-
-    <div class="p-4 rounded-2xl shadow-sm flex items-center justify-between gap-3"
-         style="background: {{ $bg }}; color: {{ $color }}; border:1px solid {{ $border }}; animation: fadeIn .3s ease-in-out;">
-
-        <div>
-            <div class="font-black text-sm">
-                @if($diasRestantes <= 1)
-                    ⚠️ Suscripción por vencer
-                @else
-                    ⏳ Suscripción activa
-                @endif
+        {{-- 1. MENSAJE DE ÉXITO --}}
+        @if(session('success'))
+            <div class="p-3 rounded-xl bg-green-50 dark:bg-neutral-800 border border-green-200 dark:border-green-900/50 text-green-700 dark:text-green-400 text-sm font-bold shadow-sm flex items-center gap-2">
+                ✅ {{ session('success') }}
             </div>
+        @endif
 
-            <div class="text-xs mt-1">
-                @if($diasRestantes === 0)
-                    Vence hoy. Renová para evitar suspensión.
-                @elseif($diasRestantes === 1)
-                    Vence mañana. Te recomendamos renovar.
-                @else
-                    Te quedan {{ $diasRestantes }} días de suscripción.
-                @endif
+        {{-- 🔥 AVISO SaaS --}}
+        @if(!is_null($diasRestantes) && $diasRestantes <= 7)
+
+            @php
+                if ($diasRestantes > 3) {
+                    $bg = '#fef9c3';
+                    $color = '#92400e';
+                    $border = '#fde68a';
+                    $badge = 'Por vencer';
+                    $badgeColor = '#f59e0b';
+                } else {
+                    $bg = '#fee2e2';
+                    $color = '#991b1b';
+                    $border = '#fecaca';
+                    $badge = 'Urgente';
+                    $badgeColor = '#dc2626';
+                }
+            @endphp
+
+            <div class="p-4 rounded-2xl shadow-sm flex items-center justify-between gap-3"
+                 style="background: {{ $bg }}; color: {{ $color }}; border:1px solid {{ $border }}; animation: fadeIn .3s ease-in-out;">
+
+                <div>
+                    <div class="font-black text-sm">
+                        @if($diasRestantes <= 1)
+                            ⚠️ Suscripción por vencer
+                        @else
+                            ⏳ Suscripción activa
+                        @endif
+                    </div>
+
+                    <div class="text-xs mt-1">
+                        @if($diasRestantes === 0)
+                            Vence hoy. Renová para evitar suspensión.
+                        @elseif($diasRestantes === 1)
+                            Vence mañana. Te recomendamos renovar.
+                        @else
+                            Te quedan {{ $diasRestantes }} días de suscripción.
+                        @endif
+
+                        {{-- 🔥 BOTÓN CLAVE --}}
+                        <a href="{{ route('suscripcion.index') }}"
+   class="inline-block mt-2 px-3 py-1 rounded bg-white text-black text-xs font-bold shadow">
+    Ir a suscripción
+</a>
+                    </div>
+                </div>
+
+                <span style="background: {{ $badgeColor }}; color:white; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:bold;">
+                    {{ $badge }}
+                </span>
+
             </div>
-        </div>
-
-        <span style="background: {{ $badgeColor }}; color:white; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:bold;">
-            {{ $badge }}
-        </span>
-
-    </div>
-@endif
+        @endif
 
         {{-- CABECERA --}}
         <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 bg-white dark:bg-neutral-900 shadow-sm font-sans">

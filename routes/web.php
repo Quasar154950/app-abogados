@@ -21,6 +21,12 @@ Route::middleware(['auth', 'verified', 'activo'])->group(function () {
 
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+        // 🔥 NUEVO: MI SUSCRIPCIÓN
+        Route::get('/suscripcion', function () {
+            $user = auth()->user();
+            return view('suscripcion.index', compact('user'));
+        })->name('suscripcion.index');
+
         Route::post('/renovar/{user}', function (User $user) {
             $user->renovarSuscripcion();
             return back()->with('ok', 'Suscripción renovada +30 días');
@@ -133,7 +139,7 @@ Route::get('/soporte/login', function () {
 
 })->name('login.soporte');
 
-// Ruta temporal (puede eliminarse después)
+// Ruta temporal
 Route::get('/crear-slug', function () {
 
     if (!Schema::hasColumn('users', 'slug_estudio')) {
@@ -146,4 +152,3 @@ Route::get('/crear-slug', function () {
 });
 
 require __DIR__ . '/settings.php';
-

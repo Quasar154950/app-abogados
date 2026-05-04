@@ -1,60 +1,63 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Acceso al sistema</title>
-</head>
-<body style="margin:0; font-family: Arial, sans-serif; background:#f5f5f5; min-height:100vh; display:flex; align-items:center; justify-content:center;">
+<x-layouts::auth :title="__('Acceso al sistema')">
+    <div class="flex flex-col gap-6">
 
-    <div style="background:white; width:100%; max-width:400px; padding:32px; border-radius:18px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,.08);">
+        {{-- LOGO DEL ESTUDIO --}}
+        <div class="flex justify-center">
+            <img 
+                src="{{ asset($userEstudio->logo_estudio ?: 'images/logo.png') }}" 
+                alt="Logo" 
+                style="height: 100px; width: auto;"
+            >
+        </div>
 
-        <!-- LOGO -->
-        <img src="{{ asset($userEstudio->logo_estudio ?: 'images/logo.png') }}"
-             style="width:80px; height:80px; object-fit:cover; border-radius:50%; margin-bottom:16px;">
+        {{-- TITULO --}}
+        <x-auth-header 
+            :title="$userEstudio->nombre_estudio ?? __('Acceso al sistema')" 
+            :description="__('Ingresá con tu email y contraseña para continuar')" 
+        />
 
-        <!-- NOMBRE -->
-        <h1 style="margin:0; font-size:22px;">
-            {{ $userEstudio->nombre_estudio ?? 'Acceso al sistema' }}
-        </h1>
+        <x-auth-session-status class="text-center" :status="session('status')" />
 
-        <p style="font-size:14px; color:#666; margin-bottom:24px;">
-            Ingresá con tus datos
-        </p>
-
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-6">
             @csrf
 
-            <!-- EMAIL -->
-            <input type="email" name="email" placeholder="Correo electrónico" required
-                   style="width:100%; padding:12px; margin-bottom:12px; border:1px solid #ddd; border-radius:10px; box-sizing:border-box;">
+            <flux:input
+                name="email"
+                :label="__('Email')"
+                :value="old('email')"
+                type="email"
+                required
+                autofocus
+                autocomplete="email"
+                placeholder="cliente@email.com"
+            />
 
-            <!-- PASSWORD CON OJITO -->
-            <div style="position:relative; margin-bottom:16px;">
-                <input type="password" id="password" name="password" placeholder="Contraseña" required
-                       style="width:100%; padding:12px; padding-right:40px; border:1px solid #ddd; border-radius:10px; box-sizing:border-box;">
+            <div class="relative">
+                <flux:input
+                    name="password"
+                    :label="__('Contraseña')"
+                    type="password"
+                    required
+                    autocomplete="current-password"
+                    :placeholder="__('Ingresá tu contraseña')"
+                    viewable
+                />
 
-                <span onclick="togglePassword()" 
-                      style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:16px;">
-                    👁️
-                </span>
+                @if (Route::has('password.request'))
+                    <flux:link class="absolute top-0 text-sm end-0" :href="route('password.request')" wire:navigate>
+                        {{ __('¿Olvidaste tu contraseña?') }}
+                    </flux:link>
+                @endif
             </div>
 
-            <!-- BOTÓN -->
-            <button type="submit"
-                    style="width:100%; padding:12px; border:none; border-radius:10px; background:#111827; color:white; font-weight:bold; cursor:pointer;">
-                Ingresar
-            </button>
+            <flux:checkbox name="remember" :label="__('Recordarme')" :checked="old('remember')" />
 
+            <div class="flex items-center justify-end">
+                <flux:button variant="primary" type="submit" class="w-full">
+                    {{ __('Ingresar') }}
+                </flux:button>
+            </div>
         </form>
 
     </div>
-
-    <script>
-        function togglePassword() {
-            const input = document.getElementById('password');
-            input.type = input.type === 'password' ? 'text' : 'password';
-        }
-    </script>
-
-</body>
-</html>
+</x-layouts::auth>

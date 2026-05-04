@@ -120,7 +120,7 @@
                         </div>
 
                         {{-- BOTONES --}}
-                        <div class="flex flex-wrap gap-2">
+                        <div class="flex flex-wrap gap-1">
 
                             {{-- RENOVAR --}}
                             <form method="POST" action="{{ route('renovar.suscripcion', $user) }}">

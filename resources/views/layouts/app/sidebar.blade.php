@@ -61,6 +61,10 @@
                         <flux:sidebar.item icon="clock" :href="route('actividades.index')" :current="request()->routeIs('actividades.*')" wire:navigate>
                             Historial
                         </flux:sidebar.item>
+                        
+                        <flux:sidebar.item icon="credit-card" :href="route('suscripcion.index')" :current="request()->routeIs('suscripcion.*')" wire:navigate>
+                           Suscripción
+                        </flux:sidebar.item>
 
                     @endif
 

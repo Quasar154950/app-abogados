@@ -9,15 +9,64 @@
             </p>
         </div>
 
+        {{-- MÉTRICAS --}}
+        @php
+            $users = \App\Models\User::where('role', 'abogado')
+                ->where('email', '!=', 'soporte@tuempresa.com')
+                ->orderBy('email')
+                ->get();
+
+            $totalEstudios = $users->count();
+
+            $activos = $users->where('activo', true)->count();
+
+            $inactivos = $users->where('activo', false)->count();
+
+            $vencidos = $users->filter(function ($user) {
+                return $user->fecha_vencimiento && now()->greaterThan($user->fecha_vencimiento);
+            })->count();
+
+            $porVencer = $users->filter(function ($user) {
+                if (!$user->fecha_vencimiento) return false;
+
+                $dias = max(0, now()->startOfDay()->diffInDays($user->fecha_vencimiento->startOfDay(), false));
+
+                return $dias > 0 && $dias <= 7;
+            })->count();
+        @endphp
+
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+
+            <div class="p-3 rounded-xl bg-blue-50 border border-blue-200 text-center">
+                <div class="text-xs text-blue-600">Total</div>
+                <div class="text-xl font-bold text-blue-800">{{ $totalEstudios }}</div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-green-50 border border-green-200 text-center">
+                <div class="text-xs text-green-600">Activos</div>
+                <div class="text-xl font-bold text-green-800">{{ $activos }}</div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-gray-100 border border-gray-300 text-center">
+                <div class="text-xs text-gray-600">Inactivos</div>
+                <div class="text-xl font-bold text-gray-800">{{ $inactivos }}</div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-red-50 border border-red-200 text-center">
+                <div class="text-xs text-red-600">Vencidos</div>
+                <div class="text-xl font-bold text-red-800">{{ $vencidos }}</div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-yellow-50 border border-yellow-200 text-center">
+                <div class="text-xs text-yellow-600">Por vencer</div>
+                <div class="text-xl font-bold text-yellow-800">{{ $porVencer }}</div>
+            </div>
+
+        </div>
+
+        {{-- LISTADO --}}
         <div class="rounded-xl border border-neutral-200 p-5 bg-white shadow-sm">
             <h2 class="text-lg font-bold mb-4">Estudios / Abogados</h2>
-
-            @php
-                $users = \App\Models\User::where('role', 'abogado')
-                    ->where('email', '!=', 'soporte@tuempresa.com')
-                    ->orderBy('email')
-                    ->get();
-            @endphp
 
             <div class="space-y-2">
                 @foreach($users as $user)
@@ -35,6 +84,17 @@
                         } else {
                             $estado = 'Vigente';
                         }
+
+                        // 🔥 COLOR SEGURO
+                        if (is_null($diasRestantes)) {
+                            $color = '#6b7280'; // gris
+                        } elseif ($diasRestantes > 10) {
+                            $color = '#16a34a'; // verde
+                        } elseif ($diasRestantes > 3) {
+                            $color = '#ca8a04'; // amarillo
+                        } else {
+                            $color = '#dc2626'; // rojo
+                        }
                     @endphp
 
                     <div class="p-3 border rounded-lg flex justify-between items-center gap-4">
@@ -46,7 +106,7 @@
                                 {{ $user->fecha_vencimiento ? $user->fecha_vencimiento->format('d/m/Y') : 'Sin fecha' }}
                             </div>
 
-                            <div class="text-xs text-gray-500">
+                            <div class="text-xs font-bold" style="color: {{ $color }}">
                                 Días restantes:
                                 {{ is_null($diasRestantes) ? 'Sin fecha' : $diasRestantes }}
                             </div>
@@ -58,23 +118,18 @@
                                 {{ $estado }}
                             </div>
 
-                            {{-- BOTÓN RENOVAR --}}
                             <form method="POST" action="{{ route('renovar.suscripcion', $user) }}">
                                 @csrf
-                                <button
-                                    onclick="return confirm('¿Seguro querés renovar 30 días?')"
+                                <button onclick="return confirm('¿Seguro querés renovar 30 días?')"
                                     class="text-xs px-3 py-1 rounded bg-green-600 text-white">
                                     Renovar
                                 </button>
                             </form>
 
-                            {{-- BOTÓN SUSPENDER / ACTIVAR --}}
                             <form method="POST" action="{{ route('toggle.activo', $user) }}">
                                 @csrf
-                                <button
-                                    onclick="return confirm('¿Seguro querés cambiar el estado?')"
-                                    class="text-xs px-3 py-1 rounded
-                                        {{ $user->activo ? 'bg-red-600' : 'bg-blue-600' }} text-white">
+                                <button onclick="return confirm('¿Seguro querés cambiar el estado?')"
+                                    class="text-xs px-3 py-1 rounded {{ $user->activo ? 'bg-red-600' : 'bg-blue-600' }} text-white">
                                     {{ $user->activo ? 'Suspender' : 'Activar' }}
                                 </button>
                             </form>

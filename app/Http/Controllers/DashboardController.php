@@ -11,6 +11,11 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        // 🔴 REDIRIGIR SOPORTE AL PANEL DE SOPORTE
+        if (auth()->user()->email === 'soporte@tuempresa.com') {
+            return redirect('/soporte');
+        }
+
         $hoy = Carbon::today();
         $abogadoId = auth()->id();
 

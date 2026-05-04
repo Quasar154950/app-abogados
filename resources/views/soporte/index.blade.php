@@ -100,8 +100,7 @@
                         }
                     @endphp
 
-                    {{-- 🔥 CONTENEDOR MEJORADO MOBILE --}}
-                    <div class="p-3 border rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div class="p-3 border rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
 
                         {{-- INFO --}}
                         <div>
@@ -118,36 +117,36 @@
                             </div>
                         </div>
 
-                        {{-- 🔥 BOTONES RESPONSIVE --}}
-                        <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                        {{-- 🔥 BOTONES CON SCROLL --}}
+                        <div class="flex items-center gap-2 overflow-x-auto whitespace-nowrap w-full sm:w-auto">
 
-                            <div class="text-sm font-bold self-start sm:self-auto">
+                            <div class="text-sm font-bold shrink-0">
                                 {{ $estado }}
                             </div>
 
                             {{-- RENOVAR --}}
-                            <form method="POST" action="{{ route('renovar.suscripcion', $user) }}" class="w-full sm:w-auto">
+                            <form method="POST" action="{{ route('renovar.suscripcion', $user) }}" class="shrink-0">
                                 @csrf
                                 <button onclick="return confirm('¿Seguro querés renovar 30 días?')"
-                                    class="w-full sm:w-auto text-xs px-3 py-1 rounded bg-green-600 text-white">
-                                    Renovar
+                                    class="text-xs px-3 py-1 rounded bg-green-600 text-white">
+                                    🔄 Renovar
                                 </button>
                             </form>
 
                             {{-- ACTIVAR / SUSPENDER --}}
-                            <form method="POST" action="{{ route('toggle.activo', $user) }}" class="w-full sm:w-auto">
+                            <form method="POST" action="{{ route('toggle.activo', $user) }}" class="shrink-0">
                                 @csrf
                                 <button onclick="return confirm('¿Seguro querés cambiar el estado?')"
-                                    class="w-full sm:w-auto text-xs px-3 py-1 rounded {{ $user->activo ? 'bg-red-600' : 'bg-blue-600' }} text-white">
-                                    {{ $user->activo ? 'Suspender' : 'Activar' }}
+                                    class="text-xs px-3 py-1 rounded {{ $user->activo ? 'bg-red-600' : 'bg-blue-600' }} text-white">
+                                    {{ $user->activo ? '⛔ Suspender' : '✅ Activar' }}
                                 </button>
                             </form>
 
                             {{-- RESET PASSWORD --}}
-                            <form method="POST" action="{{ route('soporte.reset.password', $user) }}" class="w-full sm:w-auto">
+                            <form method="POST" action="{{ route('soporte.reset.password', $user) }}" class="shrink-0">
                                 @csrf
                                 <button onclick="return confirm('¿Resetear contraseña de este usuario?')"
-                                    class="w-full sm:w-auto text-xs px-3 py-1 rounded bg-blue-600 text-white">
+                                    class="text-xs px-3 py-1 rounded bg-blue-600 text-white">
                                     🔑 Reset
                                 </button>
                             </form>

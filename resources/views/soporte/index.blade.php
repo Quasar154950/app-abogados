@@ -27,14 +27,11 @@
             $activos = $users->where('activo', true)->count();
             $inactivos = $users->where('activo', false)->count();
 
-            $vencidos = $users->filter(function ($user) {
-                return $user->fecha_vencimiento && now()->greaterThan($user->fecha_vencimiento);
-            })->count();
+            $vencidos = $users->filter(fn ($u) => $u->fecha_vencimiento && now()->greaterThan($u->fecha_vencimiento))->count();
 
-            $porVencer = $users->filter(function ($user) {
-                if (!$user->fecha_vencimiento) return false;
-
-                $dias = max(0, now()->startOfDay()->diffInDays($user->fecha_vencimiento->startOfDay(), false));
+            $porVencer = $users->filter(function ($u) {
+                if (!$u->fecha_vencimiento) return false;
+                $dias = max(0, now()->startOfDay()->diffInDays($u->fecha_vencimiento->startOfDay(), false));
                 return $dias > 0 && $dias <= 7;
             })->count();
         @endphp
@@ -72,7 +69,7 @@
         <div class="rounded-xl border border-neutral-200 p-5 bg-white shadow-sm">
             <h2 class="text-lg font-bold mb-4">Estudios / Abogados</h2>
 
-            <div class="space-y-2">
+            <div class="space-y-3">
                 @foreach($users as $user)
                     @php
                         $vencido = $user->fecha_vencimiento && now()->greaterThan($user->fecha_vencimiento);
@@ -100,12 +97,11 @@
                         }
                     @endphp
 
-                    {{-- 🔥 NUEVO LAYOUT PRO --}}
-                    <div class="p-3 border rounded-lg space-y-3">
+                    <div class="p-4 border rounded-xl space-y-3 bg-white">
 
                         {{-- INFO --}}
                         <div>
-                            <div class="font-bold">{{ $user->email }}</div>
+                            <div class="font-semibold">{{ $user->email }}</div>
 
                             <div class="text-xs text-gray-500">
                                 Vence:
@@ -126,26 +122,29 @@
                         {{-- BOTONES --}}
                         <div class="flex flex-wrap gap-2">
 
+                            {{-- RENOVAR --}}
                             <form method="POST" action="{{ route('renovar.suscripcion', $user) }}">
                                 @csrf
                                 <button onclick="return confirm('¿Seguro querés renovar 30 días?')"
-                                    class="text-xs px-3 py-1 rounded bg-green-600 text-white">
+                                    class="text-sm px-4 py-2 rounded bg-green-600 text-white cursor-pointer hover:bg-green-700 transition">
                                     🔄 Renovar
                                 </button>
                             </form>
 
+                            {{-- ACTIVAR / SUSPENDER --}}
                             <form method="POST" action="{{ route('toggle.activo', $user) }}">
                                 @csrf
                                 <button onclick="return confirm('¿Seguro querés cambiar el estado?')"
-                                    class="text-xs px-3 py-1 rounded {{ $user->activo ? 'bg-red-600' : 'bg-blue-600' }} text-white">
+                                    class="text-sm px-4 py-2 rounded {{ $user->activo ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700' }} text-white cursor-pointer transition">
                                     {{ $user->activo ? '⛔ Suspender' : '✅ Activar' }}
                                 </button>
                             </form>
 
+                            {{-- RESET --}}
                             <form method="POST" action="{{ route('soporte.reset.password', $user) }}">
                                 @csrf
                                 <button onclick="return confirm('¿Resetear contraseña de este usuario?')"
-                                    class="text-xs px-3 py-1 rounded bg-blue-600 text-white">
+                                    class="text-sm px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white cursor-pointer transition">
                                     🔑 Reset
                                 </button>
                             </form>

@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -13,9 +15,6 @@ use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         $this->app->singleton(\Laravel\Fortify\Contracts\LoginResponse::class, function () {
@@ -29,41 +28,83 @@ class FortifyServiceProvider extends ServiceProvider
                     }
 
                     if ($user && $user->email === 'soporte@tuempresa.com') {
-                    return redirect('/soporte');
-                }
+                        return redirect('/soporte');
+                    }
 
-                if ($user && $user->role === 'cliente') {
-                    return redirect('/cliente/dashboard');
-                }
+                    if ($user && $user->role === 'cliente') {
+                        return redirect('/cliente/dashboard');
+                    }
 
-                return redirect('/dashboard');
+                    return redirect('/dashboard');
+                }
+            };
+        });
+
+        // 🔐 LOGOUT INTELIGENTE
+        $this->app->singleton(\Laravel\Fortify\Contracts\LogoutResponse::class, function () {
+            return new class implements \Laravel\Fortify\Contracts\LogoutResponse {
+                public function toResponse($request)
+                {
+                    $context = $request->cookie('last_login_context');
+                    $slug = $request->cookie('last_estudio_slug');
+
+                    if ($context === 'soporte') {
+                        return redirect('/soporte/login');
+                    }
+
+                    if ($context === 'estudio' && $slug) {
+                        return redirect('/estudio/' . $slug);
+                    }
+
+                    return redirect('/login');
                 }
             };
         });
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         $this->configureActions();
         $this->configureViews();
         $this->configureRateLimiting();
+
+        Fortify::authenticateUsing(function (Request $request) {
+
+            $user = User::where('email', $request->email)->first();
+
+            if (! $user || ! Hash::check($request->password, $user->password)) {
+                return null;
+            }
+
+            $slugEstudio = session('slug_estudio');
+            $context = session('login_context');
+
+            if ($context === 'soporte') {
+                if ($user->email !== 'soporte@tuempresa.com') {
+                    return null;
+                }
+
+                return $user;
+            }
+
+            if ($context === 'estudio') {
+                if ($slugEstudio && $user->slug_estudio !== $slugEstudio) {
+                    return null;
+                }
+
+                return $user;
+            }
+
+            return null;
+        });
     }
 
-    /**
-     * Configure Fortify actions.
-     */
     private function configureActions(): void
     {
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
         Fortify::createUsersUsing(CreateNewUser::class);
     }
 
-    /**
-     * Configure Fortify views.
-     */
     private function configureViews(): void
     {
         Fortify::loginView(fn () => view('pages::auth.login'));
@@ -75,9 +116,6 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::requestPasswordResetLinkView(fn () => view('pages::auth.forgot-password'));
     }
 
-    /**
-     * Configure rate limiting.
-     */
     private function configureRateLimiting(): void
     {
         RateLimiter::for('two-factor', function (Request $request) {

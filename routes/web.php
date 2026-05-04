@@ -9,6 +9,9 @@ use App\Http\Controllers\SeguimientoController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ActividadController;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 
 Route::redirect('/', '/login')->name('home');
 
@@ -20,15 +23,15 @@ Route::middleware(['auth', 'verified', 'activo'])->group(function () {
 
         Route::post('/renovar/{user}', function (User $user) {
             $user->renovarSuscripcion();
-
             return back()->with('ok', 'Suscripción renovada +30 días');
         })->name('renovar.suscripcion');
-        Route::post('/toggle-activo/{user}', function (User $user) {
-        $user->activo = !$user->activo;
-        $user->save();
 
-    return back();
-})->name('toggle.activo');
+        Route::post('/toggle-activo/{user}', function (User $user) {
+            $user->activo = !$user->activo;
+            $user->save();
+            return back();
+        })->name('toggle.activo');
+
         Route::get('search', [SearchController::class, 'index'])->name('global.search');
 
         Route::get('clientes/archivados', [ClienteController::class, 'archivados'])->name('clientes.archivados');
@@ -75,8 +78,7 @@ Route::middleware(['auth', 'role:cliente', 'activo'])->get('/cliente/dashboard',
 Route::middleware(['auth', 'role:cliente', 'activo'])->get('/cliente/expedientes/{expediente}/imprimir', [ExpedienteController::class, 'imprimir'])
     ->name('cliente.expedientes.imprimir');
 
-use Illuminate\Support\Facades\Storage;
-
+// Test cloudinary
 Route::get('/test-cloudinary', function () {
     $result = Storage::disk('cloudinary')->put(
         'test-railway.jpg',
@@ -86,6 +88,7 @@ Route::get('/test-cloudinary', function () {
     return $result ? 'OK' : 'ERROR';
 });
 
+// Panel soporte
 Route::middleware(['auth'])->get('/soporte', function () {
     $user = auth()->user();
 
@@ -95,21 +98,42 @@ Route::middleware(['auth'])->get('/soporte', function () {
 
     return view('soporte.index');
 });
-// Login personalizado por estudio
+
+// 🔐 Login por estudio
 Route::get('/estudio/{slug}', function ($slug) {
+
     $userEstudio = User::where('slug_estudio', $slug)->first();
 
     if (!$userEstudio) {
         abort(404);
     }
 
-    return view('auth.login-estudio', [
-        'userEstudio' => $userEstudio,
+    session([
+        'slug_estudio' => $slug,
+        'login_context' => 'estudio'
     ]);
-})->name('login.estudio');
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 
+    return response()
+        ->view('auth.login-estudio', [
+            'userEstudio' => $userEstudio,
+        ])
+        ->cookie('last_login_context', 'estudio', 60 * 24 * 30)
+        ->cookie('last_estudio_slug', $slug, 60 * 24 * 30);
+
+})->name('login.estudio');
+
+// 🔐 Login soporte
+Route::get('/soporte/login', function () {
+
+    session(['login_context' => 'soporte']);
+
+    return response()
+        ->view('pages::auth.login')
+        ->cookie('last_login_context', 'soporte', 60 * 24 * 30);
+
+})->name('login.soporte');
+
+// Ruta temporal (puede eliminarse después)
 Route::get('/crear-slug', function () {
 
     if (!Schema::hasColumn('users', 'slug_estudio')) {
@@ -120,4 +144,6 @@ Route::get('/crear-slug', function () {
 
     return 'Columna slug creada';
 });
+
 require __DIR__ . '/settings.php';
+

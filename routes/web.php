@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 
-Route::redirect('/', '/login')->name('home');
+Route::redirect('/', '/estudio/vairo')->name('home');
 
 Route::middleware(['auth', 'verified', 'activo'])->group(function () {
 

@@ -95,5 +95,29 @@ Route::middleware(['auth'])->get('/soporte', function () {
 
     return view('soporte.index');
 });
+// Login personalizado por estudio
+Route::get('/estudio/{slug}', function ($slug) {
+    $userEstudio = User::where('slug_estudio', $slug)->first();
 
+    if (!$userEstudio) {
+        abort(404);
+    }
+
+    return view('auth.login-estudio', [
+        'userEstudio' => $userEstudio,
+    ]);
+})->name('login.estudio');
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
+Route::get('/crear-slug', function () {
+
+    if (!Schema::hasColumn('users', 'slug_estudio')) {
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('slug_estudio')->nullable();
+        });
+    }
+
+    return 'Columna slug creada';
+});
 require __DIR__ . '/settings.php';

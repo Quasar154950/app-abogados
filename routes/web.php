@@ -95,23 +95,5 @@ Route::middleware(['auth'])->get('/soporte', function () {
 
     return view('soporte.index');
 });
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 
-Route::get('/migrar', function () {
-
-    if (!Schema::hasColumn('users', 'nombre_estudio')) {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('nombre_estudio')->nullable();
-        });
-    }
-
-    if (!Schema::hasColumn('users', 'logo_estudio')) {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('logo_estudio')->nullable();
-        });
-    }
-
-    return 'Columnas creadas manualmente';
-});
 require __DIR__ . '/settings.php';

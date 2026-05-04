@@ -9,6 +9,13 @@
             </p>
         </div>
 
+        {{-- 🔑 MENSAJE PASSWORD GENERADA --}}
+        @if(session('password_generada'))
+            <div class="p-3 rounded bg-blue-100 text-blue-800 text-sm font-bold">
+                Nueva contraseña: {{ session('password_generada') }}
+            </div>
+        @endif
+
         {{-- MÉTRICAS --}}
         @php
             $users = \App\Models\User::where('role', 'abogado')
@@ -17,9 +24,7 @@
                 ->get();
 
             $totalEstudios = $users->count();
-
             $activos = $users->where('activo', true)->count();
-
             $inactivos = $users->where('activo', false)->count();
 
             $vencidos = $users->filter(function ($user) {
@@ -30,7 +35,6 @@
                 if (!$user->fecha_vencimiento) return false;
 
                 $dias = max(0, now()->startOfDay()->diffInDays($user->fecha_vencimiento->startOfDay(), false));
-
                 return $dias > 0 && $dias <= 7;
             })->count();
         @endphp
@@ -85,15 +89,14 @@
                             $estado = 'Vigente';
                         }
 
-                        // 🔥 COLOR SEGURO
                         if (is_null($diasRestantes)) {
-                            $color = '#6b7280'; // gris
+                            $color = '#6b7280';
                         } elseif ($diasRestantes > 10) {
-                            $color = '#16a34a'; // verde
+                            $color = '#16a34a';
                         } elseif ($diasRestantes > 3) {
-                            $color = '#ca8a04'; // amarillo
+                            $color = '#ca8a04';
                         } else {
-                            $color = '#dc2626'; // rojo
+                            $color = '#dc2626';
                         }
                     @endphp
 
@@ -118,6 +121,7 @@
                                 {{ $estado }}
                             </div>
 
+                            {{-- RENOVAR --}}
                             <form method="POST" action="{{ route('renovar.suscripcion', $user) }}">
                                 @csrf
                                 <button onclick="return confirm('¿Seguro querés renovar 30 días?')"
@@ -126,11 +130,21 @@
                                 </button>
                             </form>
 
+                            {{-- ACTIVAR / SUSPENDER --}}
                             <form method="POST" action="{{ route('toggle.activo', $user) }}">
                                 @csrf
                                 <button onclick="return confirm('¿Seguro querés cambiar el estado?')"
                                     class="text-xs px-3 py-1 rounded {{ $user->activo ? 'bg-red-600' : 'bg-blue-600' }} text-white">
                                     {{ $user->activo ? 'Suspender' : 'Activar' }}
+                                </button>
+                            </form>
+
+                            {{-- 🔑 RESET PASSWORD --}}
+                            <form method="POST" action="{{ route('soporte.reset.password', $user) }}">
+                                @csrf
+                                <button onclick="return confirm('¿Resetear contraseña de este usuario?')"
+                                    class="text-xs px-3 py-1 rounded bg-blue-600 text-white">
+                                    🔑 Reset
                                 </button>
                             </form>
 

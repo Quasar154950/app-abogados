@@ -45,7 +45,6 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-
             'fecha_vencimiento' => 'datetime',
             'activo' => 'boolean',
         ];
@@ -81,5 +80,18 @@ class User extends Authenticatable
             'fecha_vencimiento' => $fechaBase->copy()->addDays($dias),
             'activo' => true,
         ]);
+    }
+
+    /**
+     * 🔑 Resetear contraseña (soporte)
+     */
+    public function resetearPassword(): string
+    {
+        $nueva = 'Abc' . rand(1000, 9999);
+
+        $this->password = $nueva; // Laravel lo encripta solo
+        $this->save();
+
+        return $nueva;
     }
 }

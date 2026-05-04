@@ -21,7 +21,7 @@ Route::middleware(['auth', 'verified', 'activo'])->group(function () {
 
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        // 🔥 NUEVO: MI SUSCRIPCIÓN
+        // 🔥 SUSCRIPCIÓN
         Route::get('/suscripcion', function () {
             $user = auth()->user();
             return view('suscripcion.index', compact('user'));
@@ -104,6 +104,21 @@ Route::middleware(['auth'])->get('/soporte', function () {
 
     return view('soporte.index');
 });
+
+// 🔑 RESET PASSWORD (SOLO SOPORTE)
+Route::middleware(['auth'])->post('/soporte/reset-password/{user}', function (User $user) {
+
+    $userAuth = auth()->user();
+
+    if (!$userAuth || $userAuth->email !== 'soporte@tuempresa.com') {
+        abort(403);
+    }
+
+    $nueva = $user->resetearPassword();
+
+    return back()->with('password_generada', $nueva);
+
+})->name('soporte.reset.password');
 
 // 🔐 Login por estudio
 Route::get('/estudio/{slug}', function ($slug) {

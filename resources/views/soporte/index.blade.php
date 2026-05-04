@@ -5,7 +5,7 @@
         <div class="rounded-xl border border-neutral-200 p-5 bg-white shadow-sm">
             <h1 class="text-2xl font-bold italic">Panel de Soporte</h1>
             <p class="text-sm text-neutral-600 mt-2">
-                Administración de estudios y suscripciones
+                Administración de estudios y suscripciones de Fernando García
             </p>
         </div>
 

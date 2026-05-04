@@ -95,8 +95,5 @@ Route::middleware(['auth'])->get('/soporte', function () {
 
     return view('soporte.index');
 });
-Route::get('/migrar', function () {
-    \Artisan::call('migrate');
-    return 'Migraciones ejecutadas correctamente';
-});
+
 require __DIR__ . '/settings.php';

@@ -119,20 +119,20 @@
                             {{ $estado }}
                         </div>
 
-                        {{-- BOTONES --}}
-                        <div class="flex flex-wrap gap-1">
+                        {{-- 🔥 BOTONES CON SCROLL SUAVE --}}
+                        <div class="flex gap-2 overflow-x-auto whitespace-nowrap pb-1 -mx-1 px-1">
 
                             {{-- RENOVAR --}}
-                            <form method="POST" action="{{ route('renovar.suscripcion', $user) }}">
+                            <form method="POST" action="{{ route('renovar.suscripcion', $user) }}" class="shrink-0">
                                 @csrf
                                 <button onclick="return confirm('¿Seguro querés renovar 30 días?')"
-                                    class="text-sm px-4 py-2 rounded bg-green-600 text-white cursor-pointer hover:bg-green-700 transition">
+                                    class="text-sm px-4 py-2 rounded bg-green-600 hover:bg-green-700 text-white cursor-pointer transition">
                                     🔄 Renovar
                                 </button>
                             </form>
 
                             {{-- ACTIVAR / SUSPENDER --}}
-                            <form method="POST" action="{{ route('toggle.activo', $user) }}">
+                            <form method="POST" action="{{ route('toggle.activo', $user) }}" class="shrink-0">
                                 @csrf
                                 <button onclick="return confirm('¿Seguro querés cambiar el estado?')"
                                     class="text-sm px-4 py-2 rounded {{ $user->activo ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700' }} text-white cursor-pointer transition">
@@ -141,7 +141,7 @@
                             </form>
 
                             {{-- RESET --}}
-                            <form method="POST" action="{{ route('soporte.reset.password', $user) }}">
+                            <form method="POST" action="{{ route('soporte.reset.password', $user) }}" class="shrink-0">
                                 @csrf
                                 <button onclick="return confirm('¿Resetear contraseña de este usuario?')"
                                     class="text-sm px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white cursor-pointer transition">
@@ -159,3 +159,5 @@
     </div>
 
 </x-layouts::app>
+
+

@@ -26,7 +26,11 @@
             <p class="text-xs text-gray-400 mt-1">Máximo 10MB</p>
         </div>
 
-        @error('archivo') <span class="text-red-500 text-xs block mt-2 font-bold text-center italic">{{ $message }}</span> @enderror
+        @error('archivo')
+            <span class="text-red-500 text-xs block mt-2 font-bold text-center italic">
+                {{ $message }}
+            </span>
+        @enderror
     </div>
 
     {{-- Botón de Confirmación --}}
@@ -34,8 +38,14 @@
         <button wire:click="guardarArchivo" 
                 wire:loading.attr="disabled" 
                 class="w-full mb-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition flex justify-center items-center shadow-lg cursor-pointer active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
-            <span wire:loading.remove wire:target="archivo, guardarArchivo">✅ Confirmar y Guardar</span>
-            <span wire:loading wire:target="archivo, guardarArchivo">⏳ Procesando archivo...</span>
+            
+            <span wire:loading.remove wire:target="archivo, guardarArchivo">
+                ✅ Confirmar y Guardar
+            </span>
+
+            <span wire:loading wire:target="archivo, guardarArchivo">
+                ⏳ Procesando archivo...
+            </span>
         </button>
     @endif
 
@@ -44,6 +54,7 @@
     {{-- Listado de Archivos --}}
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         @forelse($archivos as $doc)
+
             @php
                 $url = $doc->getFullUrl();
 
@@ -53,7 +64,7 @@
             @endphp
 
             <div class="relative group border rounded-md p-3 flex flex-col items-center bg-white dark:bg-neutral-800 hover:shadow-md transition border-gray-100 dark:border-neutral-700">
-                
+
                 {{-- BOTÓN ELIMINAR --}}
                 <button wire:click="eliminarArchivo({{ $doc->id }})" 
                         wire:confirm="¿Estás seguro de que deseas eliminar este archivo?"
@@ -64,22 +75,39 @@
 
                 {{-- LINK PARA ABRIR ARCHIVO --}}
                 <a href="{{ $url }}" target="_blank" class="absolute inset-0 z-10 cursor-pointer" title="Ver archivo"></a>
-                
+
                 {{-- Vista previa --}}
                 @if(str_contains($doc->mime_type, 'image'))
-                    <img src="{{ $url }}" class="w-16 h-16 object-cover rounded shadow-sm">
+
+                    <div class="flex flex-col items-center">
+                        <img src="{{ $url }}"
+                             class="w-16 h-16 object-cover rounded shadow-sm border border-gray-200 dark:border-neutral-700">
+
+                        <span class="text-[10px] font-bold text-pink-600 mt-1 uppercase">
+                            IMG
+                        </span>
+                    </div>
+
                 @elseif(str_contains($doc->mime_type, 'pdf'))
+
                     <div class="text-4xl">📕</div>
                     <span class="text-[10px] font-bold text-red-600">PDF</span>
+
                 @elseif(str_contains($doc->mime_type, 'word') || str_contains($doc->mime_type, 'officedocument.word'))
+
                     <div class="text-4xl">📘</div>
                     <span class="text-[10px] font-bold text-blue-600">WORD</span>
+
                 @elseif(str_contains($doc->mime_type, 'excel') || str_contains($doc->mime_type, 'officedocument.spreadsheet'))
+
                     <div class="text-4xl">📗</div>
                     <span class="text-[10px] font-bold text-green-600">EXCEL</span>
+
                 @else
+
                     <div class="text-4xl">📁</div>
                     <span class="text-[10px] font-bold text-gray-500">DOC</span>
+
                 @endif
 
                 {{-- Nombre del archivo --}}
@@ -88,8 +116,13 @@
                     {{ $doc->file_name }}
                 </p>
             </div>
+
         @empty
-            <p class="col-span-full text-center text-gray-400 text-sm py-4 italic">No hay archivos adjuntos todavía.</p>
+
+            <p class="col-span-full text-center text-gray-400 text-sm py-4 italic">
+                No hay archivos adjuntos todavía.
+            </p>
+
         @endforelse
     </div>
 </div>

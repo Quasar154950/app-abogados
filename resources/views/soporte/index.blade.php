@@ -148,7 +148,12 @@
                                     🔑 Reset
                                 </button>
                             </form>
-
+                            
+                            {{-- EDITAR VENCIMIENTO --}}
+                            <a href="{{ route('soporte.editar.vencimiento', $user) }}"
+                                   class="shrink-0 text-sm px-4 py-2 rounded bg-yellow-500 hover:bg-yellow-600 text-white transition">
+                                   ✏️ Editar vencimiento
+                             </a>
                         </div>
 
                     </div>

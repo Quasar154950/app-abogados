@@ -120,6 +120,39 @@ Route::middleware(['auth'])->post('/soporte/reset-password/{user}', function (Us
 
 })->name('soporte.reset.password');
 
+// ✏️ EDITAR VENCIMIENTO
+Route::middleware(['auth'])->get('/soporte/{user}/editar-vencimiento', function (User $user) {
+
+    $userAuth = auth()->user();
+
+    if (!$userAuth || $userAuth->email !== 'soporte@tuempresa.com') {
+        abort(403);
+    }
+
+    return view('soporte.editar-vencimiento', compact('user'));
+
+})->name('soporte.editar.vencimiento');
+
+// 💾 GUARDAR VENCIMIENTO
+Route::middleware(['auth'])->post('/soporte/{user}/guardar-vencimiento', function (
+    Illuminate\Http\Request $request,
+    User $user
+) {
+
+    $userAuth = auth()->user();
+
+    if (!$userAuth || $userAuth->email !== 'soporte@tuempresa.com') {
+        abort(403);
+    }
+
+    $user->fecha_vencimiento = $request->fecha_vencimiento;
+    $user->save();
+
+    return redirect('/soporte')
+        ->with('success', 'Vencimiento actualizado');
+
+})->name('soporte.guardar.vencimiento');
+
 // 🔐 Login por estudio
 Route::get('/estudio/{slug}', function ($slug) {
 

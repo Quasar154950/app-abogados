@@ -143,12 +143,9 @@ class SeguimientoController extends Controller
     {
         $this->checkOwnership($seguimiento);
 
-        $clienteId = $seguimiento->cliente_id;
         $seguimiento->delete();
 
-        return redirect()
-            ->route('clientes.show', $clienteId)
-            ->with('success', 'Tarea eliminada correctamente');
+        return back()->with('success', 'Tarea eliminada correctamente');
     }
 
     public function cambiarEstado(Request $request, Seguimiento $seguimiento)

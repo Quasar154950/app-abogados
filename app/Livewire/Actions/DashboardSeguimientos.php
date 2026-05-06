@@ -112,6 +112,27 @@ class DashboardSeguimientos extends Component
         $this->procesandoId = null;
     }
 
+    public function eliminarSeguimiento(int $seguimientoId): void
+    {
+        $this->procesandoId = $seguimientoId;
+
+        $seguimiento = Seguimiento::whereHas('cliente', function ($q) {
+                $q->where('abogado_id', auth()->id());
+            })
+            ->find($seguimientoId);
+
+        if (!$seguimiento) {
+            $this->procesandoId = null;
+            return;
+        }
+
+        $seguimiento->delete();
+
+        $this->cargarDatos();
+
+        $this->procesandoId = null;
+    }
+
     public function render()
     {
         return view('livewire.actions.dashboard-seguimientos');

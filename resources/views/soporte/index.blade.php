@@ -154,6 +154,14 @@
                                    class="shrink-0 text-sm px-4 py-2 rounded bg-yellow-500 hover:bg-yellow-600 text-white transition">
                                    ✏️ Editar vencimiento
                              </a>
+
+                             {{-- COPIAR ACCESO --}}
+                              <button
+                               type="button"
+                               onclick="navigator.clipboard.writeText('{{ url('/estudio/' . $user->slug_estudio) }}')"
+                              class="shrink-0 text-sm px-4 py-2 rounded bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer transition">
+                             📩 Copiar acceso
+                              </button>
                         </div>
 
                     </div>

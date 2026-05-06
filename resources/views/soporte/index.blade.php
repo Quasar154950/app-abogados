@@ -162,6 +162,18 @@
                               class="shrink-0 text-sm px-4 py-2 rounded bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer transition">
                              📩 Copiar acceso
                               </button>
+
+                             {{-- VER COMO USUARIO --}}
+                           <form method="POST" action="{{ route('soporte.ver-como', $user) }}" class="shrink-0">
+                           @csrf
+
+                          <button
+                           type="submit"
+                           onclick="return confirm('¿Entrar como este usuario?')"
+                         class="text-sm px-4 py-2 rounded bg-violet-600 hover:bg-violet-700 text-white cursor-pointer transition">
+                           👁 Ver usuario
+                          </button>
+                         </form>
                         </div>
 
                     </div>

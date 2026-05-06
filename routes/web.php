@@ -153,6 +153,63 @@ Route::middleware(['auth'])->post('/soporte/{user}/guardar-vencimiento', functio
 
 })->name('soporte.guardar.vencimiento');
 
+// 👁 VER COMO USUARIO
+Route::middleware(['auth'])->post('/soporte/ver-como/{user}', function (User $user) {
+
+    $userAuth = auth()->user();
+
+    // SOLO SOPORTE
+    if (!$userAuth || $userAuth->email !== 'soporte@tuempresa.com') {
+        abort(403);
+    }
+
+    // SOLO ABOGADOS
+    if ($user->role !== 'abogado') {
+        abort(403);
+    }
+
+    // GUARDAMOS SOPORTE ORIGINAL
+    session([
+        'soporte_original_id' => $userAuth->id,
+        'soporte_ver_como_id' => $user->id,
+    ]);
+
+    // LOGIN COMO USUARIO
+    auth()->login($user);
+
+    // REDIRECCIÓN
+    return redirect('/dashboard');
+
+})->name('soporte.ver-como');
+
+// ↩ VOLVER A SOPORTE
+Route::middleware(['auth'])->post('/soporte/volver', function () {
+
+    $soporteId = session('soporte_original_id');
+
+    if (!$soporteId) {
+        abort(403);
+    }
+
+    $soporte = User::find($soporteId);
+
+    if (!$soporte) {
+        abort(403);
+    }
+
+    // LOGIN SOPORTE ORIGINAL
+    auth()->login($soporte);
+
+    // LIMPIAR SESIONES
+    session()->forget([
+        'soporte_original_id',
+        'soporte_ver_como_id',
+    ]);
+
+    return redirect('/soporte');
+
+})->name('soporte.volver');
+
 // 🔐 Login por estudio
 Route::get('/estudio/{slug}', function ($slug) {
 

@@ -210,6 +210,43 @@ Route::middleware(['auth'])->post('/soporte/volver', function () {
 
 })->name('soporte.volver');
 
+// 💾 BACKUP DEL SISTEMA
+Route::middleware(['auth'])->post('/soporte/backup', function () {
+
+    $userAuth = auth()->user();
+
+    // SOLO SOPORTE
+    if (!$userAuth || $userAuth->email !== 'soporte@tuempresa.com') {
+        abort(403);
+    }
+
+    // CREAR CARPETA SI NO EXISTE
+    if (!file_exists(base_path('backups'))) {
+        mkdir(base_path('backups'), 0777, true);
+    }
+
+    // NOMBRE DEL ARCHIVO
+    $filename = 'backup-railway-' . now()->format('Y-m-d-H-i-s') . '.sql';
+
+    $filepath = base_path('backups/' . $filename);
+
+    // COMANDO LINUX RAILWAY
+    $command =
+        'pg_dump "' . env('DATABASE_URL') . '" > "' . $filepath . '"';
+
+    // EJECUTAR
+    exec($command, $output, $result);
+
+    // ERROR
+    if ($result !== 0) {
+        dd($output);
+    }
+
+    // OK
+    return back()->with('success', 'Backup Railway generado correctamente: ' . $filename);
+
+})->name('soporte.backup');
+
 // 🔐 Login por estudio
 Route::get('/estudio/{slug}', function ($slug) {
 

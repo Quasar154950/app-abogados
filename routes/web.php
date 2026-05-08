@@ -138,37 +138,49 @@ Route::middleware(['auth'])->post('/soporte/backup', function () {
 
     $userAuth = auth()->user();
 
+    // SOLO SOPORTE
     if (!$userAuth || $userAuth->email !== 'soporte@tuempresa.com') {
         abort(403);
     }
 
+    // CREAR CARPETA SI NO EXISTE
     if (!file_exists(base_path('backups'))) {
         mkdir(base_path('backups'), 0777, true);
     }
 
+    // NOMBRE DEL ARCHIVO
     $filename = 'backup-railway-' . now()->format('Y-m-d-H-i-s') . '.sql';
+
     $filepath = base_path('backups/' . $filename);
 
+    // VARIABLES DB RAILWAY
     $host = env('DB_HOST');
     $port = env('DB_PORT', 5432);
     $database = env('DB_DATABASE');
     $username = env('DB_USERNAME');
     $password = env('DB_PASSWORD');
 
+    // PASSWORD TEMPORAL PARA PG_DUMP
+    putenv('PGPASSWORD=' . $password);
+
+    // COMANDO BACKUP LINUX
     $command =
-        'PGPASSWORD="' . $password . '" pg_dump ' .
+        'pg_dump ' .
         '-h "' . $host . '" ' .
         '-p "' . $port . '" ' .
         '-U "' . $username . '" ' .
         '-d "' . $database . '" ' .
-        '> "' . $filepath . '" 2>&1';
+        '-f "' . $filepath . '" 2>&1';
 
+    // EJECUTAR
     exec($command, $output, $result);
 
+    // ERROR
     if ($result !== 0) {
         dd($command, $output, $result);
     }
 
+    // DESCARGAR
     return response()->download($filepath)->deleteFileAfterSend(true);
 
 })->name('soporte.backup');

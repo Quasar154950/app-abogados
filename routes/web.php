@@ -161,7 +161,7 @@ Route::middleware(['auth'])->post('/soporte/backup', function () {
         '-p "' . $port . '" ' .
         '-U "' . $username . '" ' .
         '-d "' . $database . '" ' .
-        '> "' . $filepath . '"';
+        '> "' . $filepath . '" 2>&1';
 
     exec($command, $output, $result);
 

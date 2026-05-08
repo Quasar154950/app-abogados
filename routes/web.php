@@ -133,11 +133,8 @@ Route::middleware(['auth'])->get('/soporte/{user}/editar-vencimiento', function 
 
 })->name('soporte.editar.vencimiento');
 
-// 💾 GUARDAR VENCIMIENTO
-Route::middleware(['auth'])->post('/soporte/{user}/guardar-vencimiento', function (
-    Illuminate\Http\Request $request,
-    User $user
-) {
+// 💾 BACKUP DEL SISTEMA
+Route::middleware(['auth'])->post('/soporte/backup', function () {
 
     $userAuth = auth()->user();
 
@@ -145,13 +142,36 @@ Route::middleware(['auth'])->post('/soporte/{user}/guardar-vencimiento', functio
         abort(403);
     }
 
-    $user->fecha_vencimiento = $request->fecha_vencimiento;
-    $user->save();
+    if (!file_exists(base_path('backups'))) {
+        mkdir(base_path('backups'), 0777, true);
+    }
 
-    return redirect('/soporte')
-        ->with('success', 'Vencimiento actualizado');
+    $filename = 'backup-railway-' . now()->format('Y-m-d-H-i-s') . '.sql';
+    $filepath = base_path('backups/' . $filename);
 
-})->name('soporte.guardar.vencimiento');
+    $host = env('DB_HOST');
+    $port = env('DB_PORT', 5432);
+    $database = env('DB_DATABASE');
+    $username = env('DB_USERNAME');
+    $password = env('DB_PASSWORD');
+
+    $command =
+        'PGPASSWORD="' . $password . '" pg_dump ' .
+        '-h "' . $host . '" ' .
+        '-p "' . $port . '" ' .
+        '-U "' . $username . '" ' .
+        '-d "' . $database . '" ' .
+        '> "' . $filepath . '"';
+
+    exec($command, $output, $result);
+
+    if ($result !== 0) {
+        dd($command, $output, $result);
+    }
+
+    return response()->download($filepath)->deleteFileAfterSend(true);
+
+})->name('soporte.backup');
 
 // 👁 VER COMO USUARIO
 Route::middleware(['auth'])->post('/soporte/ver-como/{user}', function (User $user) {

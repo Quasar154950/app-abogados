@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
     libpq-dev \
+    postgresql-client \
     nodejs \
     npm \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \

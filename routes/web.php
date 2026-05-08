@@ -239,7 +239,7 @@ Route::middleware(['auth'])->post('/soporte/backup', function () {
 
     // ERROR
     if ($result !== 0) {
-        dd($output);
+        dd($command, $output, $result);
     }
 
     // OK

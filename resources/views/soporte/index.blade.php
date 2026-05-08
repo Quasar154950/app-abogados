@@ -174,6 +174,18 @@
                            👁 Ver usuario
                           </button>
                          </form>
+
+                         {{-- BACKUP --}}
+                        <form method="POST" action="{{ route('soporte.backup') }}" class="shrink-0">
+                        @csrf
+
+                        <button
+                        type="submit"
+                        onclick="return confirm('¿Generar backup del sistema?')"
+                        class="text-sm px-4 py-2 rounded bg-cyan-600 hover:bg-cyan-700 text-white cursor-pointer transition">
+                        💾 Backup
+                      </button>
+                          </form>
                         </div>
 
                     </div>

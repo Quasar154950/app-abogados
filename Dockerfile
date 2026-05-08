@@ -6,21 +6,14 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     unzip \
-    wget \
-    gnupg \
-    lsb-release \
-    ca-certificates \
     libzip-dev \
     libpng-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
     libpq-dev \
+    postgresql-client-17 \
     nodejs \
     npm \
-    && echo "deb http://apt.postgresql.org/pub/repos/apt $(. /etc/os-release && echo $VERSION_CODENAME)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
-    && wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
-    && apt-get update \
-    && apt-get install -y postgresql-client-18 \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_pgsql pgsql exif zip gd \
     && apt-get clean \

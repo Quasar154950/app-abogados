@@ -133,6 +133,26 @@ Route::middleware(['auth'])->get('/soporte/{user}/editar-vencimiento', function 
 
 })->name('soporte.editar.vencimiento');
 
+// 💾 GUARDAR VENCIMIENTO
+Route::middleware(['auth'])->post('/soporte/{user}/guardar-vencimiento', function (User $user, \Illuminate\Http\Request $request) {
+
+    $userAuth = auth()->user();
+
+    if (!$userAuth || $userAuth->email !== 'soporte@tuempresa.com') {
+        abort(403);
+    }
+
+    $request->validate([
+        'fecha_vencimiento' => ['required', 'date'],
+    ]);
+
+    $user->fecha_vencimiento = $request->fecha_vencimiento;
+    $user->save();
+
+    return redirect('/soporte')->with('success', 'Fecha de vencimiento actualizada correctamente.');
+
+})->name('soporte.guardar.vencimiento');
+
 // 💾 BACKUP DEL SISTEMA
 Route::middleware(['auth'])->post('/soporte/backup', function () {
 

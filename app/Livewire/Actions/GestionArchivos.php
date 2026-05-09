@@ -42,8 +42,8 @@ class GestionArchivos extends Component
             : $nombreLimpio;
 
         // 📦 LÍMITE TOTAL POR CLIENTE (300 MB)
-
         $totalBytes = $this->model
+            ->fresh()
             ->getMedia('archivos')
             ->sum('size');
 
@@ -52,7 +52,6 @@ class GestionArchivos extends Component
         $limiteCliente = 300 * 1024 * 1024;
 
         if (($totalBytes + $nuevoArchivo) > $limiteCliente) {
-
             session()->flash(
                 'error',
                 '⚠️ Este cliente alcanzó el límite de 300 MB en documentos.'
@@ -68,9 +67,9 @@ class GestionArchivos extends Component
 
         $this->archivo = null;
 
-$this->dispatch('$refresh');
+        $this->model = $this->model->fresh();
 
-session()->flash('success', '✅ ¡Archivo guardado con éxito!');
+        session()->flash('success', '✅ ¡Archivo guardado con éxito!');
     }
 
     public function eliminarArchivo($id)
@@ -78,21 +77,23 @@ session()->flash('success', '✅ ¡Archivo guardado con éxito!');
         $media = Media::find($id);
 
         if ($media) {
-    $media->delete();
+            $media->delete();
 
-    $this->dispatch('$refresh');
+            $this->model = $this->model->fresh();
 
-    session()->flash(
-        'success',
-        '🗑️ Archivo eliminado correctamente.'
-    );
-}
+            session()->flash(
+                'success',
+                '🗑️ Archivo eliminado correctamente.'
+            );
+        }
     }
 
     public function render()
     {
+        $modelActualizado = $this->model->fresh();
+
         return view('livewire.actions.gestion-archivos', [
-            'archivos' => $this->model->getMedia('archivos')
+            'archivos' => $modelActualizado->getMedia('archivos')
         ]);
     }
 }

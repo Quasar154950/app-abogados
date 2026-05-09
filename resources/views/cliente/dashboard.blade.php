@@ -136,8 +136,20 @@
                     </div>
                 @endif
             </div>
+              @if($cliente)
 
-            <div class="bg-white rounded-xl shadow-md p-6">
+           <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+
+        <livewire:actions.gestion-archivos
+            :model="$cliente"
+            modo="cliente"
+        />
+
+     </div>
+
+             @endif
+            
+              <div class="bg-white rounded-xl shadow-md p-6">
                 <form method="POST" action="/logout">
                     @csrf
                     <button type="submit"

@@ -31,7 +31,7 @@ class Cliente extends Model implements HasMedia
         'direccion',
         'archivado',
         'user_id',
-        'abogado_id', // 🔥 SOLUCIÓN
+        'abogado_id',
     ];
 
     /**
@@ -56,6 +56,7 @@ class Cliente extends Model implements HasMedia
         if ($campo === 'archivado') {
             return $valor ? '📁 Cliente Archivado' : '👥 Cliente Activo';
         }
+
         return $valor;
     }
 
@@ -64,6 +65,11 @@ class Cliente extends Model implements HasMedia
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function abogado(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'abogado_id');
     }
 
     public function notas(): HasMany

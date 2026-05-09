@@ -41,6 +41,26 @@ class GestionArchivos extends Component
             ? $nombreLimpio . '.' . $extension
             : $nombreLimpio;
 
+        // 📦 LÍMITE TOTAL POR CLIENTE (300 MB)
+
+        $totalBytes = $this->model
+            ->getMedia('archivos')
+            ->sum('size');
+
+        $nuevoArchivo = $this->archivo->getSize();
+
+        $limiteCliente = 300 * 1024 * 1024;
+
+        if (($totalBytes + $nuevoArchivo) > $limiteCliente) {
+
+            session()->flash(
+                'error',
+                '⚠️ Este cliente alcanzó el límite de 300 MB en documentos.'
+            );
+
+            return;
+        }
+
         $this->model->addMedia($this->archivo->getRealPath())
             ->usingName($nombreOriginal)
             ->usingFileName($nombreFinal)
@@ -57,7 +77,11 @@ class GestionArchivos extends Component
 
         if ($media) {
             $media->delete();
-            session()->flash('success', '🗑️ Archivo eliminado correctamente.');
+
+            session()->flash(
+                'success',
+                '🗑️ Archivo eliminado correctamente.'
+            );
         }
     }
 

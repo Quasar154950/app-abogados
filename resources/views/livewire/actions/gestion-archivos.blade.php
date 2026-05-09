@@ -20,10 +20,10 @@
                 @if($archivo)
                     <span class="font-bold text-blue-600 dark:text-blue-400">📄 Archivo listo: {{ $archivo->getClientOriginalName() }}</span>
                 @else
-                    Haga clic aquí o arrastre un archivo (PDF, Word, Imagen)
+                    Haga clic aquí o arrastre un archivo (PDF, Word, Excel o Imagen)
                 @endif
             </p>
-            <p class="text-xs text-gray-400 mt-1">Máximo 10MB</p>
+            <p class="text-xs text-gray-400 mt-1">Máximo 10MB por archivo (300 MB totales por cliente)</p>
         </div>
 
         @error('archivo')

@@ -68,7 +68,9 @@ class GestionArchivos extends Component
 
         $this->archivo = null;
 
-        session()->flash('success', '✅ ¡Archivo guardado con éxito!');
+$this->dispatch('$refresh');
+
+session()->flash('success', '✅ ¡Archivo guardado con éxito!');
     }
 
     public function eliminarArchivo($id)
@@ -76,13 +78,15 @@ class GestionArchivos extends Component
         $media = Media::find($id);
 
         if ($media) {
-            $media->delete();
+    $media->delete();
 
-            session()->flash(
-                'success',
-                '🗑️ Archivo eliminado correctamente.'
-            );
-        }
+    $this->dispatch('$refresh');
+
+    session()->flash(
+        'success',
+        '🗑️ Archivo eliminado correctamente.'
+    );
+}
     }
 
     public function render()

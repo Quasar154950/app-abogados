@@ -82,6 +82,7 @@
 
                 {{-- BOTÓN ELIMINAR --}}
                 <button wire:click="eliminarArchivo({{ $doc->id }})" 
+                        wire:confirm="¿Estás seguro de que deseas eliminar este archivo?"
                         class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] shadow-sm z-20 hover:bg-red-600 transition cursor-pointer"
                         title="Eliminar">
                     ✕

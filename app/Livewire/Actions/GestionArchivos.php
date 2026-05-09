@@ -30,21 +30,30 @@ class GestionArchivos extends Component
 
         $extension = strtolower($this->archivo->getClientOriginalExtension());
 
-$nombreLimpio = str($nombreSinExtension)
-    ->ascii()
-    ->replaceMatches('/[^A-Za-z0-9_\-]/', '_')
-    ->toString();
+        $nombreLimpio = str($nombreSinExtension)
+            ->ascii()
+            ->replaceMatches('/[^A-Za-z0-9_\-]/', '_')
+            ->toString();
 
-$esRaw = in_array($extension, ['doc', 'docx', 'xls', 'xlsx']);
+        $esRaw = in_array($extension, ['doc', 'docx', 'xls', 'xlsx']);
 
-$nombreFinal = $esRaw
-    ? $nombreLimpio . '.' . $extension
-    : $nombreLimpio;
+        $nombreFinal = $esRaw
+            ? $nombreLimpio . '.' . $extension
+            : $nombreLimpio;
 
-$this->model->addMedia($this->archivo->getRealPath())
-    ->usingName($nombreOriginal)
-    ->usingFileName($nombreFinal)
-    ->toMediaCollection('archivos');
+        // 👇 SLUG DEL ESTUDIO
+        $slugEstudio = auth()->user()->slug_estudio ?? 'general';
+
+        // 👇 RUTA DINÁMICA EN CLOUDINARY
+        $rutaCloudinary = "estudios/{$slugEstudio}/documentos";
+
+        $this->model->addMedia($this->archivo->getRealPath())
+            ->usingName($nombreOriginal)
+            ->usingFileName($nombreFinal)
+            ->withCustomProperties([
+                'folder' => $rutaCloudinary,
+            ])
+            ->toMediaCollection('archivos');
 
         $this->archivo = null;
 

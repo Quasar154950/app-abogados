@@ -7,23 +7,37 @@
         </div>
     @endif
 
+    @if (session()->has('error'))
+        <div class="mb-4 p-2 text-xs font-bold text-red-700 bg-red-100 border border-red-200 rounded-lg text-center shadow-sm">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <h3 class="text-md font-bold mb-4 text-gray-800 dark:text-neutral-200 flex items-center gap-2">
         📂 Gestión de Documentos
     </h3>
 
     {{-- Zona de Carga --}}
     <div class="mb-6 p-4 border-2 border-dashed border-gray-300 dark:border-neutral-600 rounded-lg bg-gray-50 dark:bg-neutral-800 hover:bg-gray-100 dark:hover:bg-neutral-700/50 transition relative text-center">
+        
         <input type="file" wire:model="archivo" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
         
         <div class="text-center">
             <p class="text-sm text-gray-600 dark:text-neutral-400">
                 @if($archivo)
-                    <span class="font-bold text-blue-600 dark:text-blue-400">📄 Archivo listo: {{ $archivo->getClientOriginalName() }}</span>
+                    <span class="font-bold text-blue-600 dark:text-blue-400">
+                        📄 Archivo listo: {{ $archivo->getClientOriginalName() }}
+                    </span>
                 @else
-                    Haga clic aquí o arrastre un archivo (PDF, Word, Excel o Imagen)
+                    Haga clic aquí o arrastre un archivo
+                    (PDF, Word, Excel o Imagen)
                 @endif
             </p>
-            <p class="text-xs text-gray-400 mt-1">Máximo 10MB por archivo (300 MB totales por cliente)</p>
+
+            <p class="text-xs text-gray-400 mt-1">
+                Máximo 10MB por archivo
+                (300 MB totales por cliente)
+            </p>
         </div>
 
         @error('archivo')
@@ -53,6 +67,7 @@
 
     {{-- Listado de Archivos --}}
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        
         @forelse($archivos as $doc)
 
             @php
@@ -74,7 +89,10 @@
                 </button>
 
                 {{-- LINK PARA ABRIR ARCHIVO --}}
-                <a href="{{ $url }}" target="_blank" class="absolute inset-0 z-10 cursor-pointer" title="Ver archivo"></a>
+                <a href="{{ $url }}" 
+                   target="_blank" 
+                   class="absolute inset-0 z-10 cursor-pointer" 
+                   title="Ver archivo"></a>
 
                 {{-- Vista previa --}}
                 @if(str_contains($doc->mime_type, 'image'))
@@ -115,6 +133,7 @@
                    title="Ver archivo: {{ $doc->file_name }}">
                     {{ $doc->file_name }}
                 </p>
+
             </div>
 
         @empty
@@ -124,5 +143,6 @@
             </p>
 
         @endforelse
+
     </div>
 </div>

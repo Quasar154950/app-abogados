@@ -50,11 +50,11 @@ class GestionArchivos extends Component
         $this->model->addMedia($this->archivo->getRealPath())
     ->usingName($nombreOriginal)
     ->usingFileName($nombreFinal)
-    ->withCustomProperties([
-        'public_id_prefix' => $rutaCloudinary,
+    ->withManipulations([
+        'folder' => $rutaCloudinary,
     ])
     ->toMediaCollection('archivos', 'cloudinary');
-
+    
         $this->archivo = null;
 
         session()->flash('success', '✅ ¡Archivo guardado con éxito!');

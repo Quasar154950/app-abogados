@@ -12,10 +12,12 @@ class GestionArchivos extends Component
 
     public $model;
     public $archivo;
+    public $modo = 'estudio';
 
-    public function mount($model)
+    public function mount($model, $modo = 'estudio')
     {
         $this->model = $model;
+        $this->modo = $modo;
     }
 
     public function guardarArchivo()
@@ -60,16 +62,28 @@ class GestionArchivos extends Component
             return;
         }
 
+        $subidoPor = $this->modo === 'cliente' ? 'cliente' : 'estudio';
+
+        $revisadoPorEstudio = $this->modo === 'cliente' ? false : true;
+
         $this->model->addMedia($this->archivo->getRealPath())
             ->usingName($nombreOriginal)
             ->usingFileName($nombreFinal)
+            ->withCustomProperties([
+                'subido_por' => $subidoPor,
+                'revisado_por_estudio' => $revisadoPorEstudio,
+            ])
             ->toMediaCollection('archivos', 'cloudinary');
 
         $this->archivo = null;
 
         $this->model = $this->model->fresh();
 
-        session()->flash('success', '✅ ¡Archivo guardado con éxito!');
+        if ($this->modo === 'cliente') {
+            session()->flash('success', '✅ ¡Documento enviado al estudio con éxito!');
+        } else {
+            session()->flash('success', '✅ ¡Archivo guardado con éxito!');
+        }
     }
 
     public function eliminarArchivo($id)
@@ -93,7 +107,8 @@ class GestionArchivos extends Component
         $modelActualizado = $this->model->fresh();
 
         return view('livewire.actions.gestion-archivos', [
-            'archivos' => $modelActualizado->getMedia('archivos')
+            'archivos' => $modelActualizado->getMedia('archivos'),
+            'modo' => $this->modo,
         ]);
     }
 }

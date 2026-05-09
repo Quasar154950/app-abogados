@@ -73,6 +73,9 @@
             @php
                 $url = $doc->getFullUrl();
 
+                $subidoPor = $doc->getCustomProperty('subido_por', 'estudio');
+                $revisado = $doc->getCustomProperty('revisado_por_estudio', true);
+                
                 if (!str_contains($doc->mime_type, 'image') && !str_contains($doc->mime_type, 'pdf')) {
                     $url = str_replace('/image/upload/', '/raw/upload/', $url);
                 }
@@ -133,6 +136,27 @@
                    title="Ver archivo: {{ $doc->file_name }}">
                     {{ $doc->file_name }}
                 </p>
+                
+                {{-- Origen del archivo --}}
+                @if($subidoPor === 'cliente')
+
+                <span class="mt-1 text-[10px] font-bold text-amber-600 text-center">
+               📥 Enviado por cliente
+              </span>
+
+             @if(!$revisado)
+            <span class="text-[9px] text-red-500 font-bold text-center mt-1">
+            🔔 Sin revisar
+           </span>
+         @endif
+
+          @else
+
+             <span class="mt-1 text-[10px] font-bold text-blue-600 text-center">
+            📤 Subido por estudio
+            </span>
+
+            @endif  
 
             </div>
 

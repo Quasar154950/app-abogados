@@ -48,12 +48,12 @@ class GestionArchivos extends Component
         $rutaCloudinary = "estudios/{$slugEstudio}/documentos";
 
         $this->model->addMedia($this->archivo->getRealPath())
-            ->usingName($nombreOriginal)
-            ->usingFileName($nombreFinal)
-            ->withCustomProperties([
-                'folder' => $rutaCloudinary,
-            ])
-            ->toMediaCollection('archivos');
+    ->usingName($nombreOriginal)
+    ->usingFileName($nombreFinal)
+    ->withCustomProperties([
+        'public_id_prefix' => $rutaCloudinary,
+    ])
+    ->toMediaCollection('archivos', 'cloudinary');
 
         $this->archivo = null;
 

@@ -41,17 +41,11 @@ class GestionArchivos extends Component
             ? $nombreLimpio . '.' . $extension
             : $nombreLimpio;
 
-        // 👇 SLUG DEL ESTUDIO
-        $slugEstudio = auth()->user()->slug_estudio ?? 'general';
-
-        // 👇 RUTA DINÁMICA EN CLOUDINARY
-        $rutaCloudinary = "estudios/{$slugEstudio}/documentos";
-
         $this->model->addMedia($this->archivo->getRealPath())
-    ->usingName($nombreOriginal)
-    ->usingFileName($nombreFinal)
-    ->toMediaCollection('archivos', 'cloudinary');
-    
+            ->usingName($nombreOriginal)
+            ->usingFileName($nombreFinal)
+            ->toMediaCollection('archivos', 'cloudinary');
+
         $this->archivo = null;
 
         session()->flash('success', '✅ ¡Archivo guardado con éxito!');

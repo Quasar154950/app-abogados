@@ -315,6 +315,6 @@ Route::get('/migrar-chat', function () {
         '--force' => true,
     ]);
 
-    return 'Migración chat ejecutada';
+    return '<pre>' . \Illuminate\Support\Facades\Artisan::output() . '</pre>';
 });
 require __DIR__ . '/settings.php';

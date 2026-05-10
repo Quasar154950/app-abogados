@@ -83,11 +83,11 @@
                                         </span>
 
                                         <a href="{{ route('cliente.expedientes.imprimir', $expediente->id) }}"
-   target="_blank"
-   class="text-zinc-400 hover:text-green-600 transition cursor-pointer"
-   title="Imprimir expediente">
-    🖨️
-</a>
+                                           target="_blank"
+                                           class="text-zinc-400 hover:text-green-600 transition cursor-pointer"
+                                           title="Imprimir expediente">
+                                            🖨️
+                                        </a>
                                     </div>
 
                                 </div>
@@ -136,20 +136,37 @@
                     </div>
                 @endif
             </div>
-              @if($cliente)
 
-           <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+            @if($cliente)
 
-        <livewire:actions.gestion-archivos
-            :model="$cliente"
-            modo="cliente"
-        />
+                <div class="bg-white rounded-xl shadow-md p-6 mb-6">
 
-     </div>
+                    <livewire:actions.gestion-archivos
+                        :model="$cliente"
+                        modo="cliente"
+                    />
 
-             @endif
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+
+                    <div class="mb-4">
+                        <h2 class="text-xl font-bold text-zinc-800 flex items-center gap-2">
+                            💬 Mensajes con el estudio
+                        </h2>
+
+                        <p class="text-sm text-zinc-500 mt-1">
+                            Comunicación directa con tu estudio jurídico.
+                        </p>
+                    </div>
+
+                    <livewire:clientes.mensajes-cliente :cliente="$cliente" />
+
+                </div>
+
+            @endif
             
-              <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="bg-white rounded-xl shadow-md p-6">
                 <form method="POST" action="/logout">
                     @csrf
                     <button type="submit"

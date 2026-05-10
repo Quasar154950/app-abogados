@@ -201,8 +201,25 @@
             </h2>
             @livewire('actions.gestion-archivos', ['model' => $cliente])
         </x-ui.panel>
+        
+        {{-- 4. BLOQUE: MENSAJES --}}
+        <x-ui.panel class="text-left">
 
-        {{-- 4. BLOQUE: EXPEDIENTES --}}
+          <div class="mb-4">
+            <h2 class="text-xl font-bold flex items-center gap-2">
+               💬 Mensajes con el cliente
+            </h2>
+
+        <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+            Comunicación interna entre el estudio y el cliente.
+        </p>
+    </div>
+
+    <livewire:clientes.mensajes-cliente :cliente="$cliente" />
+
+        </x-ui.panel>
+
+        {{-- 5. BLOQUE: EXPEDIENTES --}}
         <x-ui.panel class="text-left">
             <div class="mb-4">
                 <h2 class="text-xl font-bold">Expedientes</h2>
@@ -507,7 +524,7 @@
             @endif
         </x-ui.panel>
 
-{{-- 5. BLOQUE: TAREAS GENERALES DEL CLIENTE --}}
+{{-- 6. BLOQUE: TAREAS GENERALES DEL CLIENTE --}}
 <x-ui.panel class="text-left">
 
     <div class="mb-4">
@@ -555,7 +572,7 @@
 
 </x-ui.panel>
 
-{{-- 6. GESTIÓN INTEGRAL DE TAREAS Y NOTAS --}}
+{{-- 7. GESTIÓN INTEGRAL DE TAREAS Y NOTAS --}}
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
     <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 md:p-6 bg-white dark:bg-neutral-900 shadow-sm text-left">

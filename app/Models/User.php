@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\Cliente;
+use App\Models\MensajeCliente;
 
 class User extends Authenticatable
 {
@@ -65,6 +66,11 @@ class User extends Authenticatable
     public function cliente(): HasOne
     {
         return $this->hasOne(Cliente::class);
+    }
+
+    public function mensajesEnviados()
+    {
+        return $this->hasMany(MensajeCliente::class);
     }
 
     /**

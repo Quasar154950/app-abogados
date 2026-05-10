@@ -7,6 +7,7 @@ use App\Models\Nota;
 use App\Models\Seguimiento;
 use App\Models\Expediente;
 use App\Models\User;
+use App\Models\MensajeCliente;
 use App\Traits\RegistraActividad;
 
 // Spatie
@@ -85,5 +86,10 @@ class Cliente extends Model implements HasMedia
     public function expedientes(): HasMany
     {
         return $this->hasMany(Expediente::class);
+    }
+
+    public function mensajes(): HasMany
+    {
+    return $this->hasMany(MensajeCliente::class);
     }
 }

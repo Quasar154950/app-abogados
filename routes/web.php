@@ -308,5 +308,13 @@ Route::get('/crear-slug', function () {
 
     return 'Columna slug creada';
 });
+// 🔥 MIGRACIÓN TEMPORAL CHAT
+Route::get('/migrar-chat', function () {
 
+    \Illuminate\Support\Facades\Artisan::call('migrate', [
+        '--force' => true,
+    ]);
+
+    return 'Migración chat ejecutada';
+});
 require __DIR__ . '/settings.php';

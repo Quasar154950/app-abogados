@@ -11,9 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('slug_estudio')->nullable()->after('logo_estudio');
-        });
+        // Evita error si la columna ya existe
+        if (!Schema::hasColumn('users', 'slug_estudio')) {
+
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('slug_estudio')
+                      ->nullable()
+                      ->after('logo_estudio');
+            });
+
+        }
     }
 
     /**
@@ -21,8 +28,13 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('slug_estudio');
-        });
+        // Evita error si la columna no existe
+        if (Schema::hasColumn('users', 'slug_estudio')) {
+
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('slug_estudio');
+            });
+
+        }
     }
 };

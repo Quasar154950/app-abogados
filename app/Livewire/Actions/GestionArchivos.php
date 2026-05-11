@@ -101,6 +101,31 @@ class GestionArchivos extends Component
             );
         }
     }
+    
+    public function marcarComoVisto($id)
+{
+    $media = Media::find($id);
+
+    if (! $media) {
+        return;
+    }
+
+    // Solo marcamos como visto cuando el documento fue subido por el cliente
+    if ($media->getCustomProperty('subido_por') !== 'cliente') {
+        return;
+    }
+
+    // Si ya fue visto antes, no tocamos nada
+    if ($media->viewed_at) {
+        return;
+    }
+
+    $media->update([
+        'viewed_at' => now(),
+    ]);
+
+    $this->model = $this->model->fresh();
+}
 
     public function render()
     {

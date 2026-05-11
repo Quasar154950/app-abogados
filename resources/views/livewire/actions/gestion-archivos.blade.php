@@ -94,6 +94,7 @@
                 {{-- LINK PARA ABRIR ARCHIVO --}}
                 <a href="{{ $url }}" 
                    target="_blank" 
+                   wire:click="marcarComoVisto({{ $doc->id }})"
                    class="absolute inset-0 z-10 cursor-pointer" 
                    title="Ver archivo"></a>
 
@@ -140,23 +141,43 @@
                 {{-- Origen del archivo --}}
                 @if($subidoPor === 'cliente')
 
-                <span class="mt-1 text-[10px] font-bold text-amber-600 text-center">
-               📥 Enviado por cliente
-              </span>
+                    <span class="mt-1 text-[10px] font-bold text-amber-600 text-center">
+                        📥 Enviado por cliente
+                    </span>
 
-             @if(!$revisado)
-            <span class="text-[9px] text-red-500 font-bold text-center mt-1">
-            🔔 Sin revisar
-           </span>
-         @endif
+                    @if(!$revisado)
 
-          @else
+                        @if($doc->viewed_at)
 
-             <span class="mt-1 text-[10px] font-bold text-blue-600 text-center">
-            📤 Subido por estudio
-            </span>
+                            <div class="flex flex-col items-center mt-1">
 
-            @endif  
+                                <span class="text-[9px] text-amber-500 font-bold text-center">
+                                    👁️ Visto por estudio
+                                </span>
+
+                                <span class="text-[8px] text-gray-400 text-center">
+                                    {{ \Carbon\Carbon::parse($doc->viewed_at)->format('d/m/Y H:i') }} hs
+                                </span>
+
+                            </div>
+
+                        @else
+
+                            <span class="text-[9px] text-red-500 font-bold text-center mt-1">
+                                🔔 Sin revisar
+                            </span>
+
+                        @endif
+
+                    @endif
+
+                @else
+
+                    <span class="mt-1 text-[10px] font-bold text-blue-600 text-center">
+                        📤 Subido por estudio
+                    </span>
+
+                @endif
 
             </div>
 

@@ -44,27 +44,34 @@
                                 {{ $item->mensaje }}
                             </p>
 
-                            <p class="mt-2 text-[10px]
+                            <div class="mt-2 text-[10px]
                                 {{ $esEstudio
                                     ? 'text-blue-100 text-right'
                                     : 'text-neutral-500 text-left' }}">
 
-                                {{ $item->created_at->format('d/m/Y H:i') }}
+                                <div>
+                                    📤 Enviado · {{ $item->created_at->format('d/m/Y H:i') }}
+                                </div>
 
                                 @if($item->leido)
-    <br>
-    👁 Leído
 
-    @if($item->leido_at)
-        · {{ \Carbon\Carbon::parse($item->leido_at)->format('d/m/Y H:i') }}
-    @endif
+                                    <div class="mt-1">
+                                        👁 Leído
 
-@else
-    <br>
-    🔔 No leído
-@endif
+                                        @if($item->leido_at)
+                                            · {{ \Carbon\Carbon::parse($item->leido_at)->format('d/m/Y H:i') }}
+                                        @endif
+                                    </div>
 
-                            </p>
+                                @else
+
+                                    <div class="mt-1">
+                                        🔔 No leído
+                                    </div>
+
+                                @endif
+
+                            </div>
 
                         </div>
 

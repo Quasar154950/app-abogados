@@ -48,7 +48,22 @@
                                 {{ $esEstudio
                                     ? 'text-blue-100 text-right'
                                     : 'text-neutral-500 text-left' }}">
+
                                 {{ $item->created_at->format('d/m/Y H:i') }}
+
+                                @if($item->leido)
+    <br>
+    👁 Leído
+
+    @if($item->leido_at)
+        · {{ \Carbon\Carbon::parse($item->leido_at)->format('d/m/Y H:i') }}
+    @endif
+
+@else
+    <br>
+    🔔 No leído
+@endif
+
                             </p>
 
                         </div>

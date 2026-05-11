@@ -12,7 +12,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Artisan;
 
 Route::redirect('/', '/estudio/vairo')->name('home');
 
@@ -308,15 +307,6 @@ Route::get('/crear-slug', function () {
     }
 
     return 'Columna slug creada';
-});
-Route::get('/migrar-viewed-at', function () {
-
-    Artisan::call('migrate', [
-        '--force' => true,
-    ]);
-
-    return nl2br(Artisan::output());
-
 });
 
 require __DIR__ . '/settings.php';

@@ -43,7 +43,8 @@
         </div>
     </div>
 
-    <div class="flex flex-col gap-6">
+    {{-- LOGIN --}}
+    <div id="login-content" class="flex flex-col gap-6 opacity-0 transition-opacity duration-500">
 
         {{-- LOGO DEL ESTUDIO --}}
         <div class="flex justify-center">
@@ -163,17 +164,30 @@
 
     <script>
         window.addEventListener('load', function () {
+
+            const splash = document.getElementById('app-splash');
+            const loginContent = document.getElementById('login-content');
+
             setTimeout(function () {
-                const splash = document.getElementById('app-splash');
 
                 if (splash) {
+
                     splash.classList.add('opacity-0');
 
                     setTimeout(function () {
+
                         splash.remove();
+
+                        if (loginContent) {
+                            loginContent.classList.remove('opacity-0');
+                            loginContent.classList.add('opacity-100');
+                        }
+
                     }, 700);
                 }
+
             }, 1800);
+
         });
     </script>
 

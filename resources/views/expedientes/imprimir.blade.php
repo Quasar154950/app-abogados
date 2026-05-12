@@ -169,22 +169,33 @@
 <div class="page">
 
     <div class="header">
-        <div class="brand" style="display: flex; align-items: center; gap: 12px;">
-    
-    <img src="/images/logo.png" alt="Logo" style="height: 40px;">
 
-    <div>
-        <h1 style="margin: 0;">Estudio Jurídico M. Vairo</h1>
-        <p style="margin: 4px 0 0;">Ficha de expediente</p>
+    <div class="brand" style="display: flex; align-items: center; gap: 12px;">
+
+        <img 
+            src="{{ asset(auth()->user()->logo_estudio ?? 'images/logo.png') }}"
+            alt="Logo"
+            style="height: 40px;"
+        >
+
+        <div>
+            <h1 style="margin: 0;">
+                {{ auth()->user()->nombre_estudio ?? 'Estudio Jurídico' }}
+            </h1>
+
+            <p style="margin: 4px 0 0;">
+                Ficha de expediente
+            </p>
+        </div>
+
+    </div>
+
+    <div class="doc-info">
+        <strong>Fecha de emisión</strong><br>
+        {{ now()->format('d/m/Y') }}
     </div>
 
 </div>
-
-        <div class="doc-info">
-            <strong>Fecha de emisión</strong><br>
-            {{ now()->format('d/m/Y') }}
-        </div>
-    </div>
 
     <div class="title">
         <h2>{{ $expediente->caratula }}</h2>

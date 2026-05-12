@@ -5,19 +5,37 @@
     {{ $title ?? '' }}
 </title>
 
-{{-- FAVICON PERSONALIZADO --}}
-<link rel="icon" href="/images/logo.png?v=2">
-<link rel="apple-touch-icon" href="/images/logo.png?v=2">
+@php
+    $slug = auth()->check() ? auth()->user()->slug_estudio : null;
 
-{{-- PWA --}}
-<link rel="manifest" href="/manifest.json">
+    $manifest = match($slug) {
+        'demo' => '/manifest-demo.json',
+        'vairo' => '/manifest-vairo.json',
+        default => '/manifest.json',
+    };
+
+    $logo = auth()->check()
+        ? asset(auth()->user()->logo_estudio ?? 'images/logo.png')
+        : asset('images/logo.png');
+
+    $appName = auth()->check()
+        ? auth()->user()->nombre_estudio
+        : 'MCTandil Apps';
+@endphp
+
+{{-- FAVICON PERSONALIZADO --}}
+<link rel="icon" href="{{ $logo }}">
+<link rel="apple-touch-icon" href="{{ $logo }}">
+
+{{-- PWA DINÁMICA --}}
+<link rel="manifest" href="{{ $manifest }}">
 
 <meta name="theme-color" content="#111827">
 
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 
-<meta name="apple-mobile-web-app-title" content="MCTandil Apps">
+<meta name="apple-mobile-web-app-title" content="{{ $appName }}">
 
 {{-- FUENTES --}}
 <link rel="preconnect" href="https://fonts.bunny.net">

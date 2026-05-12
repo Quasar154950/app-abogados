@@ -17,7 +17,11 @@ class MensajeCliente extends Model
         'leido',
         'leido_at',
     ];
-
+    
+    protected $casts = [
+    'leido' => 'boolean',
+    'leido_at' => 'datetime',
+   ];
     /*
     |--------------------------------------------------------------------------
     | RELACIONES

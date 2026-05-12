@@ -1,4 +1,48 @@
 <x-layouts::auth :title="__('Acceso al sistema')">
+
+    {{-- SPLASH PWA / APP --}}
+    <div 
+        id="app-splash" 
+        class="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden transition-opacity duration-700"
+        style="background: radial-gradient(circle at center, #1e293b 0%, #020617 72%);"
+    >
+        {{-- Fondo decorativo --}}
+        <div class="absolute inset-0 opacity-40"
+             style="background: radial-gradient(circle at center, rgba(245,158,11,0.18) 0%, transparent 45%);">
+        </div>
+
+        <div class="relative flex flex-col items-center text-center px-6">
+
+            {{-- Logo splash --}}
+            <div class="splash-logo-wrap">
+                <img
+                    src="{{ asset('images/splash-vairo.png') }}"
+                    alt="Marcela Vairo"
+                    class="w-36 h-36 sm:w-44 sm:h-44 rounded-full object-cover"
+                >
+            </div>
+
+            {{-- Nombre --}}
+            <h1 class="mt-8 text-white text-2xl sm:text-3xl tracking-[0.20em] font-serif">
+                MARCELA VAIRO
+            </h1>
+
+            <p class="mt-2 text-amber-300 tracking-[0.45em] text-sm font-serif">
+                ABOGADA
+            </p>
+
+            {{-- Texto carga --}}
+            <p class="mt-8 text-gray-300 text-sm">
+                Cargando acceso seguro...
+            </p>
+
+            {{-- Barra --}}
+            <div class="mt-5 w-56 h-1 rounded-full bg-white/10 overflow-hidden">
+                <div class="splash-bar h-full rounded-full"></div>
+            </div>
+        </div>
+    </div>
+
     <div class="flex flex-col gap-6">
 
         {{-- LOGO DEL ESTUDIO --}}
@@ -60,4 +104,77 @@
         </form>
 
     </div>
+
+    <style>
+        .splash-logo-wrap {
+            padding: 10px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow:
+                0 0 0 1px rgba(245, 158, 11, 0.35),
+                0 25px 80px rgba(0, 0, 0, 0.55),
+                0 0 45px rgba(245, 158, 11, 0.25);
+            animation: splashLogo 1.4s ease-out both, splashBreath 2.4s ease-in-out infinite;
+        }
+
+        .splash-bar {
+            width: 45%;
+            background: linear-gradient(90deg, #fbbf24, #fde68a);
+            animation: splashBar 1.8s ease-in-out infinite;
+        }
+
+        @keyframes splashLogo {
+            0% {
+                opacity: 0;
+                transform: scale(0.72) rotate(-6deg);
+            }
+
+            60% {
+                opacity: 1;
+                transform: scale(1.05) rotate(0deg);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes splashBreath {
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.035);
+            }
+        }
+
+        @keyframes splashBar {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(240%);
+            }
+        }
+    </style>
+
+    <script>
+        window.addEventListener('load', function () {
+            setTimeout(function () {
+                const splash = document.getElementById('app-splash');
+
+                if (splash) {
+                    splash.classList.add('opacity-0');
+
+                    setTimeout(function () {
+                        splash.remove();
+                    }, 700);
+                }
+            }, 1800);
+        });
+    </script>
+
 </x-layouts::auth>

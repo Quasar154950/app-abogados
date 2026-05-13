@@ -1,5 +1,15 @@
 <x-layouts::auth :title="__('Acceso al sistema')">
 
+    @php
+        $splashImage = match($userEstudio->slug_estudio ?? null) {
+            'demo' => 'images/splash-demo.png',
+            'vairo' => 'images/splash-vairo.png',
+            default => $userEstudio->logo_estudio ?: 'images/logo.png',
+        };
+
+        $splashName = strtoupper($userEstudio->name ?? $userEstudio->nombre_estudio ?? 'ESTUDIO JURÍDICO');
+    @endphp
+
     {{-- SPLASH PWA / APP --}}
     <div 
         id="app-splash" 
@@ -16,15 +26,15 @@
             {{-- Logo splash --}}
             <div class="splash-logo-wrap">
                 <img
-                    src="{{ asset('images/splash-vairo.png') }}"
-                    alt="Marcela Vairo"
+                    src="{{ asset($splashImage) }}"
+                    alt="{{ $userEstudio->nombre_estudio ?? 'Estudio Jurídico' }}"
                     class="w-36 h-36 sm:w-44 sm:h-44 rounded-full object-cover"
                 >
             </div>
 
             {{-- Nombre --}}
             <h1 class="mt-8 text-white text-2xl sm:text-3xl tracking-[0.20em] font-serif">
-                MARCELA VAIRO
+                {{ $splashName }}
             </h1>
 
             <p class="mt-2 text-amber-300 tracking-[0.45em] text-sm font-serif">

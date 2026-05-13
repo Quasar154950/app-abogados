@@ -3,7 +3,7 @@
   "short_name": "Demo",
   "description": "Plataforma privada del estudio jurídico.",
   "start_url": "/estudio/demo",
-  "scope": "/",
+  "scope": "/estudio/demo",
   "display": "standalone",
   "background_color": "#020617",
   "theme_color": "#020617",

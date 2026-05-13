@@ -3,7 +3,7 @@
   "short_name": "Vairo",
   "description": "Plataforma privada del estudio jurídico.",
   "start_url": "/estudio/vairo",
-  "scope": "/",
+  "scope": "/estudio/vairo",
   "display": "standalone",
   "background_color": "#020617",
   "theme_color": "#020617",

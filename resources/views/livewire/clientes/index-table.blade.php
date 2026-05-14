@@ -55,23 +55,61 @@
                         <th class="p-3 text-right">Acciones</th>
                     </tr>
                 </thead>
+
                 <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800">
                     @foreach($clientes as $cliente)
+
                         <tr wire:key="cliente-{{ $cliente->id }}" class="hover:bg-neutral-50 dark:hover:bg-neutral-800/40 transition">
-                            <td class="p-3 text-sm text-neutral-500 font-mono">#{{ $cliente->id }}</td>
-                            <td class="p-3 text-sm font-bold text-neutral-800 dark:text-neutral-200 whitespace-nowrap">{{ $cliente->nombre }}</td>
-                            <td class="p-3 text-sm text-neutral-600 dark:text-neutral-400 font-medium">{{ $cliente->telefono }}</td>
-                            <td class="p-3 text-sm text-neutral-600 dark:text-neutral-400">{{ $cliente->email }}</td>
-                            
+
+                            {{-- ID --}}
+                            <td class="p-3 text-sm text-neutral-500 font-mono">
+                                #{{ $cliente->id }}
+                            </td>
+
+                            {{-- NOMBRE + BADGE --}}
+                            <td class="p-3 text-sm font-bold text-neutral-800 dark:text-neutral-200 whitespace-nowrap">
+                                
+                                <div class="flex flex-col gap-1">
+
+                                    <span>
+                                        {{ $cliente->nombre }}
+                                    </span>
+
+                                    @if($cliente->mensajes_no_leidos_count > 0)
+                                        <span class="inline-flex w-fit items-center rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">
+                                            💬 Nuevo mensaje
+                                        </span>
+                                    @endif
+
+                                </div>
+
+                            </td>
+
+                            {{-- TELÉFONO --}}
+                            <td class="p-3 text-sm text-neutral-600 dark:text-neutral-400 font-medium">
+                                {{ $cliente->telefono }}
+                            </td>
+
+                            {{-- EMAIL --}}
+                            <td class="p-3 text-sm text-neutral-600 dark:text-neutral-400">
+                                {{ $cliente->email }}
+                            </td>
+
+                            {{-- ACCIONES --}}
                             <td class="p-3 text-right">
                                 <div class="flex items-center justify-end gap-1">
+
                                     <a href="{{ route('clientes.show', $cliente->id) }}" 
                                        class="p-2 rounded-lg text-neutral-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition cursor-pointer" 
-                                       title="Ver Detalle">👁️</a>
+                                       title="Ver Detalle">
+                                        👁️
+                                    </a>
                                     
                                     <a href="{{ route('clientes.edit', $cliente->id) }}" 
                                        class="p-2 rounded-lg text-neutral-500 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 transition cursor-pointer" 
-                                       title="Editar">✏️</a>
+                                       title="Editar">
+                                        ✏️
+                                    </a>
                                     
                                     <button 
                                          wire:click="archivar({{ $cliente->id }})" 
@@ -88,9 +126,12 @@
                                         title="Eliminar Permanentemente">
                                         🗑️
                                     </button>
+
                                 </div>
                             </td>
+
                         </tr>
+
                     @endforeach
                 </tbody>
             </table>
@@ -100,6 +141,7 @@
         <div class="mt-6">
             {{ $clientes->links() }}
         </div>
+
     @endif
 </div>
 

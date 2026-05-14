@@ -50,7 +50,7 @@
                                     : 'text-neutral-500 text-left' }}">
 
                                 <div>
-                                    📤 Enviado · {{ $item->created_at->format('d/m/Y H:i') }}
+                                    📤 Enviado · {{ $item->created_at->format('d/m/Y H:i') }} hs
                                 </div>
 
                                 @if($item->leido)
@@ -59,7 +59,7 @@
                                         👁 Leído
 
                                         @if($item->leido_at)
-                                            · {{ \Carbon\Carbon::parse($item->leido_at)->format('d/m/Y H:i') }}
+                                            · {{ \Carbon\Carbon::parse($item->leido_at)->format('d/m/Y H:i') }} hs
                                         @endif
                                     </div>
 

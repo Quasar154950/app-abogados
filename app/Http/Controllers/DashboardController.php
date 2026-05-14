@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use App\Models\Nota;
 use App\Models\Seguimiento;
+use App\Models\MensajeCliente;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -112,6 +113,13 @@ class DashboardController extends Controller
             ->with('cliente')
             ->get();
 
+        $mensajesNoLeidos = MensajeCliente::whereHas('cliente', function ($q) use ($abogadoId) {
+            $q->where('abogado_id', $abogadoId);
+        })
+            ->where('remitente', 'cliente')
+            ->where('leido', false)
+            ->count();
+
         $proximosRecordatorios = Seguimiento::whereHas('cliente', function ($q) use ($abogadoId) {
             $q->where('abogado_id', $abogadoId);
         })
@@ -125,7 +133,7 @@ class DashboardController extends Controller
 
         return view('dashboard', [
             'diasRestantes'           => $diasRestantes,
-            
+
             'totalClientes'           => $totalClientesActivos,
             'historicoNotas'          => $conteoTotalNotas,
             'soloHoyNotas'            => $conteoNotasDeHoy,
@@ -140,6 +148,7 @@ class DashboardController extends Controller
             'vencidos'                => $vencidos,
             'paraHoy'                 => $paraHoy,
             'proximosRecordatorios'   => $proximosRecordatorios,
+            'mensajesNoLeidos'        => $mensajesNoLeidos,
         ]);
     }
 }

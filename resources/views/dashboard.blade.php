@@ -16,6 +16,30 @@
             </div>
         @endif
 
+        {{-- 🔔 ALERTA MENSAJES NUEVOS --}}
+        @if(isset($mensajesNoLeidos) && $mensajesNoLeidos > 0)
+
+            <div class="p-4 rounded-2xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+
+                <div>
+                    <div class="font-black text-sm text-blue-800 dark:text-blue-200">
+                        🔔 Tenés mensajes nuevos de clientes
+                    </div>
+
+                    <div class="text-xs mt-1 text-blue-700 dark:text-blue-300">
+                        Hay {{ $mensajesNoLeidos }} mensaje{{ $mensajesNoLeidos === 1 ? '' : 's' }} sin leer.
+                    </div>
+                </div>
+
+                <a href="{{ route('clientes.index') }}"
+                   class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white hover:bg-blue-700 transition shadow-sm">
+                    Ver clientes
+                </a>
+
+            </div>
+
+        @endif
+
         {{-- 🔥 AVISO SaaS --}}
         @if(!is_null($diasRestantes) && $diasRestantes <= 7)
 
@@ -58,9 +82,9 @@
 
                         {{-- 🔥 BOTÓN CLAVE --}}
                         <a href="{{ route('suscripcion.index') }}"
-   class="inline-block mt-2 px-3 py-1 rounded bg-white text-black text-xs font-bold shadow">
-    Ir a suscripción
-</a>
+                           class="inline-block mt-2 px-3 py-1 rounded bg-white text-black text-xs font-bold shadow">
+                            Ir a suscripción
+                        </a>
                     </div>
                 </div>
 
@@ -73,7 +97,10 @@
 
         {{-- CABECERA --}}
         <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 bg-white dark:bg-neutral-900 shadow-sm font-sans">
-            <h1 class="text-2xl font-bold text-neutral-800 dark:text-neutral-100 italic">Panel del Estudio</h1>
+            <h1 class="text-2xl font-bold text-neutral-800 dark:text-neutral-100 italic">
+                Panel del Estudio
+            </h1>
+
             <p class="mt-1.5 text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
                 Bienvenido. Acá tenés un resumen del estado general de tus clientes y tareas del estudio.
             </p>
@@ -87,7 +114,10 @@
 
         {{-- BOTONES DE GESTIÓN --}}
         <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 bg-white dark:bg-neutral-900 shadow-sm font-sans">
-            <h2 class="text-lg font-bold text-neutral-800 dark:text-neutral-100 italic">Gestión del Estudio</h2>
+
+            <h2 class="text-lg font-bold text-neutral-800 dark:text-neutral-100 italic">
+                Gestión del Estudio
+            </h2>
 
             <div class="mt-4 flex gap-2.5 overflow-x-auto md:overflow-visible whitespace-nowrap md:whitespace-normal md:flex-wrap">
 
@@ -121,12 +151,19 @@
 
             {{-- Próximos Recordatorios --}}
             <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 bg-white dark:bg-neutral-900 shadow-sm font-sans">
-                <h2 class="text-lg font-bold text-neutral-800 dark:text-neutral-100 italic mb-4">📅 Próximos Recordatorios</h2>
+
+                <h2 class="text-lg font-bold text-neutral-800 dark:text-neutral-100 italic mb-4">
+                    📅 Próximos Recordatorios
+                </h2>
 
                 <div class="space-y-3">
+
                     @forelse($proximosRecordatorios as $recordatorio)
+
                         <div class="p-3 rounded-lg border border-neutral-100 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50">
+
                             <div class="flex justify-between items-center">
+
                                 <span class="text-sm font-bold">
                                     {{ $recordatorio->cliente->nombre ?? 'Sin Cliente' }}
                                 </span>
@@ -134,27 +171,40 @@
                                 <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-blue-500 text-white">
                                     {{ str_replace('_', ' ', $recordatorio->estado) }}
                                 </span>
+
                             </div>
 
                             <p class="text-xs text-neutral-500 mt-2 italic">
                                 "{{ $recordatorio->descripcion }}"
                             </p>
+
                         </div>
+
                     @empty
+
                         <p class="text-xs text-neutral-500 italic text-center py-5">
                             No hay recordatorios futuros.
                         </p>
+
                     @endforelse
+
                 </div>
+
             </div>
 
             {{-- Últimos clientes --}}
             <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 bg-white dark:bg-neutral-900 shadow-sm font-sans">
-                <h2 class="text-lg font-bold mb-4">🆕 Últimos clientes incorporados</h2>
+
+                <h2 class="text-lg font-bold mb-4">
+                    🆕 Últimos clientes incorporados
+                </h2>
 
                 <div class="space-y-3">
+
                     @foreach($ultimosClientes as $cliente)
+
                         <div class="flex justify-between text-sm border-b pb-2">
+
                             <a href="{{ route('clientes.show', $cliente->id) }}"
                                class="hover:underline">
                                 {{ $cliente->nombre }}
@@ -163,12 +213,17 @@
                             <span class="text-xs text-neutral-400">
                                 {{ $cliente->created_at->diffForHumans() }}
                             </span>
+
                         </div>
+
                     @endforeach
+
                 </div>
+
             </div>
 
         </div>
+
     </div>
 
 </x-layouts::app>

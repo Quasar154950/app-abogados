@@ -3,23 +3,25 @@
     {{-- ACCIONES DEL CHAT --}}
     @if(auth()->user()->role === 'abogado' && !$mensajes->isEmpty())
         <div class="flex justify-end">
+
             <button
                 type="button"
                 wire:click="vaciarConversacion"
-                onclick="return confirm('¿Seguro que querés borrar toda la conversación con este cliente?')"
-                class="inline-flex items-center gap-2 rounded-lg bg-red-600 px-3 py-2 text-xs text-white font-bold hover:bg-red-700 transition"
+                onclick="return confirm('¿Seguro que querés borrar toda la conversación con este socio?')"
+                style="background:black;color:white;border-radius:14px;padding:8px 14px;font-size:12px;font-weight:bold;display:inline-flex;align-items:center;gap:8px;"
             >
                 🗑 Vaciar conversación
             </button>
+
         </div>
     @endif
 
     {{-- LISTADO MENSAJES --}}
-    <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900 p-4 h-80 overflow-y-auto">
+    <div class="rounded-xl border border-stone-300 bg-stone-100 p-4 h-80 overflow-y-auto">
 
         @if($mensajes->isEmpty())
 
-            <p class="text-sm text-neutral-500 italic">
+            <p class="text-sm text-stone-500 italic">
                 Todavía no hay mensajes.
             </p>
 
@@ -37,8 +39,8 @@
 
                         <div class="max-w-[80%] rounded-2xl px-4 py-3 shadow-sm
                             {{ $esEstudio
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-800 dark:text-white' }}">
+                                ? 'bg-orange-500 text-white'
+                                : 'bg-stone-200 text-stone-800' }}">
 
                             <p class="text-sm leading-relaxed whitespace-pre-line">
                                 {{ $item->mensaje }}
@@ -46,8 +48,8 @@
 
                             <div class="mt-2 text-[10px]
                                 {{ $esEstudio
-                                    ? 'text-blue-100 text-right'
-                                    : 'text-neutral-500 text-left' }}">
+                                    ? 'text-orange-100 text-right'
+                                    : 'text-stone-500 text-left' }}">
 
                                 <div>
                                     📤 Enviado · {{ $item->created_at->format('d/m/Y H:i') }} hs
@@ -92,13 +94,13 @@
             wire:model="mensaje"
             rows="3"
             placeholder="Escribir mensaje..."
-            class="w-full rounded-xl border border-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 px-4 py-3 text-sm resize-none"
+            class="w-full rounded-xl border border-stone-300 bg-stone-100 px-4 py-3 text-sm resize-none text-stone-900 outline-none focus:ring-2 focus:ring-orange-500"
         ></textarea>
 
         <button
             type="button"
             wire:click="enviarMensaje"
-            class="shrink-0 rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 text-sm font-bold transition"
+            class="shrink-0 rounded-xl bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 text-sm font-bold transition"
         >
             Enviar
         </button>

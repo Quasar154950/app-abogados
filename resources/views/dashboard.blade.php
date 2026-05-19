@@ -1,4 +1,4 @@
-<x-layouts::app :title="__('Dashboard')">
+<x-layouts::app :title="__('Panel')">
 
     <style>
         @keyframes fadeIn {
@@ -7,11 +7,18 @@
         }
     </style>
 
-    <div class="space-y-5 text-left">
+    @php
+        $sociosActivos = $sociosActivos ?? $totalClientes ?? 0;
+        $reservasHoy = $reservasHoy ?? 0;
+        $cuposOcupadosHoy = $cuposOcupadosHoy ?? 0;
+        $pagosPendientes = $pagosPendientes ?? 0;
+        $presentesAhora = $presentesAhora ?? 0;
+    @endphp
 
-        {{-- 1. MENSAJE DE ÉXITO --}}
+    <div class="-m-4 min-h-screen space-y-5 bg-slate-950 p-4 sm:-m-6 sm:p-6 text-left">
+
         @if(session('success'))
-            <div class="p-3 rounded-xl bg-green-50 dark:bg-neutral-800 border border-green-200 dark:border-green-900/50 text-green-700 dark:text-green-400 text-sm font-bold shadow-sm flex items-center gap-2">
+            <div style="border-radius:8px !important;" class="p-3 bg-green-50 border border-green-200 text-green-700 text-sm font-bold shadow-sm flex items-center gap-2">
                 ✅ {{ session('success') }}
             </div>
         @endif
@@ -19,163 +26,178 @@
         {{-- 🔔 ALERTA MENSAJES NUEVOS --}}
         @if(isset($mensajesNoLeidos) && $mensajesNoLeidos > 0)
 
-            <div class="p-4 rounded-2xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div style="border-radius:8px !important;" class="p-4 bg-stone-200 border border-stone-300 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 
                 <div>
-                    <div class="font-black text-sm text-blue-800 dark:text-blue-200">
-                        🔔 Tenés mensajes nuevos de clientes
+                    <div class="font-black text-sm text-neutral-800">
+                        🔔 Tenés mensajes nuevos de socios
                     </div>
 
-                    <div class="text-xs mt-1 text-blue-700 dark:text-blue-300">
+                    <div class="text-xs mt-1 text-neutral-600">
                         Hay {{ $mensajesNoLeidos }} mensaje{{ $mensajesNoLeidos === 1 ? '' : 's' }} sin leer.
                     </div>
                 </div>
 
                 <a href="{{ route('clientes.index') }}"
-                   class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white hover:bg-blue-700 transition shadow-sm">
-                    Ver clientes
+                   style="background:#f97316;color:white;border-radius:14px;padding:10px 16px;font-size:12px;font-weight:bold;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">
+                    Ver socios
                 </a>
 
             </div>
 
         @endif
 
-        {{-- 🔥 AVISO SaaS --}}
-        @if(!is_null($diasRestantes) && $diasRestantes <= 7)
+        {{-- CABECERA --}}
+        <div style="border-radius:8px !important;" class="border border-stone-300 p-5 bg-stone-200 shadow-sm font-sans">
 
-            @php
-                if ($diasRestantes > 3) {
-                    $bg = '#fef9c3';
-                    $color = '#92400e';
-                    $border = '#fde68a';
-                    $badge = 'Por vencer';
-                    $badgeColor = '#f59e0b';
-                } else {
-                    $bg = '#fee2e2';
-                    $color = '#991b1b';
-                    $border = '#fecaca';
-                    $badge = 'Urgente';
-                    $badgeColor = '#dc2626';
-                }
-            @endphp
+            <h1 class="text-2xl font-black text-neutral-800">
+                Panel del Gimnasio
+            </h1>
 
-            <div class="p-4 rounded-2xl shadow-sm flex items-center justify-between gap-3"
-                 style="background: {{ $bg }}; color: {{ $color }}; border:1px solid {{ $border }}; animation: fadeIn .3s ease-in-out;">
+            <p class="mt-1.5 text-sm text-neutral-600 leading-relaxed">
+                Resumen general de socios, reservas, actividades, asistencias y cuotas.
+            </p>
 
-                <div>
-                    <div class="font-black text-sm">
-                        @if($diasRestantes <= 1)
-                            ⚠️ Suscripción por vencer
-                        @else
-                            ⏳ Suscripción activa
-                        @endif
-                    </div>
+        </div>
 
-                    <div class="text-xs mt-1">
-                        @if($diasRestantes === 0)
-                            Vence hoy. Renová para evitar suspensión.
-                        @elseif($diasRestantes === 1)
-                            Vence mañana. Te recomendamos renovar.
-                        @else
-                            Te quedan {{ $diasRestantes }} días de suscripción.
-                        @endif
+        {{-- TARJETAS PRINCIPALES --}}
+        <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
 
-                        {{-- 🔥 BOTÓN CLAVE --}}
-                        <a href="{{ route('suscripcion.index') }}"
-                           class="inline-block mt-2 px-3 py-1 rounded bg-white text-black text-xs font-bold shadow">
-                            Ir a suscripción
-                        </a>
+            <div style="border-radius:8px !important;" class="border border-stone-300 bg-stone-200 p-5 shadow-sm">
+                <div class="text-xs font-black uppercase text-blue-700">Socios activos</div>
+                <div class="mt-3 text-3xl font-black text-neutral-800">{{ $sociosActivos }}</div>
+                <div class="mt-1 text-xs text-neutral-600">Socios habilitados para entrenar.</div>
+            </div>
+
+            <div style="border-radius:8px !important;" class="border border-stone-300 bg-stone-200 p-5 shadow-sm">
+                <div class="text-xs font-black uppercase text-violet-700">Reservas de hoy</div>
+                <div class="mt-3 text-3xl font-black text-neutral-800">{{ $reservasHoy }}</div>
+                <div class="mt-1 text-xs text-neutral-600">Turnos reservados para el día.</div>
+            </div>
+
+            <div style="border-radius:8px !important;" class="border border-stone-300 bg-stone-200 p-5 shadow-sm">
+                <div class="text-xs font-black uppercase text-green-700">Cupos ocupados</div>
+                <div class="mt-3 text-3xl font-black text-neutral-800">{{ $cuposOcupadosHoy }}</div>
+                <div class="mt-1 text-xs text-neutral-600">Ocupación total de clases del día.</div>
+            </div>
+
+            <div style="border-radius:8px !important;" class="border border-stone-300 bg-stone-200 p-5 shadow-sm">
+                <div class="text-xs font-black uppercase text-red-700">Pagos pendientes</div>
+                <div class="mt-3 text-3xl font-black text-neutral-800">{{ $pagosPendientes }}</div>
+                <div class="mt-1 text-xs text-neutral-600">Cuotas vencidas o por regularizar.</div>
+            </div>
+
+            <div style="border-radius:8px !important;" class="border border-stone-300 bg-stone-200 p-5 shadow-sm">
+                <div class="text-xs font-black uppercase text-orange-700">Presentes ahora</div>
+                <div class="mt-3 text-3xl font-black text-neutral-800">{{ $presentesAhora }}</div>
+                <div class="mt-1 text-xs text-neutral-600">Socios actualmente dentro del gimnasio.</div>
+            </div>
+
+        </div>
+
+        {{-- ACTIVIDADES --}}
+        <div style="border-radius:8px !important;" class="border border-stone-300 p-5 bg-stone-200 shadow-sm font-sans">
+
+            <h2 class="text-lg font-black text-neutral-800">
+                Actividades del gimnasio
+            </h2>
+
+            <div class="mt-4 grid gap-3 md:grid-cols-3">
+
+                <div style="border-radius:8px !important;" class="border border-stone-300 bg-stone-100 p-4">
+                    <div class="font-black text-neutral-800">🚴 Spinning</div>
+                    <div class="text-xs mt-1 text-neutral-600">Actividad con reserva previa.</div>
+                </div>
+
+                <div style="border-radius:8px !important;" class="border border-stone-300 bg-stone-100 p-4">
+                    <div class="font-black text-neutral-800">🧘 Pilates</div>
+                    <div class="text-xs mt-1 text-neutral-600">Actividad con reserva previa.</div>
+                </div>
+
+                <div style="border-radius:8px !important;" class="border border-stone-300 bg-stone-100 p-4">
+                    <div class="font-black text-neutral-800">🏋️ Musculación</div>
+                    <div class="text-xs mt-1 text-neutral-600">Acceso libre de 06:00 a 23:00.</div>
+
+                    <div class="mt-4 inline-flex items-center gap-2 rounded-xl bg-orange-500 px-3 py-2 text-white text-sm font-bold shadow-sm">
+                        👥 Presentes ahora: {{ $presentesAhora }}
                     </div>
                 </div>
 
-                <span style="background: {{ $badgeColor }}; color:white; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:bold;">
-                    {{ $badge }}
-                </span>
-
             </div>
-        @endif
 
-        {{-- CABECERA --}}
-        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 bg-white dark:bg-neutral-900 shadow-sm font-sans">
-            <h1 class="text-2xl font-bold text-neutral-800 dark:text-neutral-100 italic">
-                Panel del Estudio
-            </h1>
-
-            <p class="mt-1.5 text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
-                Bienvenido. Acá tenés un resumen del estado general de tus clientes y tareas del estudio.
-            </p>
         </div>
 
-        {{-- BLOQUE VIVO DE TAREAS --}}
-        <livewire:actions.dashboard-seguimientos
-            :total-clientes="$totalClientes"
-            :solo-hoy-notas="$soloHoyNotas"
-        />
+        {{-- ACCESOS RÁPIDOS --}}
+        <div style="border-radius:8px !important;" class="border border-stone-300 p-5 bg-stone-200 shadow-sm font-sans">
 
-        {{-- BOTONES DE GESTIÓN --}}
-        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 bg-white dark:bg-neutral-900 shadow-sm font-sans">
-
-            <h2 class="text-lg font-bold text-neutral-800 dark:text-neutral-100 italic">
-                Gestión del Estudio
+            <h2 class="text-lg font-black text-neutral-800">
+                Gestión rápida
             </h2>
 
             <div class="mt-4 flex gap-2.5 overflow-x-auto md:overflow-visible whitespace-nowrap md:whitespace-normal md:flex-wrap">
 
                 <a href="{{ route('clientes.index') }}"
-                   class="shrink-0 inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-bold shadow-sm transition cursor-pointer active:scale-95"
-                   style="background-color: #2563eb; color: #ffffff !important;">
-                    👁️ Ver clientes
-                </a>
-
-                <a href="{{ route('seguimientos.index') }}"
-                   class="shrink-0 inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-bold shadow-sm transition cursor-pointer active:scale-95"
-                   style="background-color: #262626; color: #ffffff !important; min-width: 170px;">
-                    🔍 Ver tareas
+                   style="background:#f97316;color:white;border-radius:14px;padding:10px 16px;font-size:14px;font-weight:bold;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">
+                    👥 Ver socios
                 </a>
 
                 <a href="{{ route('clientes.create') }}"
-                   class="shrink-0 inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-bold shadow-sm transition cursor-pointer active:scale-95"
-                   style="background-color: #16a34a; color: #ffffff !important;">
-                    ➕ Nuevo cliente
+                   style="background:black;color:white;border-radius:14px;padding:10px 16px;font-size:14px;font-weight:bold;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">
+                    ➕ Nuevo socio
                 </a>
+
+                @if(Route::has('turnos.index'))
+
+                    <a href="{{ route('turnos.index') }}"
+                       style="background:#f97316;color:white;border-radius:14px;padding:10px 16px;font-size:14px;font-weight:bold;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">
+                        📅 Turnos / Reservas
+                    </a>
+
+                @endif
+
+                @if(Route::has('asistencias.index'))
+
+                    <a href="{{ route('asistencias.index') }}"
+                       style="background:#f97316;color:white;border-radius:14px;padding:10px 16px;font-size:14px;font-weight:bold;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">
+                        👥 Asistencias
+                    </a>
+
+                @endif
 
             </div>
 
         </div>
 
-        {{-- NOTAS FIJADAS --}}
-        <livewire:actions.dashboard-notas-fijadas />
-
         {{-- SECCIÓN INFERIOR --}}
         <div class="grid gap-4 md:grid-cols-2">
 
-            {{-- Próximos Recordatorios --}}
-            <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 bg-white dark:bg-neutral-900 shadow-sm font-sans">
+            {{-- Próximas actividades --}}
+            <div style="border-radius:10px !important;" class="border border-stone-300 p-5 bg-stone-200 shadow-sm font-sans">
 
-                <h2 class="text-lg font-bold text-neutral-800 dark:text-neutral-100 italic mb-4">
-                    📅 Próximos Recordatorios
+                <h2 class="text-lg font-black text-neutral-800 mb-4">
+                    📅 Próximas reservas / actividades
                 </h2>
 
                 <div class="space-y-3">
 
-                    @forelse($proximosRecordatorios as $recordatorio)
+                    @forelse($proximosRecordatorios ?? [] as $recordatorio)
 
-                        <div class="p-3 rounded-lg border border-neutral-100 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50">
+                        <div style="border-radius:10px !important;" class="p-3 border border-stone-300 bg-stone-100">
 
                             <div class="flex justify-between items-center">
 
                                 <span class="text-sm font-bold">
-                                    {{ $recordatorio->cliente->nombre ?? 'Sin Cliente' }}
+                                    {{ $recordatorio->cliente->nombre ?? 'Socio sin nombre' }}
                                 </span>
 
-                                <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-blue-500 text-white">
-                                    {{ str_replace('_', ' ', $recordatorio->estado) }}
+                                <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded bg-orange-500 text-white">
+                                    {{ str_replace('_', ' ', $recordatorio->estado ?? 'pendiente') }}
                                 </span>
 
                             </div>
 
                             <p class="text-xs text-neutral-500 mt-2 italic">
-                                "{{ $recordatorio->descripcion }}"
+                                "{{ $recordatorio->descripcion ?? 'Actividad programada' }}"
                             </p>
 
                         </div>
@@ -183,7 +205,7 @@
                     @empty
 
                         <p class="text-xs text-neutral-500 italic text-center py-5">
-                            No hay recordatorios futuros.
+                            No hay actividades próximas cargadas.
                         </p>
 
                     @endforelse
@@ -192,31 +214,37 @@
 
             </div>
 
-            {{-- Últimos clientes --}}
-            <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 bg-white dark:bg-neutral-900 shadow-sm font-sans">
+            {{-- Últimos socios --}}
+            <div style="border-radius:8px !important;" class="border border-stone-300 p-5 bg-stone-200 shadow-sm font-sans">
 
-                <h2 class="text-lg font-bold mb-4">
-                    🆕 Últimos clientes incorporados
+                <h2 class="text-lg font-black mb-4 text-neutral-800">
+                    🆕 Últimos socios incorporados
                 </h2>
 
                 <div class="space-y-3">
 
-                    @foreach($ultimosClientes as $cliente)
+                    @forelse($ultimosClientes ?? [] as $cliente)
 
-                        <div class="flex justify-between text-sm border-b pb-2">
+                        <div class="flex justify-between text-sm border-b border-stone-300 pb-2">
 
                             <a href="{{ route('clientes.show', $cliente->id) }}"
-                               class="hover:underline">
+                               class="hover:underline font-bold text-neutral-800">
                                 {{ $cliente->nombre }}
                             </a>
 
-                            <span class="text-xs text-neutral-400">
-                                {{ $cliente->created_at->diffForHumans() }}
+                            <span class="text-xs text-neutral-500">
+                                {{ $cliente->created_at?->diffForHumans() }}
                             </span>
 
                         </div>
 
-                    @endforeach
+                    @empty
+
+                        <p class="text-xs text-neutral-500 italic text-center py-5">
+                            Todavía no hay socios cargados.
+                        </p>
+
+                    @endforelse
 
                 </div>
 

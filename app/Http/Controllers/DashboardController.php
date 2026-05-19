@@ -6,7 +6,10 @@ use App\Models\Cliente;
 use App\Models\Nota;
 use App\Models\Seguimiento;
 use App\Models\MensajeCliente;
+use App\Models\ReservaTurno;
+use App\Models\Asistencia;
 use Carbon\Carbon;
+
 
 class DashboardController extends Controller
 {
@@ -28,6 +31,29 @@ class DashboardController extends Controller
 
         $totalClientesActivos = Cliente::where('abogado_id', $abogadoId)
             ->where('archivado', false)
+            ->count();
+
+        // 🔥 MÉTRICAS GIMNASIO DEMO
+        // Por ahora dejamos estas métricas preparadas.
+        // Después las conectamos a reservas, cupos y pagos reales.
+
+        $reservasHoy = ReservaTurno::whereHas('turno', function ($q) use ($hoy) {
+        $q->whereDate('fecha', $hoy);
+        })->count();
+
+        $cuposOcupadosHoy = $reservasHoy;
+
+        $pagosPendientes = Cliente::where('abogado_id', $abogadoId)
+            ->where('archivado', false)
+            ->whereNotNull('fecha_vencimiento_cuota')
+            ->whereDate('fecha_vencimiento_cuota', '<', $hoy)
+            ->count();
+
+        $presentesAhora = Asistencia::whereHas('cliente', function ($q) use ($abogadoId) {
+            $q->where('abogado_id', $abogadoId);
+    })
+            ->where('presente', true)
+            ->whereNull('hora_salida')
             ->count();
 
         $conteoTotalNotas = Nota::whereHas('cliente', function ($q) use ($abogadoId) {
@@ -135,6 +161,14 @@ class DashboardController extends Controller
             'diasRestantes'           => $diasRestantes,
 
             'totalClientes'           => $totalClientesActivos,
+
+            // 🔥 TARJETAS DEL PANEL DE GIMNASIO
+            'sociosActivos'           => $totalClientesActivos,
+            'reservasHoy'             => $reservasHoy,
+            'cuposOcupadosHoy'        => $cuposOcupadosHoy,
+            'pagosPendientes'         => $pagosPendientes,
+            'presentesAhora'          => $presentesAhora,
+
             'historicoNotas'          => $conteoTotalNotas,
             'soloHoyNotas'            => $conteoNotasDeHoy,
             'cantHoy'                 => $cantHoy,

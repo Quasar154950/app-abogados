@@ -8,6 +8,7 @@ use App\Models\Seguimiento;
 use App\Models\Expediente;
 use App\Models\User;
 use App\Models\MensajeCliente;
+use App\Models\Asistencia;
 use App\Traits\RegistraActividad;
 
 // Spatie
@@ -30,6 +31,7 @@ class Cliente extends Model implements HasMedia
         'telefono',
         'email',
         'direccion',
+        'fecha_vencimiento_cuota',
         'archivado',
         'user_id',
         'abogado_id',
@@ -90,6 +92,11 @@ class Cliente extends Model implements HasMedia
 
     public function mensajes(): HasMany
     {
-    return $this->hasMany(MensajeCliente::class);
+        return $this->hasMany(MensajeCliente::class);
+    }
+
+    public function asistencias(): HasMany
+    {
+        return $this->hasMany(Asistencia::class);
     }
 }

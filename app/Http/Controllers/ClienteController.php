@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Cliente;
 use App\Models\Etiqueta;
+use App\Models\Pago;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -42,6 +43,7 @@ class ClienteController extends Controller
             'telefono' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:clientes,email',
             'direccion' => 'required|string|max:255',
+            'fecha_vencimiento_cuota' => 'nullable|date',
         ], [
             'nombre.required' => 'El nombre es obligatorio.',
             'telefono.required' => 'El teléfono es obligatorio.',
@@ -56,11 +58,12 @@ class ClienteController extends Controller
             'telefono' => $request->telefono,
             'email' => $request->email,
             'direccion' => $request->direccion,
+            'fecha_vencimiento_cuota' => $request->fecha_vencimiento_cuota,
             'archivado' => false,
-            'abogado_id' => auth()->id(), // 🔥 clave
+            'abogado_id' => auth()->id(),
         ]);
 
-        return redirect()->route('clientes.index')->with('success', 'Cliente creado correctamente.');
+        return redirect()->route('clientes.index')->with('success', 'Socio creado correctamente.');
     }
 
     public function show(Request $request, string $id)
@@ -91,18 +94,23 @@ class ClienteController extends Controller
                 return $collection->where('estado', $estadoFiltro);
             })
             ->sortBy(function ($s) use ($hoy) {
+
                 $prioEstado = ($s->estado === 'resuelto') ? 1 : 0;
 
                 if ($s->fecha_recordatorio) {
+
                     $fecha = Carbon::parse($s->fecha_recordatorio)->startOfDay();
 
                     if ($fecha->lt($hoy)) {
                         $prioFecha = 0;
+
                     } elseif ($fecha->isSameDay($hoy)) {
                         $prioFecha = 1;
+
                     } else {
                         $prioFecha = 2;
                     }
+
                 } else {
                     $prioFecha = 3;
                 }
@@ -114,7 +122,12 @@ class ClienteController extends Controller
                     default => 1,
                 };
 
-                return [$prioEstado, $prioFecha, $prioImportancia, -$s->created_at->timestamp];
+                return [
+                    $prioEstado,
+                    $prioFecha,
+                    $prioImportancia,
+                    -$s->created_at->timestamp
+                ];
             });
 
         return view('clientes.show', compact(
@@ -165,7 +178,7 @@ class ClienteController extends Controller
         $user = User::create([
             'name' => $cliente->nombre,
             'email' => $request->email_acceso,
-            'password' => Hash::make($request->password_acceso), // 🔥 corregido
+            'password' => Hash::make($request->password_acceso),
             'role' => 'cliente',
         ]);
 
@@ -189,7 +202,7 @@ class ClienteController extends Controller
         $nuevaPassword = Str::password(10);
 
         $cliente->user->update([
-            'password' => Hash::make($nuevaPassword), // 🔥 corregido
+            'password' => Hash::make($nuevaPassword),
         ]);
 
         return back()
@@ -242,6 +255,7 @@ class ClienteController extends Controller
     public function edit(string $id)
     {
         $cliente = Cliente::where('abogado_id', auth()->id())->findOrFail($id);
+
         return view('clientes.edit', compact('cliente'));
     }
 
@@ -254,6 +268,7 @@ class ClienteController extends Controller
             'telefono' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:clientes,email,' . $id,
             'direccion' => 'required|string|max:255',
+            'fecha_vencimiento_cuota' => 'nullable|date',
         ], [
             'nombre.required' => 'El nombre es obligatorio.',
             'telefono.required' => 'El teléfono es obligatorio.',
@@ -268,32 +283,54 @@ class ClienteController extends Controller
             'telefono' => $request->telefono,
             'email' => $request->email,
             'direccion' => $request->direccion,
+            'fecha_vencimiento_cuota' => $request->fecha_vencimiento_cuota,
         ]);
 
-        return redirect()->route('clientes.index')->with('success', 'Cliente actualizado correctamente.');
+        return redirect()->route('clientes.index')->with('success', 'Socio actualizado correctamente.');
     }
 
-public function destroy(string $id)
-{
-    $cliente = Cliente::where('abogado_id', auth()->id())->findOrFail($id);
-    $cliente->delete();
+    public function destroy(string $id)
+    {
+        $cliente = Cliente::where('abogado_id', auth()->id())->findOrFail($id);
 
-    return redirect()->route('clientes.index')->with('success', 'Cliente eliminado correctamente.');
-}
+        $cliente->delete();
+
+        return redirect()->route('clientes.index')->with('success', 'Socio eliminado correctamente.');
+    }
 
     public function archivar(string $id)
     {
         $cliente = Cliente::where('abogado_id', auth()->id())->findOrFail($id);
-        $cliente->update(['archivado' => true]);
 
-        return redirect()->route('clientes.index')->with('success', 'Cliente archivado correctamente.');
+        $cliente->update([
+            'archivado' => true
+        ]);
+
+        return redirect()->route('clientes.index')->with('success', 'Socio archivado correctamente.');
     }
 
     public function desarchivar(string $id)
     {
         $cliente = Cliente::where('abogado_id', auth()->id())->findOrFail($id);
-        $cliente->update(['archivado' => false]);
 
-        return redirect()->route('clientes.archivados')->with('success', 'Cliente restaurado correctamente.');
+        $cliente->update([
+            'archivado' => false
+        ]);
+
+        return redirect()->route('clientes.archivados')->with('success', 'Socio restaurado correctamente.');
+    }
+
+    public function pagos(string $id)
+    {
+        $cliente = Cliente::findOrFail($id);
+
+        $pagos = Pago::where('cliente_id', $cliente->id)
+            ->latest()
+            ->get();
+
+        return view('clientes.pagos', compact(
+            'cliente',
+            'pagos'
+        ));
     }
 }

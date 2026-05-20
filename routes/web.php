@@ -366,20 +366,23 @@ Route::get('/migrar', function () {
 
 Route::get('/crear-admin', function () {
 
-    User::updateOrCreate(
-        ['email' => 'admin@sportgym.com'],
-        [
-            'name' => 'Admin Sport Gym',
-            'password' => Hash::make('12345678'),
-            'role' => 'abogado',
-            'activo' => true,
-            'slug_estudio' => 'demo',
-            'nombre_estudio' => 'Sport Gym',
-            'fecha_vencimiento' => now()->addYear(),
-        ]
-    );
+    $user = User::where('email', 'admin@sportgym.com')->first();
 
-    return 'Usuario admin creado correctamente';
+    if (!$user) {
+        $user = new User();
+        $user->email = 'admin@sportgym.com';
+    }
+
+    $user->name = 'Admin Sport Gym';
+    $user->password = Hash::make('12345678');
+    $user->role = 'abogado';
+    $user->activo = true;
+    $user->slug_estudio = 'demo';
+    $user->nombre_estudio = 'Sport Gym';
+    $user->fecha_vencimiento = now()->addYear();
+    $user->save();
+
+    return 'Usuario admin creado/actualizado correctamente. Slug: ' . $user->slug_estudio;
 });
 
 require __DIR__ . '/settings.php';

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ExpedienteController;
@@ -354,6 +355,12 @@ Route::get('/crear-slug', function () {
     }
 
     return 'Columna slug creada';
+});
+
+Route::get('/migrar', function () {
+    Artisan::call('migrate', ['--force' => true]);
+
+    return nl2br(Artisan::output());
 });
 
 require __DIR__ . '/settings.php';

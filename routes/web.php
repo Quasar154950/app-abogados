@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ExpedienteController;
@@ -356,33 +354,6 @@ Route::get('/crear-slug', function () {
     }
 
     return 'Columna slug creada';
-});
-
-Route::get('/migrar', function () {
-    Artisan::call('migrate', ['--force' => true]);
-
-    return nl2br(Artisan::output());
-});
-
-Route::get('/crear-admin', function () {
-
-    $user = User::where('email', 'admin@sportgym.com')->first();
-
-    if (!$user) {
-        $user = new User();
-        $user->email = 'admin@sportgym.com';
-    }
-
-    $user->name = 'Admin Sport Gym';
-    $user->password = Hash::make('12345678');
-    $user->role = 'abogado';
-    $user->activo = true;
-    $user->slug_estudio = 'demo';
-    $user->nombre_estudio = 'Sport Gym';
-    $user->fecha_vencimiento = now()->addYear();
-    $user->save();
-
-    return 'Usuario admin creado/actualizado correctamente. Slug: ' . $user->slug_estudio;
 });
 
 require __DIR__ . '/settings.php';

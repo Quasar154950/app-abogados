@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClienteController;
@@ -361,6 +362,24 @@ Route::get('/migrar', function () {
     Artisan::call('migrate', ['--force' => true]);
 
     return nl2br(Artisan::output());
+});
+
+Route::get('/crear-admin', function () {
+
+    User::updateOrCreate(
+        ['email' => 'admin@sportgym.com'],
+        [
+            'name' => 'Admin Sport Gym',
+            'password' => Hash::make('12345678'),
+            'role' => 'abogado',
+            'activo' => true,
+            'slug_estudio' => 'demo',
+            'nombre_estudio' => 'Sport Gym',
+            'fecha_vencimiento' => now()->addYear(),
+        ]
+    );
+
+    return 'Usuario admin creado correctamente';
 });
 
 require __DIR__ . '/settings.php';

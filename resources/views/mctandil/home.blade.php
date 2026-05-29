@@ -214,7 +214,7 @@
             <div class="card">
                 <h3>⚖️ Abogados App</h3>
                 <p>Gestión para estudios jurídicos, clientes, documentos y vencimientos.</p>
-                <p><a style="color:#fb923c;font-weight:bold;" href="/estudio/vairo">Ingresar demo/estudio</a></p>
+                
             </div>
 
             <div class="card">

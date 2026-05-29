@@ -14,7 +14,12 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 
-Route::redirect('/', '/estudio/vairo')->name('home');
+Route::view('/', 'mctandil.home')->name('home');
+
+Route::redirect('/meteo', '/#meteo')->name('mctandil.meteo');
+Route::redirect('/iot', '/#iot')->name('mctandil.iot');
+Route::redirect('/apps', '/#apps')->name('mctandil.apps');
+Route::redirect('/contacto', '/#contacto')->name('mctandil.contacto');
 
 Route::middleware(['auth', 'verified', 'activo'])->group(function () {
 

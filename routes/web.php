@@ -25,6 +25,9 @@ Route::get('/meteo/graficas', function () {
     return view('meteo.graficas');
 })->name('meteo.graficas');
 
+Route::get('/meteo/reporte', [MeteoController::class, 'reportePdf'])
+    ->name('meteo.reporte');
+
 Route::get('/meteo/datos', [MeteoController::class, 'datos'])->name('meteo.datos');
 Route::get('/meteo/lectura-actual', [MeteoController::class, 'lecturaActual'])
     ->name('meteo.lectura.actual');

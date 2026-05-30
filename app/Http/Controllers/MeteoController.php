@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use PDO;
 use PDOException;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class MeteoController extends Controller
 {
@@ -105,6 +106,8 @@ class MeteoController extends Controller
     ], 500);
 }
 
+}
+
 public function lecturaActual()
 {
     try {
@@ -148,6 +151,73 @@ public function lecturaActual()
             'error' => $e->getMessage(),
         ], 500);
     }
+}
+
+public function reportePdf()
+{
+    ini_set('memory_limit', '512M');
+    set_time_limit(60);
+
+    $limit = request()->integer('limit', 200);
+    $limit = max(1, min($limit, 5000));
+
+    $cols = [
+        'id' => ['ID','0'],
+        'tiempo' => ['Tiempo','dt'],
+        'temperatura' => ['Temp (°C)','1'],
+        'sensacion_termica' => ['Sens. (°C)','1'],
+        'humedad' => ['HR (%)','0'],
+        'punto_rocio' => ['P. rocío (°C)','1'],
+        'presion' => ['Pres. (hPa)','1'],
+        'techo_nubes' => ['Techo (m)','0'],
+        'lluvia_acumulada' => ['Lluvia (mm)','1'],
+        'intensidad_lluvia_maxima_diaria' => ['Int. máx (mm/h)','1'],
+        'intensidad_lluvia_promedio_diaria' => ['Int. prom (mm/h)','1'],
+        'angulo_viento' => ['Ángulo (°)','0'],
+        'direccion_viento' => ['Dir. viento','str'],
+        'velocidad_viento' => ['Viento (km/h)','1'],
+        'rafagas_viento' => ['Ráfagas (km/h)','1'],
+        'indice_uv' => ['Índice UV','1'],
+        'uv_peligrosidad' => ['Pelig. UV','str'],
+        'luminosidad' => ['Lum. (lx)','0'],
+        'latitud' => ['Lat.','6'],
+        'longitud' => ['Long.','6'],
+        'altitud' => ['Alt. (m)','1'],
+    ];
+
+    $select = implode(', ', array_map(fn($c) => "public.clima_tandil.$c", array_keys($cols)));
+
+    $host = env('METEO_DB_HOST', '127.0.0.1');
+    $port = env('METEO_DB_PORT', '5432');
+    $user = env('METEO_DB_USERNAME', 'postgres');
+    $pass = env('METEO_DB_PASSWORD', '');
+    $dbMeteo = env('METEO_DB_DATABASE', 'meteotandil');
+
+    $pdo = new PDO("pgsql:host=$host;port=$port;dbname=$dbMeteo", $user, $pass, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    ]);
+
+    $sql = "SELECT $select FROM public.clima_tandil ORDER BY public.clima_tandil.tiempo DESC LIMIT :lim";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':lim', $limit, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $rows = $stmt->fetchAll();
+
+    $html = view('meteo.reporte-pdf', [
+        'cols' => $cols,
+        'rows' => $rows,
+        'limit' => $limit,
+        'fechaGen' => now('America/Argentina/Buenos_Aires')->format('Y-m-d H:i'),
+    ])->render();
+
+    $pdf = Pdf::loadHTML($html)->setPaper('a3', 'landscape');
+
+    $nombre = 'Reporte_Meteo_Tandil_' . now()->format('Y-m-d_His') . '.pdf';
+
+    return $pdf->download($nombre);
 }
 
 private function floatOrNull($value)

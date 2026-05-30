@@ -105,8 +105,6 @@ class MeteoController extends Controller
     ], 500);
 }
 
-}
-
 public function lecturaActual()
 {
     try {

@@ -57,7 +57,7 @@
             <i class="fas fa-chevron-right subchev" aria-hidden="true"></i>
           </span>
           <div class="sub-menu" role="menu" aria-label="Submenú Datos Actuales">
-            <a href="graficas.html" class="dropdown-subitem with-icon" role="menuitem">
+            <a href="{{ route('meteo.graficas') }}" class="dropdown-subitem with-icon" role="menuitem">
               <span class="nav-ico-wrap"><i class="fa-solid fa-chart-line nav-ico" aria-hidden="true"></i></span>
               Gráficas
             </a>

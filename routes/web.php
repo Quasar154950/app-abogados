@@ -16,7 +16,9 @@ use Illuminate\Database\Schema\Blueprint;
 
 Route::view('/', 'mctandil.home')->name('home');
 
-Route::redirect('/meteo', '/#meteo')->name('mctandil.meteo');
+Route::get('/meteo', function () {
+    return view('meteo.index');
+})->name('meteo.index');
 Route::redirect('/iot', '/#iot')->name('mctandil.iot');
 Route::redirect('/apps', '/#apps')->name('mctandil.apps');
 Route::redirect('/contacto', '/#contacto')->name('mctandil.contacto');

@@ -313,7 +313,7 @@
             </div>
 
             <nav class="toplinks">
-                <a href="#meteo">Meteorología</a>
+                <a href="{{ route('meteo.index') }}">Meteorología</a>
                 <a href="#iot">IoT</a>
                 <a href="#saas">SaaS</a>
                 <a href="#impresion3d">Impresión 3D</a>
@@ -339,7 +339,7 @@
 
             <div class="nav">
                 <a href="#contacto">Consultar proyecto</a>
-                <a href="#meteo" class="secondary">Meteorología</a>
+                <a href="{{ route('meteo.index') }}" class="secondary">Meteorología</a>
                 <a href="#iot" class="secondary">IoT</a>
                 <a href="#saas" class="secondary">SaaS</a>
                 <a href="#impresion3d" class="secondary">Impresión 3D</a>

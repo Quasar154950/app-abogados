@@ -92,7 +92,7 @@
       </a>
 
       <div class="dropdown-menu" id="descargasDropdownMenu">
-        <a href="reporte_clima.php" class="dropdown-item" download>📄 Reporte diario (PDF)</a>
+        <a href="{{ route('meteo.reporte') }}" class="dropdown-item">📄 Reporte diario (PDF)</a>
         <a href="#" class="dropdown-item">📊 Reporte mensual (PDF)</a>
       </div>
     </div>

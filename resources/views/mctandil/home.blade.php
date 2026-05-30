@@ -6,11 +6,25 @@
     <title>MCTandil | SaaS, IoT, Meteorología e Impresión 3D</title>
 
     <style>
+        html { scroll-behavior: smooth; }
+
         body {
             margin: 0;
             font-family: Arial, sans-serif;
             background: #020617;
             color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at top left, rgba(249,115,22,.20), transparent 35%),
+                radial-gradient(circle at bottom right, rgba(14,165,233,.10), transparent 35%);
+            pointer-events: none;
+            z-index: -1;
         }
 
         .container {
@@ -19,6 +33,54 @@
             padding: 28px 20px;
         }
 
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(14px);
+            background: rgba(2, 6, 23, .78);
+            border-bottom: 1px solid rgba(148,163,184,.15);
+        }
+
+        .topbar-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 900;
+            letter-spacing: .5px;
+        }
+
+        .brand img {
+            width: 34px;
+            height: 34px;
+            object-fit: contain;
+        }
+
+        .toplinks {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .toplinks a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .toplinks a:hover { color: #fb923c; }
+
         .hero {
             min-height: 90vh;
             display: flex;
@@ -26,9 +88,7 @@
             text-align: center;
         }
 
-        .hero-content {
-            width: 100%;
-        }
+        .hero-content { width: 100%; }
 
         .logo {
             width: 190px;
@@ -112,6 +172,32 @@
             font-weight: bold;
         }
 
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-top: 34px;
+        }
+
+        .stat {
+            background: rgba(15,23,42,.75);
+            border: 1px solid #1e293b;
+            border-radius: 22px;
+            padding: 20px;
+        }
+
+        .stat strong {
+            display: block;
+            color: #fb923c;
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .stat span {
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+
         .section {
             padding: 60px 0;
         }
@@ -135,11 +221,18 @@
         }
 
         .card {
-            background: #0f172a;
+            background: rgba(15,23,42,.86);
             border: 1px solid #1e293b;
             border-radius: 24px;
             padding: 24px;
             box-shadow: 0 20px 50px rgba(0,0,0,.25);
+            transition: .2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(249,115,22,.55);
+            box-shadow: 0 24px 60px rgba(0,0,0,.35);
         }
 
         .card h3 {
@@ -155,7 +248,33 @@
             text-align: center;
         }
 
+        .whatsapp {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            z-index: 60;
+            background: #25d366;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 14px 18px;
+            border-radius: 999px;
+            box-shadow: 0 14px 40px rgba(0,0,0,.35);
+        }
+
+        .whatsapp:hover {
+            transform: translateY(-2px);
+        }
+
         @media (max-width: 640px) {
+            .topbar-inner {
+                justify-content: center;
+            }
+
+            .toplinks {
+                display: none;
+            }
+
             .hero {
                 min-height: auto;
                 padding-top: 55px;
@@ -173,11 +292,35 @@
             .section h2 {
                 font-size: 28px;
             }
+
+            .whatsapp {
+                right: 12px;
+                bottom: 12px;
+                padding: 12px 15px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 
 <body>
+
+    <header class="topbar">
+        <div class="topbar-inner">
+            <div class="brand">
+                <img src="{{ asset('images/logo-mctandil.png') }}" alt="Logo MCTandil">
+                <span>MCTandil</span>
+            </div>
+
+            <nav class="toplinks">
+                <a href="#meteo">Meteorología</a>
+                <a href="#iot">IoT</a>
+                <a href="#saas">SaaS</a>
+                <a href="#impresion3d">Impresión 3D</a>
+                <a href="#contacto">Contacto</a>
+            </nav>
+        </div>
+    </header>
 
     <main class="container hero">
         <div class="hero-content">
@@ -195,11 +338,28 @@
             </p>
 
             <div class="nav">
-                <a href="#meteo">Meteorología</a>
+                <a href="#contacto">Consultar proyecto</a>
+                <a href="#meteo" class="secondary">Meteorología</a>
                 <a href="#iot" class="secondary">IoT</a>
                 <a href="#saas" class="secondary">SaaS</a>
                 <a href="#impresion3d" class="secondary">Impresión 3D</a>
-                <a href="#contacto" class="secondary">Contacto</a>
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    <strong>4</strong>
+                    <span>Áreas tecnológicas integradas</span>
+                </div>
+
+                <div class="stat">
+                    <strong>100%</strong>
+                    <span>Desarrollo propio y adaptable</span>
+                </div>
+
+                <div class="stat">
+                    <strong>Tandil</strong>
+                    <span>Tecnología local con mirada real</span>
+                </div>
             </div>
 
             <div class="construction">
@@ -356,6 +516,10 @@
     <footer class="container footer">
         © {{ date('Y') }} MCTandil · SaaS · IoT · Meteorología · Automatización · Impresión 3D.
     </footer>
+
+    <a class="whatsapp" href="https://wa.me/5492494631299" target="_blank">
+        💬 WhatsApp
+    </a>
 
 </body>
 </html>

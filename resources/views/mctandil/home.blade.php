@@ -6,38 +6,192 @@
     <title>MCTandil | SaaS, IoT, Meteorología e Impresión 3D</title>
 
     <style>
-        body { margin: 0; font-family: Arial, sans-serif; background: #020617; color: #f8fafc; }
-        .container { max-width: 1100px; margin: 0 auto; padding: 28px 20px; }
-        .hero { min-height: 90vh; display: flex; align-items: center; }
-        .badge { display: inline-block; background: rgba(249,115,22,.15); color: #fb923c; border: 1px solid rgba(249,115,22,.35); padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: bold; margin-bottom: 18px; }
-        h1 { font-size: clamp(42px, 7vw, 82px); line-height: .95; margin: 0; font-weight: 900; }
-        .subtitle { margin-top: 22px; color: #cbd5e1; font-size: 20px; max-width: 760px; line-height: 1.5; }
-        .nav { margin-top: 34px; display: flex; flex-wrap: wrap; gap: 12px; }
-        .nav a { color: white; text-decoration: none; background: #f97316; padding: 12px 18px; border-radius: 16px; font-weight: bold; }
-        .nav a.secondary { background: #111827; border: 1px solid #334155; }
-        .section { padding: 60px 0; }
-        .section h2 { font-size: 34px; margin-bottom: 14px; }
-        .section p { color: #cbd5e1; line-height: 1.6; font-size: 17px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-top: 26px; }
-        .card { background: #0f172a; border: 1px solid #1e293b; border-radius: 24px; padding: 24px; box-shadow: 0 20px 50px rgba(0,0,0,.25); }
-        .card h3 { margin-top: 0; font-size: 22px; }
-        .footer { border-top: 1px solid #1e293b; padding: 28px 0; color: #94a3b8; font-size: 14px; }
-        .construction { margin-top: 28px; background: rgba(251,146,60,.12); border: 1px solid rgba(251,146,60,.35); color: #fed7aa; padding: 16px; border-radius: 18px; font-weight: bold; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #020617;
+            color: #f8fafc;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 28px 20px;
+        }
+
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero-content {
+            width: 100%;
+        }
+
+        .logo {
+            width: 190px;
+            max-width: 70%;
+            margin: 0 auto 22px;
+            display: block;
+            filter: drop-shadow(0 18px 35px rgba(249,115,22,.25));
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(249,115,22,.15);
+            color: #fb923c;
+            border: 1px solid rgba(249,115,22,.35);
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 18px;
+        }
+
+        .eyebrow {
+            font-size: 14px;
+            letter-spacing: 3px;
+            color: #fb923c;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: clamp(42px, 7vw, 82px);
+            line-height: .95;
+            margin: 0;
+            font-weight: 900;
+        }
+
+        .subtitle {
+            margin: 22px auto 0;
+            color: #cbd5e1;
+            font-size: 20px;
+            max-width: 800px;
+            line-height: 1.5;
+        }
+
+        .nav {
+            margin-top: 34px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            background: #f97316;
+            padding: 12px 18px;
+            border-radius: 16px;
+            font-weight: bold;
+            transition: .2s;
+        }
+
+        .nav a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(249,115,22,.25);
+        }
+
+        .nav a.secondary {
+            background: #111827;
+            border: 1px solid #334155;
+        }
+
+        .construction {
+            max-width: 720px;
+            margin: 28px auto 0;
+            background: rgba(251,146,60,.12);
+            border: 1px solid rgba(251,146,60,.35);
+            color: #fed7aa;
+            padding: 16px;
+            border-radius: 18px;
+            font-weight: bold;
+        }
+
+        .section {
+            padding: 60px 0;
+        }
+
+        .section h2 {
+            font-size: 34px;
+            margin-bottom: 14px;
+        }
+
+        .section p {
+            color: #cbd5e1;
+            line-height: 1.6;
+            font-size: 17px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+            margin-top: 26px;
+        }
+
+        .card {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,.25);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-size: 22px;
+        }
+
+        .footer {
+            border-top: 1px solid #1e293b;
+            padding: 28px 0;
+            color: #94a3b8;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        @media (max-width: 640px) {
+            .hero {
+                min-height: auto;
+                padding-top: 55px;
+                padding-bottom: 55px;
+            }
+
+            .logo {
+                width: 150px;
+            }
+
+            .subtitle {
+                font-size: 17px;
+            }
+
+            .section h2 {
+                font-size: 28px;
+            }
+        }
     </style>
 </head>
 
 <body>
 
     <main class="container hero">
-        <div>
+        <div class="hero-content">
             <div class="badge">🚧 Sitio en construcción</div>
+
+            <img src="{{ asset('images/logo-mctandil.png') }}" alt="Logo MCTandil" class="logo">
+
+            <div class="eyebrow">TECNOLOGÍA APLICADA AL MUNDO REAL</div>
 
             <h1>MCTandil</h1>
 
             <p class="subtitle">
-                SaaS · IoT · Meteorología · Automatización · Impresión 3D.
-                Conectando ideas, creando soluciones tecnológicas para proyectos locales,
-                empresas y organizaciones.
+                Desarrollo de software, SaaS, IoT, meteorología, automatización e impresión 3D
+                para empresas, instituciones y proyectos tecnológicos.
             </p>
 
             <div class="nav">
@@ -53,6 +207,31 @@
             </div>
         </div>
     </main>
+
+    <section class="container section">
+        <h2>🚀 ¿Por qué elegir MCTandil?</h2>
+        <p>
+            Integramos software, hardware, sensores, automatización y fabricación digital
+            para crear soluciones reales, útiles y adaptadas a cada proyecto.
+        </p>
+
+        <div class="grid">
+            <div class="card">
+                <h3>Soluciones a medida</h3>
+                <p>Desarrollos pensados según la necesidad real de cada cliente o institución.</p>
+            </div>
+
+            <div class="card">
+                <h3>Hardware + Software</h3>
+                <p>Conectamos sensores, placas, bases de datos, paneles web y aplicaciones.</p>
+            </div>
+
+            <div class="card">
+                <h3>Tecnología local</h3>
+                <p>Proyectos desarrollados desde Tandil, con soporte cercano y personalizado.</p>
+            </div>
+        </div>
+    </section>
 
     <section id="meteo" class="container section">
         <h2>🌦️ Meteorología</h2>

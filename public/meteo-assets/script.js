@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ============================ */
   async function cargarDatos() {
     try {
-      const res = await fetch('/estacionmeteotandil/consulta.php', { cache: 'no-store' });
+      const res = await fetch('/meteo/datos', { cache: 'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const d = await res.json();
 

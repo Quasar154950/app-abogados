@@ -9,6 +9,7 @@ use App\Http\Controllers\SeguimientoController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\TurnoController;
+use App\Http\Controllers\MeteoController;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
@@ -19,6 +20,8 @@ Route::view('/', 'mctandil.home')->name('home');
 Route::get('/meteo', function () {
     return view('meteo.index');
 })->name('meteo.index');
+
+Route::get('/meteo/datos', [MeteoController::class, 'datos'])->name('meteo.datos');
 Route::redirect('/iot', '/#iot')->name('mctandil.iot');
 Route::redirect('/apps', '/#apps')->name('mctandil.apps');
 Route::redirect('/contacto', '/#contacto')->name('mctandil.contacto');

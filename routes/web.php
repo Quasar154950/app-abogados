@@ -21,7 +21,13 @@ Route::get('/meteo', function () {
     return view('meteo.index');
 })->name('meteo.index');
 
+Route::get('/meteo/graficas', function () {
+    return view('meteo.graficas');
+})->name('meteo.graficas');
+
 Route::get('/meteo/datos', [MeteoController::class, 'datos'])->name('meteo.datos');
+Route::get('/meteo/lectura-actual', [MeteoController::class, 'lecturaActual'])
+    ->name('meteo.lectura.actual');
 Route::redirect('/iot', '/#iot')->name('mctandil.iot');
 Route::redirect('/apps', '/#apps')->name('mctandil.apps');
 Route::redirect('/contacto', '/#contacto')->name('mctandil.contacto');

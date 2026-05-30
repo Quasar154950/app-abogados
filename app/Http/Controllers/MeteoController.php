@@ -107,6 +107,51 @@ class MeteoController extends Controller
 
 }
 
+public function lecturaActual()
+{
+    try {
+        $host = env('METEO_DB_HOST', '127.0.0.1');
+        $port = env('METEO_DB_PORT', '5432');
+        $user = env('METEO_DB_USERNAME', 'postgres');
+        $pass = env('METEO_DB_PASSWORD', '');
+        $dbMeteo = env('METEO_DB_DATABASE', 'meteotandil');
+
+        $pdo = new PDO("pgsql:host=$host;port=$port;dbname=$dbMeteo", $user, $pass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]);
+
+        $row = $pdo->query("
+            SELECT
+                tiempo AS ts,
+                temperatura AS temp,
+                humedad AS hum
+            FROM public.clima_tandil
+            ORDER BY tiempo DESC
+            LIMIT 1
+        ")->fetch();
+
+        if (!$row) {
+            return response()->json([
+                'ts' => now()->format('Y-m-d H:i:s'),
+                'temp' => null,
+                'hum' => null,
+            ]);
+        }
+
+        return response()->json([
+            'ts' => $row['ts'],
+            'temp' => is_null($row['temp']) ? null : (float)$row['temp'],
+            'hum' => is_null($row['hum']) ? null : (float)$row['hum'],
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
 private function floatOrNull($value)
 {
     return is_null($value) ? null : (float) $value;

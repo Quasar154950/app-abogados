@@ -9,12 +9,16 @@
         html { scroll-behavior: smooth; }
 
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #020617;
-            color: #f8fafc;
-            overflow-x: hidden;
-        }
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background:
+        url('/images/mctandil-background.png')
+        center bottom / cover
+        no-repeat fixed;
+    background-color: #020617;
+    color: #f8fafc;
+    overflow-x: hidden;
+}
 
         body::before {
             content: "";

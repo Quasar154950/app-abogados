@@ -54,6 +54,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 16px;
+            height: 60px;
         }
 
         .brand {
@@ -65,9 +66,10 @@
         }
 
         .brand img {
-            width: 34px;
-            height: 34px;
+            width: 80px;
+            height: auto;
             object-fit: contain;
+            transform: scale(1.6);
         }
 
         .toplinks {
@@ -95,8 +97,8 @@
         .hero-content { width: 100%; }
 
         .logo {
-            width: 190px;
-            max-width: 70%;
+            width: 420px;
+            max-width: 90%;
             margin: 0 auto 22px;
             display: block;
             filter: drop-shadow(0 18px 35px rgba(249,115,22,.25));
@@ -312,7 +314,7 @@
     <header class="topbar">
         <div class="topbar-inner">
             <div class="brand">
-                <img src="{{ asset('images/logo-mctandil.png') }}" alt="Logo MCTandil">
+                <img src="{{ asset('images/logo-mctandil-transparent.png') }}" alt="Logo MCTandil">
                 <span>MCTandil</span>
             </div>
 
@@ -330,7 +332,7 @@
         <div class="hero-content">
             <div class="badge">🚧 Sitio en construcción</div>
 
-            <img src="{{ asset('images/logo-mctandil.png') }}" alt="Logo MCTandil" class="logo">
+            <img src="{{ asset('images/logo-mctandil-transparent.png') }}" alt="Logo MCTandil" class="logo">
 
             <div class="eyebrow">TECNOLOGÍA APLICADA AL MUNDO REAL</div>
 

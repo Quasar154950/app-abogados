@@ -222,6 +222,13 @@ public function reportePdf()
 
 public function actualizarAstronomia()
 {
+    if (request('token') !== env('ASTRO_TOKEN')) {
+    return response()->json([
+        'ok' => false,
+        'error' => 'No autorizado',
+    ], 403);
+}
+
     date_default_timezone_set('America/Argentina/Buenos_Aires');
 
     $latitude = -37.3215;

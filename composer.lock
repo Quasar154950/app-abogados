@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "57b7ceb0dc5e4657d9294d4e6aba43e6",
+    "content-hash": "16a61bfe80af43e9ab736b959d316db3",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1661,6 +1661,56 @@
                 }
             ],
             "time": "2025-08-22T14:27:06+00:00"
+        },
+        {
+            "name": "jiri.jozif/moonriset",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JiriJozif/moonriset.git",
+                "reference": "a757065ea7d4030357fe93d928160a6ec173cdf8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JiriJozif/moonriset/zipball/a757065ea7d4030357fe93d928160a6ec173cdf8",
+                "reference": "a757065ea7d4030357fe93d928160a6ec173cdf8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^12.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "JiriJozif\\Moonriset\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jiří Jozíf",
+                    "email": "jiri.jozif@gmail.com"
+                }
+            ],
+            "description": "PHP library for calculating moonrise and moonset",
+            "keywords": [
+                "astronomy",
+                "moon",
+                "rise",
+                "set",
+                "transit"
+            ],
+            "support": {
+                "issues": "https://github.com/JiriJozif/moonriset/issues",
+                "source": "https://github.com/JiriJozif/moonriset/tree/1.0.3"
+            },
+            "time": "2025-04-10T12:21:11+00:00"
         },
         {
             "name": "laravel/fortify",
@@ -4512,6 +4562,75 @@
                 "source": "https://github.com/MyIntervals/PHP-CSS-Parser/tree/v9.3.0"
             },
             "time": "2026-03-03T17:31:43+00:00"
+        },
+        {
+            "name": "solaris/php-moon-phase",
+            "version": "v3.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/BitAndBlack/php-moon-phase.git",
+                "reference": "705df50a9e2fc24e4d7ed11a3980297fd78790c6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/BitAndBlack/php-moon-phase/zipball/705df50a9e2fc24e4d7ed11a3980297fd78790c6",
+                "reference": "705df50a9e2fc24e4d7ed11a3980297fd78790c6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2.0",
+                "phpunit/phpunit": "^11.0",
+                "rector/rector": "^2.0",
+                "symfony/var-dumper": "^7.0 || ^8.0",
+                "symplify/easy-coding-standard": "^13.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Solaris\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Samir Shah",
+                    "email": "samir@rayofsolaris.net"
+                },
+                {
+                    "name": "Erik Scheepers",
+                    "email": "e.scheepers@linkorb.com",
+                    "role": "Packaging for composer"
+                },
+                {
+                    "name": "Tobias Köngeter",
+                    "email": "hello@bitandblack.com",
+                    "homepage": "https://www.bitandblack.com"
+                }
+            ],
+            "description": "Calculate the phases of the Moon in PHP.",
+            "homepage": "https://github.com/BitAndBlack/php-moon-phase",
+            "keywords": [
+                "moon",
+                "phase",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/BitAndBlack/php-moon-phase/issues",
+                "source": "https://github.com/BitAndBlack/php-moon-phase/tree/v3.3.0"
+            },
+            "funding": [
+                {
+                    "url": "https://www.buymeacoffee.com/tobiaskoengeter",
+                    "type": "buymeacoffee"
+                }
+            ],
+            "time": "2026-03-05T06:14:00+00:00"
         },
         {
             "name": "spatie/image",

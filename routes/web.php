@@ -31,6 +31,10 @@ Route::get('/meteo/reporte', [MeteoController::class, 'reportePdf'])
 Route::get('/meteo/datos', [MeteoController::class, 'datos'])->name('meteo.datos');
 Route::get('/meteo/lectura-actual', [MeteoController::class, 'lecturaActual'])
     ->name('meteo.lectura.actual');
+
+Route::get('/meteo/actualizar-astronomia', [MeteoController::class, 'actualizarAstronomia'])
+    ->name('meteo.actualizar.astronomia');
+    
 Route::redirect('/iot', '/#iot')->name('mctandil.iot');
 Route::redirect('/apps', '/#apps')->name('mctandil.apps');
 Route::redirect('/contacto', '/#contacto')->name('mctandil.contacto');

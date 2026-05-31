@@ -220,6 +220,215 @@ public function reportePdf()
     return $pdf->download($nombre);
 }
 
+public function actualizarAstronomia()
+{
+    date_default_timezone_set('America/Argentina/Buenos_Aires');
+
+    $latitude = -37.3215;
+    $longitude = -59.1365;
+    $timezone = -3;
+    $fecha = now('America/Argentina/Buenos_Aires')->format('Y-m-d');
+
+    try {
+        $url = 'https://aa.usno.navy.mil/api/rstt/oneday?' . http_build_query([
+            'date' => $fecha,
+            'coords' => $latitude . ',' . $longitude,
+            'tz' => $timezone,
+        ]);
+
+        $response = @file_get_contents($url);
+
+        if ($response === false) {
+            return response()->json([
+                'ok' => false,
+                'error' => 'No se pudo consultar la API USNO.',
+                'url' => $url,
+            ], 500);
+        }
+
+        $json = json_decode($response, true);
+
+        if (!$json || isset($json['error'])) {
+            return response()->json([
+                'ok' => false,
+                'error' => $json['error'] ?? 'Respuesta inválida de USNO.',
+                'raw' => $json,
+            ], 500);
+        }
+
+        $data = $json['properties']['data'] ?? null;
+
+        if (!$data) {
+            return response()->json([
+                'ok' => false,
+                'error' => 'USNO no devolvió properties.data.',
+                'raw' => $json,
+            ], 500);
+        }
+
+        $sunData = $data['sundata'] ?? [];
+        $moonData = $data['moondata'] ?? [];
+
+        $buscarHora = function (array $items, array $nombres) {
+            foreach ($items as $item) {
+                $phen = strtolower($item['phen'] ?? '');
+                foreach ($nombres as $nombre) {
+                    if (str_contains($phen, strtolower($nombre))) {
+                        return $item['time'] ?? null;
+                    }
+                }
+            }
+            return null;
+        };
+
+        $alba = $buscarHora($sunData, ['Begin Civil Twilight', 'BC']);
+        $salidaSol = $buscarHora($sunData, ['Rise', 'Sunrise']);
+        $puestaSol = $buscarHora($sunData, ['Set', 'Sunset']);
+        $anochecer = $buscarHora($sunData, ['End Civil Twilight', 'EC']);
+
+        $salidaLuna = $buscarHora($moonData, ['Rise', 'Moonrise']);
+        $puestaLuna = $buscarHora($moonData, ['Set', 'Moonset']);
+
+        $faseIngles = $data['curphase'] ?? null;
+        $visibilidadRaw = $data['fracillum'] ?? null;
+
+        $faseLunar = $this->traducirFaseLunar($faseIngles);
+        $visibilidadLunar = $this->normalizarIluminacionLunar($visibilidadRaw);
+        $cicloLunar = $this->calcularCicloLunar($faseLunar);
+
+        $duracionDia = null;
+
+        if ($salidaSol && $puestaSol) {
+            $inicio = strtotime($fecha . ' ' . $salidaSol);
+            $fin = strtotime($fecha . ' ' . $puestaSol);
+
+            if ($inicio && $fin && $fin > $inicio) {
+                $duracionDia = gmdate('H:i:s', $fin - $inicio);
+            }
+        }
+
+        $host = env('METEO_DB_HOST', '127.0.0.1');
+        $port = env('METEO_DB_PORT', '5432');
+        $user = env('METEO_DB_USERNAME', 'postgres');
+        $pass = env('METEO_DB_PASSWORD', '');
+        $dbAstro = env('ASTRO_DB_DATABASE', 'almanaque');
+
+        $pdo = new PDO("pgsql:host=$host;port=$port;dbname=$dbAstro", $user, $pass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        ]);
+
+        $pdo->exec("SET CLIENT_ENCODING TO 'UTF8'");
+
+        $sql = "INSERT INTO public.astronomia
+            (fecha_hora, alba, salida_sol, puesta_sol, anochecer, duracion_dia,
+             salida_luna, puesta_luna, fase_lunar, ciclo_lunar, visibilidad_lunar)
+            VALUES
+            (:fecha_hora, :alba, :salida_sol, :puesta_sol, :anochecer, :duracion_dia,
+             :salida_luna, :puesta_luna, :fase_lunar, :ciclo_lunar, :visibilidad_lunar)
+            RETURNING id, fecha_hora";
+
+        $stmt = $pdo->prepare($sql);
+
+        $stmt->execute([
+            ':fecha_hora' => now('America/Argentina/Buenos_Aires')->format('Y-m-d H:i:s'),
+            ':alba' => $alba,
+            ':salida_sol' => $salidaSol,
+            ':puesta_sol' => $puestaSol,
+            ':anochecer' => $anochecer,
+            ':duracion_dia' => $duracionDia,
+            ':salida_luna' => $salidaLuna,
+            ':puesta_luna' => $puestaLuna,
+            ':fase_lunar' => $faseLunar,
+            ':ciclo_lunar' => $cicloLunar,
+            ':visibilidad_lunar' => $visibilidadLunar,
+        ]);
+
+        $row = $stmt->fetch();
+
+        return response()->json([
+            'ok' => true,
+            'mensaje' => 'Datos astronómicos actualizados correctamente.',
+            'id' => $row['id'] ?? null,
+            'fecha_hora' => $row['fecha_hora'] ?? null,
+            'datos' => [
+                'alba' => $alba,
+                'salida_sol' => $salidaSol,
+                'puesta_sol' => $puestaSol,
+                'anochecer' => $anochecer,
+                'duracion_dia' => $duracionDia,
+                'salida_luna' => $salidaLuna,
+                'puesta_luna' => $puestaLuna,
+                'fase_lunar' => $faseLunar,
+                'ciclo_lunar' => $cicloLunar,
+                'visibilidad_lunar' => $visibilidadLunar,
+            ],
+        ], 200, [], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+    } catch (\Throwable $e) {
+        return response()->json([
+            'ok' => false,
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+private function traducirFaseLunar(?string $fase): ?string
+{
+    if (!$fase) {
+        return null;
+    }
+
+    return match (strtolower(trim($fase))) {
+        'new moon' => 'Luna Nueva',
+        'waxing crescent' => 'Luna Creciente',
+        'first quarter' => 'Cuarto Creciente',
+        'waxing gibbous' => 'Luna Gibosa Creciente',
+        'full moon' => 'Luna Llena',
+        'waning gibbous' => 'Luna Gibosa Menguante',
+        'last quarter', 'third quarter' => 'Cuarto Menguante',
+        'waning crescent' => 'Luna Menguante',
+        default => $fase,
+    };
+}
+
+private function calcularCicloLunar(?string $fase): ?string
+{
+    if (!$fase) {
+        return null;
+    }
+
+    if (str_contains($fase, 'Creciente')) {
+        return 'Creciente';
+    }
+
+    if (str_contains($fase, 'Menguante')) {
+        return 'Menguante';
+    }
+
+    if ($fase === 'Luna Nueva') {
+        return 'Creciente';
+    }
+
+    if ($fase === 'Luna Llena') {
+        return 'Menguante';
+    }
+
+    return null;
+}
+
+private function normalizarIluminacionLunar($valor): ?float
+{
+    if ($valor === null || $valor === '') {
+        return null;
+    }
+
+    $valor = str_replace('%', '', (string) $valor);
+    $valor = trim($valor);
+
+    return round((float) $valor, 2);
+}
+
 private function floatOrNull($value)
 {
     return is_null($value) ? null : (float) $value;

@@ -17,6 +17,8 @@ use Illuminate\Database\Schema\Blueprint;
 
 Route::view('/', 'mctandil.home')->name('home');
 
+Route::view('/saas', 'mctandil.saas')->name('saas');
+
 Route::get('/meteo', function () {
     return view('meteo.index');
 })->name('meteo.index');

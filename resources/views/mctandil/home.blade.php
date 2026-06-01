@@ -321,7 +321,7 @@
             <nav class="toplinks">
                 <a href="{{ route('meteo.index') }}">Meteorología</a>
                 <a href="#iot">IoT</a>
-                <a href="#saas">SaaS</a>
+                <a href="{{ route('saas') }}">SaaS</a>
                 <a href="#impresion3d">Impresión 3D</a>
                 <a href="#contacto">Contacto</a>
             </nav>
@@ -347,7 +347,7 @@
                 <a href="#contacto">Consultar proyecto</a>
                 <a href="{{ route('meteo.index') }}" class="secondary">Meteorología</a>
                 <a href="#iot" class="secondary">IoT</a>
-                <a href="#saas" class="secondary">SaaS</a>
+                <a href="{{ route('saas') }}" class="secondary">SaaS</a>
                 <a href="#impresion3d" class="secondary">Impresión 3D</a>
             </div>
 

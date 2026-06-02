@@ -276,7 +276,7 @@
             </div>
 
             <div class="content">
-                <h2>🏋️ DemoGym</h2>
+                <h2>🏋️ Gimnasios</h2>
                 
                 <div class="rating">⭐⭐⭐⭐⭐</div>
                 <div class="functional">Modelo funcional</div>
@@ -351,7 +351,7 @@
                 </div>
 
                 <div class="actions">
-                    <a class="btn" href="#" target="_blank">
+                    <a class="btn" href="https://rare-prosperity-production-a81a.up.railway.app/estudio/demo" target="_blank">
                         Ver Demo
                     </a>
 

@@ -345,9 +345,9 @@
 
                 <div class="demo-box">
                     <strong>Usuario demo:</strong><br>
-                    demo@abogados.com<br>
+                    demo2@estudio.com<br>
                     <strong>Contraseña:</strong><br>
-                    demo1234
+                    Abc4661
                 </div>
 
                 <div class="actions">

@@ -644,6 +644,10 @@ a.dropdown-item[href*="mensuales"] .nav-ico { color: #0ea5e9; }   /* celestito *
 a.dropdown-item[href*="galeria"]   .nav-ico { color: #ef4444; }   /* rojo */
 a.dropdown-item[href*="webcam"]    .nav-ico { color: #22c55e; }   /* verde */
 
+#descargasDropdownMenu {
+    min-width: 380px !important;
+}
+
 
 
 

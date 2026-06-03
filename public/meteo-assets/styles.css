@@ -136,6 +136,7 @@ header h1 {
   color: #222;
   text-decoration: none;
   border-bottom: 1px solid #eee;
+  white-space: nowrap;
 }
 .dropdown-item:last-child{ border-bottom: none; }
 .dropdown-item:hover{ background: #f3f6ff; }

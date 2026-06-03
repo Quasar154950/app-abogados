@@ -478,10 +478,14 @@ footer .info-icon-footer:hover{ color: #CCCCCC; }
 .dropdown-item.has-sub > span {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  gap: .25rem;
 }
-.dropdown-item.has-sub .subchev { font-size: 12px; opacity: .8; }
+
+.dropdown-item.has-sub .subchev {
+  margin-left: auto;
+  font-size: 12px;
+  opacity: .8;
+}
 
 /* El submenú que se despliega a la derecha */
 .dropdown-item .sub-menu {

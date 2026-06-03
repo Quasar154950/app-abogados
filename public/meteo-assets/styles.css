@@ -648,6 +648,18 @@ a.dropdown-item[href*="webcam"]    .nav-ico { color: #22c55e; }   /* verde */
     min-width: 380px !important;
 }
 
+.nav-home {
+    margin-left: auto;
+}
+
+.icon-max {
+    color: #ef4444;
+}
+
+.icon-prom {
+    color: #000000;
+}
+
 
 
 

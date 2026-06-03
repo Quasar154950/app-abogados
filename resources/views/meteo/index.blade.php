@@ -108,6 +108,12 @@
         <a href="https://eyes.nasa.gov/apps/earth" target="_blank" rel="noopener" class="dropdown-item">🛰️ Eyes on the Earth (3D)</a>
       </div>
     </div>
+
+     <!-- BOTÓN INICIO -->
+    <a href="{{ url('/') }}" class="nav-button nav-home">
+      <i class="fas fa-house"></i> Inicio
+    </a>
+
   </nav>
 
   <main class="content-wrapper">

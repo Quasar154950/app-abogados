@@ -606,7 +606,7 @@ html { position: relative; }
 .with-icon {
   display: flex;
   align-items: center;
-  gap: .55rem;
+  gap: .25rem;
 }
 
 /* Cajita fija para que el icono no “empuje” nada al hacer hover */

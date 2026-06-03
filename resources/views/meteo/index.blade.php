@@ -53,7 +53,7 @@
         <div class="dropdown-item has-sub" tabindex="0" aria-haspopup="true" aria-expanded="false">
           <span class="with-icon">
             <span class="nav-ico-wrap"><i class="fa-solid fa-gauge-high nav-ico" aria-hidden="true"></i></span>
-            Datos Actuales en línea
+            Datos Actuales
             <i class="fas fa-chevron-right subchev" aria-hidden="true"></i>
           </span>
           <div class="sub-menu" role="menu" aria-label="Submenú Datos Actuales">

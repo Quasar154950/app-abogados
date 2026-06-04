@@ -662,7 +662,7 @@ a.dropdown-item[href*="webcam"]    .nav-ico { color: #22c55e; }   /* verde */
 
 #astronomia-container .astro-title{
   display: grid !important;
-  grid-template-columns: 100px 1fr 100px;
+  grid-template-columns: 80px 1fr 80px !important;
   align-items: center;
   gap: 8px;
   margin-bottom: 10px;
@@ -673,39 +673,21 @@ a.dropdown-item[href*="webcam"]    .nav-ico { color: #22c55e; }   /* verde */
   justify-self: center !important;
   margin: 0 !important;
   text-align: center !important;
-  white-space: nowrap;
-}
-
-#ml-widget{
-  grid-column: 3;
-  justify-self: end;
 }
 
 .astro-sun-icon{
-  grid-column: 1;
-  justify-self: start;
-  width: 55px;
-  height: 55px;
+  grid-column: 1 !important;
+  justify-self: start !important;
+  width: 55px !important;
+  height: 55px !important;
   object-fit: contain;
   position: relative;
   top: -12px;
 }
 
-@media (max-width: 600px){
-  #astronomia-container .astro-title{
-    grid-template-columns: 72px 1fr 72px;
-    gap: 4px;
-  }
-
-  .astro-sun-icon{
-    width: 70px;
-    height: 70px;
-    top: -6px;
-  }
-
-  #astronomia-container .astro-title h2{
-    font-size: 1.1rem;
-  }
+#ml-widget{
+  grid-column: 3 !important;
+  justify-self: end !important;
 }
 
 

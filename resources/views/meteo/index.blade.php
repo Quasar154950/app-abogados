@@ -20,7 +20,7 @@
 <body>
 <header>
   <h1>
-    <a href="index.html" aria-label="Inicio">
+    <a href="{{ url('/') }}" aria-label="Volver al inicio de MCTandil">
       <img src="{{ asset('meteo-assets/img/logo-mctandil.png') }}" alt="Microclima Tandil" class="logo-inline" style="height:68px;width:auto;">
     </a>
     <span class="site-title">Microclima Tandil - Estaciones Meteorológicas Automáticas</span>

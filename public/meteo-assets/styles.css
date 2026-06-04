@@ -689,7 +689,9 @@ a.dropdown-item[href*="webcam"]    .nav-ico { color: #22c55e; }   /* verde */
   grid-column: 3 !important;
   justify-self: end !important;
 }
-
+body {
+    border: 10px solid red !important;
+}
 
 
 

@@ -678,11 +678,11 @@ a.dropdown-item[href*="webcam"]    .nav-ico { color: #22c55e; }   /* verde */
 .astro-sun-icon{
   grid-column: 1 !important;
   justify-self: start !important;
-  width: 110px !important;
-  height: 110px !important;
+  width: 115px !important;
+  height: 115px !important;
   object-fit: contain;
   position: relative;
-  top: -12px;
+  top: -14px;
 }
 
 #ml-widget{

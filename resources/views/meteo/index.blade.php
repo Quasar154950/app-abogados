@@ -142,7 +142,12 @@
     <!-- ===== Astronomía ===== -->
     <section id="astronomia-container">
       <div class="astro-title">
-        <h2>Datos Astronómicos</h2>
+
+        <img src="{{ asset('meteo-assets/img/sol-horizonte-transparente.png') }}"
+         alt="Astronomía"
+         class="astro-sun-icon">
+
+    <h2>Datos Astronómicos</h2>
 
         <!-- 🌙 LUNA -->
         <div id="ml-widget" aria-label="Fase lunar" role="img">

@@ -678,8 +678,8 @@ a.dropdown-item[href*="webcam"]    .nav-ico { color: #22c55e; }   /* verde */
 .astro-sun-icon{
   grid-column: 1 !important;
   justify-self: start !important;
-  width: 85px !important;
-  height: 85px !important;
+  width: 105px !important;
+  height: 105px !important;
   object-fit: contain;
   position: relative;
   top: -12px;

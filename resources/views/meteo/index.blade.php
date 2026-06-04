@@ -6,7 +6,7 @@
   <title>Estación Meteorológica Automática - Microclima Tandil</title>
 
   <!-- CSS principal -->
-  <link rel="stylesheet" href="{{ asset('meteo-assets/styles.css') }}?v=?v=10000" />
+  <link rel="stylesheet" href="{{ asset('meteo-assets/styles.css') }}?v=?v=10001" />
 
   <!-- Iconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"

@@ -682,7 +682,7 @@ a.dropdown-item[href*="webcam"]    .nav-ico { color: #22c55e; }   /* verde */
   height: 115px !important;
   object-fit: contain;
   position: relative;
-  top: -14px;
+  top: -16px;
 }
 
 #ml-widget{

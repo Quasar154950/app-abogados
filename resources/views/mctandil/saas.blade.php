@@ -366,6 +366,54 @@
             </div>
         </article>
 
+        <article class="card">
+    <div class="screenshot">
+        <img src="{{ asset('agrocontrol/icons/icon-512.png') }}" alt="AgroControl">
+    </div>
+
+    <div class="content">
+        <h2>🌱 AgroControl</h2>
+    
+        <div class="rating">⭐⭐⭐⭐⭐</div>
+        <div class="functional">Modelo funcional</div>
+
+        <p>
+            Panel demo para monitoreo de suelo agrícola, invernaderos y cultivos.
+            Visualización de temperatura, humedad, pH, electroconductividad, salinidad y nutrientes NPK.
+        </p>
+
+        <div class="features">
+            <div>✔ Temperatura del suelo</div>
+            <div>✔ Humedad del suelo</div>
+            <div>✔ pH y electroconductividad</div>
+            <div>✔ Salinidad y TDS</div>
+            <div>✔ Nitrógeno, fósforo y potasio</div>
+            <div>✔ Demo app móvil instalable</div>
+        </div>
+
+        <div class="demo-box">
+            <strong>Tipo de demo:</strong><br>
+            Simulación interactiva<br>
+            <strong>Orientado a:</strong><br>
+            Agro · IoT · Invernaderos
+        </div>
+
+        <div class="actions">
+            <a class="btn" href="{{ asset('agrocontrol/index.html') }}" target="_blank">
+                Ver Demo
+            </a>
+
+            <a class="btn secondary" href="#">
+                Ver Video
+            </a>
+
+            <a class="btn secondary" href="https://wa.me/5492494631299?text=Hola,%20quiero%20informaci%C3%B3n%20sobre%20AgroControl" target="_blank">
+                Solicitar información
+            </a>
+        </div>
+    </div>
+</article>
+
     </section>
 
     <section class="coming">

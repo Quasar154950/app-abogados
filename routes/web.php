@@ -23,6 +23,10 @@ Route::get('/meteo', function () {
     return view('meteo.index');
 })->name('meteo.index');
 
+Route::get('/meteo/app', function () {
+    return view('meteo.pwa');
+})->name('meteo.pwa');
+
 Route::get('/meteo/graficas', function () {
     return view('meteo.graficas');
 })->name('meteo.graficas');

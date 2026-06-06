@@ -1,0 +1,111 @@
+{
+  "name": "MCTandil",
+  "short_name": "MCTandil",
+  "description": "Estación meteorológica automática de Tandil",
+  "start_url": "/meteo/app",
+  "display": "standalone",
+  "background_color": "#070b14",
+  "theme_color": "#0b1630",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/meteo-assets/img/logo-mctandil.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/meteo-assets/img/logo-mctandil.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

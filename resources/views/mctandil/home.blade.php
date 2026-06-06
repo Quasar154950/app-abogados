@@ -353,7 +353,7 @@
 
             <div class="stats">
                 <div class="stat">
-                    <strong>4</strong>
+                    <strong>5</strong>
                     <span>Áreas tecnológicas integradas</span>
                 </div>
 
@@ -443,6 +443,21 @@
             </div>
 
             <div class="card">
+                <h3>🌿 Invernaderos Inteligentes</h3>
+                <p>Control de temperatura, humedad, riego, ventilación y monitoreo remoto.</p>
+            </div>
+
+            <div class="card">
+                <h3>📡 Telemetría LoRa</h3>
+                <p>Comunicación de largo alcance para sensores distribuidos en campos y establecimientos.</p>
+            </div>
+            
+            <div class="card">
+                <h3>⚡ Monitoreo Energético</h3>
+                <p>Control de consumo eléctrico, energía solar, registros históricos y alertas inteligentes.</p>
+            </div>
+
+            <div class="card">
                 <h3>Proyectos a medida</h3>
                 <p>Soluciones tecnológicas adaptadas a necesidades reales del mundo físico.</p>
             </div>
@@ -471,6 +486,17 @@
                 <h3>🎾 Padel App</h3>
                 <p>Reservas, torneos, cuadros, rankings y resultados. Próximamente.</p>
             </div>
+
+            <div class="card">
+                <h3>🌱 AgroControl</h3>
+                <p>Monitoreo de suelo, pH, humedad, electroconductividad, salinidad y nutrientes NPK para agricultura e invernaderos.</p>
+            </div>
+
+            <div class="card">
+                <h3>🚚 FleetControl</h3>
+                <p>Seguimiento GPS de vehículos, maquinaria y activos. Recorridos, alertas y telemetría en tiempo real.</p>
+            </div>
+
         </div>
     </section>
 

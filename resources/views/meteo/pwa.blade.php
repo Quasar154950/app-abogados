@@ -13,6 +13,26 @@
 </head>
 <body>
 
+<div id="appLoader" class="app-loader">
+    <div class="loader-card">
+        <img src="{{ asset('meteo-assets/img/logo-mctandil.png') }}" alt="MCTandil" class="loader-logo">
+
+        <h2>MCTandil</h2>
+        <p>Meteorología en tiempo real</p>
+
+        <div class="loader-steps">
+              <span id="loadStep1">📡 Conectando estación...</span>
+              <span id="loadStep2">☀️ Cargando astronomía...</span>
+              <span id="loadStep3">🌧️ Actualizando meteorología...</span>
+              <span id="loadStep4">✅ Sistema listo</span>
+        </div>
+
+        <div class="loader-bar">
+            <div class="loader-progress"></div>
+        </div>
+    </div>
+</div>
+
 <div class="app">
 
     <header class="app-header">

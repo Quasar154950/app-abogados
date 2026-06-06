@@ -15,6 +15,42 @@ function setValue(id, value) {
             : value;
 }
 
+function ocultarLoader() {
+
+    const loader = document.getElementById("appLoader");
+
+    if (!loader) return;
+
+    const step1 = document.getElementById("loadStep1");
+    const step2 = document.getElementById("loadStep2");
+    const step3 = document.getElementById("loadStep3");
+    const step4 = document.getElementById("loadStep4");
+
+    setTimeout(() => {
+        step1.textContent = "✅ Estación conectada";
+        step1.classList.add("done");
+    }, 300);
+
+    setTimeout(() => {
+        step2.textContent = "✅ Astronomía cargada";
+        step2.classList.add("done");
+    }, 700);
+
+    setTimeout(() => {
+        step3.textContent = "✅ Meteorología actualizada";
+        step3.classList.add("done");
+    }, 1100);
+
+    setTimeout(() => {
+        step4.style.opacity = "1";
+        step4.classList.add("done");
+    }, 1500);
+
+    setTimeout(() => {
+        loader.classList.add("hidden");
+    }, 2200);
+}
+
 function parseTimestamp(ts) {
     if (!ts) return NaN;
 
@@ -125,6 +161,8 @@ async function cargarDatos() {
 
         actualizarEstado(data.tiempo);
 
+        ocultarLoader();
+
     } catch (e) {
 
         document.getElementById("connText").textContent =
@@ -137,6 +175,8 @@ async function cargarDatos() {
 
 cargarDatos();
 setInterval(cargarDatos, 10000);
+
+
 
 
 

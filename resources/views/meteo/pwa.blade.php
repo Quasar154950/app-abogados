@@ -9,7 +9,7 @@
 
     <title>MCTandil App</title>
 
-    <link rel="stylesheet" href="{{ asset('meteo-assets/pwa.css') }}?v=2">
+    <link rel="stylesheet" href="{{ asset('meteo-assets/pwa.css') }}?v=4">
 </head>
 <body>
 
@@ -125,7 +125,7 @@
 
 </div>
 
-<script src="{{ asset('meteo-assets/pwa.js') }}?v=2"></script>
+<script src="{{ asset('meteo-assets/pwa.js') }}?v=4"></script>
 
 <script>
 if ("serviceWorker" in navigator) {

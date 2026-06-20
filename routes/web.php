@@ -10,6 +10,8 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\TurnoController;
 use App\Http\Controllers\MeteoController;
+use App\Http\Controllers\SaasPagoController;
+use App\Http\Controllers\MercadoPagoSaasWebhookController;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
@@ -56,6 +58,9 @@ Route::middleware(['auth', 'verified', 'activo'])->group(function () {
             $user = auth()->user();
             return view('suscripcion.index', compact('user'));
         })->name('suscripcion.index');
+
+        Route::post('/suscripcion/pagar', [SaasPagoController::class, 'pagarMiSuscripcion'])
+        ->name('suscripcion.pagar');
 
         Route::post('/renovar/{user}', function (User $user) {
             $user->renovarSuscripcion();

@@ -26,6 +26,9 @@ class User extends Authenticatable
         'role',
         'activo',
         'fecha_vencimiento',
+        'plan',
+        'precio_suscripcion',
+
     ];
 
     /**

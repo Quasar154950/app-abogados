@@ -1,0 +1,18 @@
+ El volumen de la unidad C es Windows
+ El n£mero de serie del volumen es: 0EFC-E23C
+
+ Directorio de C:\Users\Quasa\OneDrive\Escritorio\abogados-app\app\Http\Controllers
+
+21/06/2026  23:09    <DIR>          .
+21/04/2026  13:44    <DIR>          ..
+30/04/2026  23:35               811 ActividadController.php
+21/06/2026  23:09             9.975 ClienteController.php
+27/02/2026  09:42                77 Controller.php
+21/06/2026  23:09             5.620 DashboardController.php
+25/04/2026  10:13             2.548 ExpedienteController.php
+31/03/2026  00:00             1.868 NotaController.php
+21/06/2026  23:09             2.244 SaasPagoController.php
+21/03/2026  18:48             1.062 SearchController.php
+02/06/2026  00:36             5.648 SeguimientoController.php
+               9 archivos         29.853 bytes
+               2 dirs  213.757.972.480 bytes libres

@@ -1,0 +1,22 @@
+ El volumen de la unidad C es Windows
+ El n£mero de serie del volumen es: 0EFC-E23C
+
+ Directorio de C:\Users\Quasa\OneDrive\Escritorio\abogados-app\app\Models
+
+20/06/2026  16:48    <DIR>          .
+02/06/2026  00:36    <DIR>          ..
+23/03/2026  21:21             1.023 Actividad.php
+20/06/2026  16:48               507 Asistencia.php
+20/06/2026  16:48             2.214 Cliente.php
+21/03/2026  13:26               250 Etiqueta.php
+03/04/2026  10:50               713 Expediente.php
+02/06/2026  00:36               844 MensajeCliente.php
+23/03/2026  23:07               893 Nota.php
+20/06/2026  16:48               555 Pago.php
+20/06/2026  16:48               425 ReservaTurno.php
+20/06/2026  16:48               481 SaasPago.php
+04/04/2026  18:15             3.898 Seguimiento.php
+20/06/2026  16:48               374 Turno.php
+20/06/2026  16:48             2.451 User.php
+              13 archivos         14.628 bytes
+               2 dirs  213.781.901.312 bytes libres

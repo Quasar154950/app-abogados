@@ -1,0 +1,40 @@
+ El volumen de la unidad C es Windows
+ El n£mero de serie del volumen es: 0EFC-E23C
+
+ Directorio de C:\Users\Quasa\OneDrive\Escritorio\abogados-app\database\migrations
+
+21/06/2026  23:07    <DIR>          .
+19/06/2026  22:32    <DIR>          ..
+27/02/2026  09:42             1.473 0001_01_01_000000_create_users_table.php
+27/02/2026  09:42               867 0001_01_01_000001_create_cache_table.php
+27/02/2026  09:42             1.812 0001_01_01_000002_create_jobs_table.php
+27/02/2026  09:42               953 2025_08_14_170933_add_two_factor_columns_to_users_table.php
+12/03/2026  09:22               725 2026_03_12_121709_create_clientes_table.php
+17/03/2026  00:18               722 2026_03_17_031504_create_notas_table.php
+17/03/2026  22:32               349 2026_03_17_222639_add_campos_to_seguimientos_table.php
+17/03/2026  22:47               654 2026_03_17_224608_create_seguimientos_table.php
+18/03/2026  22:05               649 2026_03_18_220236_add_estado_y_fecha_recordatorio_to_seguimientos_table.php
+20/03/2026  09:54               651 2026_03_20_095337_add_prioridad_to_seguimientos_table.php
+21/03/2026  11:14               687 2026_03_21_111325_add_is_pinned_to_notas_table.php
+21/03/2026  13:04               881 2026_03_21_125735_create_etiquetas_table.php
+22/03/2026  11:08               641 2026_03_22_110721_add_archivado_to_clientes_table.php
+23/03/2026  21:19             1.187 2026_03_23_211700_create_actividades_table.php
+26/03/2026  10:49             1.032 2026_03_26_104913_create_media_table.php
+03/04/2026  10:40             1.133 2026_04_02_104217_create_expedientes_table.php
+02/04/2026  11:46               680 2026_04_02_114431_add_expediente_id_to_seguimientos_table.php
+01/05/2026  15:04             2.501 2026_04_03_104627_update_expedientes_table.php
+19/04/2026  14:12             1.084 2026_04_19_140751_add_role_and_cliente_id_to_users_table.php
+01/05/2026  15:34               751 2026_04_20_193041_add_user_id_to_clientes_table.php
+23/04/2026  22:56               712 2026_04_23_225526_remove_cliente_id_from_users_table.php
+01/05/2026  19:21               874 2026_04_30_222208_add_abogado_id_to_clientes_table.php
+01/05/2026  14:31               596 2026_05_01_142930_add_activo_to_users_table.php
+02/05/2026  13:04               522 2026_05_02_130231_add_fecha_vencimiento_to_users_table.php
+03/05/2026  22:40               990 2026_05_03_223923_add_branding_fields_to_users_table.php
+02/06/2026  00:36               427 2026_05_03_234507_add_branding_fields_v2_to_users_table.php
+02/06/2026  00:36               255 2026_05_03_235356_add_branding_fields_v2_to_users_table.php
+02/06/2026  00:36               932 2026_05_04_104212_add_slug_estudio_to_users_table.php
+02/06/2026  00:36               708 2026_05_09_123508_agregar_origen_y_revision_a_media_table.php
+02/06/2026  00:36             1.280 2026_05_10_112257_create_mensajes_cliente_table.php
+02/06/2026  00:36               622 2026_05_11_103501_add_viewed_at_to_media_table.php
+              31 archivos         27.350 bytes
+               2 dirs  213.757.964.288 bytes libres

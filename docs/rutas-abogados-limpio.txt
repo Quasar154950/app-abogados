@@ -1,0 +1,94 @@
+
+  ANY             / ................................................... home › Illuminate\Routing › RedirectController
+  GET|HEAD        cliente/dashboard ................................................................ cliente.dashboard
+  GET|HEAD        cliente/expedientes/{expediente}/imprimir cliente.expedientes.imprimir › ExpedienteController@impri…
+  GET|HEAD        clientes .................................................. clientes.index › ClienteController@index
+  POST            clientes .................................................. clientes.store › ClienteController@store
+  GET|HEAD        clientes/archivados ............................. clientes.archivados › ClienteController@archivados
+  GET|HEAD        clientes/create ......................................... clientes.create › ClienteController@create
+  GET|HEAD        clientes/{cliente} .......................................... clientes.show › ClienteController@show
+  PUT|PATCH       clientes/{cliente} ...................................... clientes.update › ClienteController@update
+  DELETE          clientes/{cliente} .................................... clientes.destroy › ClienteController@destroy
+  PATCH           clientes/{cliente}/archivar ......................... clientes.archivar › ClienteController@archivar
+  POST            clientes/{cliente}/asignar-usuario ...... clientes.asignarUsuario › ClienteController@asignarUsuario
+  POST            clientes/{cliente}/crear-acceso ............... clientes.crearAcceso › ClienteController@crearAcceso
+  PATCH           clientes/{cliente}/desarchivar ................ clientes.desarchivar › ClienteController@desarchivar
+  GET|HEAD        clientes/{cliente}/edit ..................................... clientes.edit › ClienteController@edit
+  POST            clientes/{cliente}/expedientes ...................... expedientes.store › ExpedienteController@store
+  DELETE          clientes/{cliente}/quitar-acceso ............ clientes.quitarAcceso › ClienteController@quitarAcceso
+  POST            clientes/{cliente}/reset-password ......... clientes.resetPassword › ClienteController@resetPassword
+  GET|HEAD        crear-slug ......................................................................................... 
+  GET|HEAD        dashboard .................................................... dashboard › DashboardController@index
+  POST            email/verification-notification verification.send › Laravel\Fortify › EmailVerificationNotification…
+  GET|HEAD        email/verify .... verification.notice › Laravel\Fortify › EmailVerificationPromptController@__invoke
+  GET|HEAD        email/verify/{id}/{hash} .... verification.verify › Laravel\Fortify › VerifyEmailController@__invoke
+  GET|HEAD        estudio/{slug} ....................................................................... login.estudio
+  GET|HEAD        expedientes/{expediente} .............................. expedientes.show › ExpedienteController@show
+  PUT             expedientes/{expediente} .......................... expedientes.update › ExpedienteController@update
+  DELETE          expedientes/{expediente} ........................ expedientes.destroy › ExpedienteController@destroy
+  GET|HEAD        expedientes/{expediente}/edit ......................... expedientes.edit › ExpedienteController@edit
+  GET|HEAD        expedientes/{expediente}/imprimir ............. expedientes.imprimir › ExpedienteController@imprimir
+  GET|HEAD        flux/editor.css ............................... Flux\AssetManager@editorCss › AssetManager@editorCss
+  GET|HEAD        flux/editor.js .................................. Flux\AssetManager@editorJs › AssetManager@editorJs
+  GET|HEAD        flux/editor.min.js ........................ Flux\AssetManager@editorMinJs › AssetManager@editorMinJs
+  GET|HEAD        flux/flux.js ........................................ Flux\AssetManager@fluxJs › AssetManager@fluxJs
+  GET|HEAD        flux/flux.min.js .............................. Flux\AssetManager@fluxMinJs › AssetManager@fluxMinJs
+  GET|HEAD        forgot-password ............ password.request › Laravel\Fortify › PasswordResetLinkController@create
+  POST            forgot-password ............... password.email › Laravel\Fortify › PasswordResetLinkController@store
+  GET|HEAD        historial ............................................ actividades.index › ActividadController@index
+  DELETE          historial/vaciar ................................... actividades.vaciar › ActividadController@vaciar
+  GET|HEAD        livewire-e361d28c/css/{component}.css .............................................................. 
+  GET|HEAD        livewire-e361d28c/css/{component}.global.css ....................................................... 
+  GET|HEAD        livewire-e361d28c/js/{component}.js ................................................................ 
+  GET|HEAD        livewire-e361d28c/livewire.csp.min.js.map ............. Livewire\Mechanisms › FrontendAssets@cspMaps
+  GET|HEAD        livewire-e361d28c/livewire.min.js ...... Livewire\Mechanisms › FrontendAssets@returnJavaScriptAsFile
+  GET|HEAD        livewire-e361d28c/livewire.min.js.map .................... Livewire\Mechanisms › FrontendAssets@maps
+  GET|HEAD        livewire-e361d28c/preview-file/{filename} livewire.preview-file › Livewire\Features › FilePreviewCo…
+  POST            livewire-e361d28c/update default-livewire.update › Livewire\Mechanisms › HandleRequests@handleUpdate
+  POST            livewire-e361d28c/upload-file livewire.upload-file › Livewire\Features › FileUploadController@handle
+  GET|HEAD        login .............................. login › Laravel\Fortify › AuthenticatedSessionController@create
+  POST            login ......................... login.store › Laravel\Fortify › AuthenticatedSessionController@store
+  POST            logout ........................... logout › Laravel\Fortify › AuthenticatedSessionController@destroy
+  POST            notas ........................................................... notas.store › NotaController@store
+  DELETE          notas/{id} .................................................. notas.destroy › NotaController@destroy
+  PUT             notas/{nota} .................................................. notas.update › NotaController@update
+  GET|HEAD        notas/{nota}/edit ................................................. notas.edit › NotaController@edit
+  PATCH           notas/{nota}/toggle-pin ................................. notas.togglePin › NotaController@togglePin
+  GET|HEAD        register .............................. register › Laravel\Fortify › RegisteredUserController@create
+  POST            register ......................... register.store › Laravel\Fortify › RegisteredUserController@store
+  POST            renovar/{user} ................................................................. renovar.suscripcion
+  POST            reset-password ..................... password.update › Laravel\Fortify › NewPasswordController@store
+  GET|HEAD        reset-password/{token} ............. password.reset › Laravel\Fortify › NewPasswordController@create
+  GET|HEAD        search ...................................................... global.search › SearchController@index
+  GET|HEAD        seguimientos ...................................... seguimientos.index › SeguimientoController@index
+  POST            seguimientos ...................................... seguimientos.store › SeguimientoController@store
+  PUT             seguimientos/{seguimiento} ...................... seguimientos.update › SeguimientoController@update
+  DELETE          seguimientos/{seguimiento} .................... seguimientos.destroy › SeguimientoController@destroy
+  GET|HEAD        seguimientos/{seguimiento}/edit ..................... seguimientos.edit › SeguimientoController@edit
+  PATCH           seguimientos/{seguimiento}/estado . seguimientos.cambiarEstado › SeguimientoController@cambiarEstado
+  ANY             settings ................................................... Illuminate\Routing › RedirectController
+  GET|HEAD        settings/appearance ................. appearance.edit › Livewire\Mechanisms › LivewirePageController
+  GET|HEAD        settings/password ................ user-password.edit › Livewire\Mechanisms › LivewirePageController
+  GET|HEAD        settings/profile ....................... profile.edit › Livewire\Mechanisms › LivewirePageController
+  GET|HEAD        settings/two-factor ................. two-factor.show › Livewire\Mechanisms › LivewirePageController
+  GET|HEAD        soporte ............................................................................................ 
+  POST            soporte/backup ...................................................................... soporte.backup
+  GET|HEAD        soporte/login ........................................................................ login.soporte
+  POST            soporte/reset-password/{user} ............................................... soporte.reset.password
+  POST            soporte/ver-como/{user} ........................................................... soporte.ver-como
+  POST            soporte/volver ...................................................................... soporte.volver
+  GET|HEAD        soporte/{user}/editar-vencimiento ....................................... soporte.editar.vencimiento
+  POST            soporte/{user}/guardar-vencimiento ..................................... soporte.guardar.vencimiento
+  GET|HEAD        storage/{path} ....................................................................... storage.local
+  PUT             storage/{path} ................................................................ storage.local.upload
+  GET|HEAD        suscripcion ...................................................................... suscripcion.index
+  POST            suscripcion/pagar ........................ suscripcion.pagar › SaasPagoController@pagarMiSuscripcion
+  GET|HEAD        test-cloudinary .................................................................................... 
+  POST            toggle-activo/{user} ................................................................. toggle.activo
+  GET|HEAD        up ................................................................................................. 
+  GET|HEAD        user/confirm-password ...... password.confirm › Laravel\Fortify › ConfirmablePasswordController@show
+  POST            user/confirm-password password.confirm.store › Laravel\Fortify › ConfirmablePasswordController@store
+  GET|HEAD        user/confirmed-password-status password.confirmation › Laravel\Fortify › ConfirmedPasswordStatusCon…
+
+                                                                                                   Showing [90] routes
+

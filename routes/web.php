@@ -9,7 +9,6 @@ use App\Http\Controllers\SeguimientoController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\TurnoController;
-use App\Http\Controllers\MeteoController;
 use App\Http\Controllers\SaasPagoController;
 use App\Http\Controllers\MercadoPagoSaasWebhookController;
 use App\Models\User;
@@ -17,36 +16,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 
-Route::view('/', 'mctandil.home')->name('home');
-
-Route::view('/saas', 'mctandil.saas')->name('saas');
-
-Route::get('/meteo', function () {
-    return view('meteo.index');
-})->name('meteo.index');
-
-Route::get('/meteo/app', function () {
-    return view('meteo.pwa');
-})->name('meteo.pwa');
-
-Route::get('/meteo/graficas', function () {
-    return view('meteo.graficas');
-})->name('meteo.graficas');
-
-Route::get('/meteo/reporte', [MeteoController::class, 'reportePdf'])
-    ->name('meteo.reporte');
-
-Route::get('/meteo/datos', [MeteoController::class, 'datos'])->name('meteo.datos');
-Route::get('/meteo/lectura-actual', [MeteoController::class, 'lecturaActual'])
-    ->name('meteo.lectura.actual');
-
-Route::get('/meteo/actualizar-astronomia', [MeteoController::class, 'actualizarAstronomia'])
-    ->name('meteo.actualizar.astronomia');
-    
-Route::redirect('/iot', '/#iot')->name('mctandil.iot');
-Route::redirect('/apps', '/#apps')->name('mctandil.apps');
-Route::redirect('/contacto', '/#contacto')->name('mctandil.contacto');
-
+ 
 Route::middleware(['auth', 'verified', 'activo'])->group(function () {
 
     Route::middleware('role:abogado')->group(function () {

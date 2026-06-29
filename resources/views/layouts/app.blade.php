@@ -5,7 +5,7 @@
         x-on:keydown.window.meta.k.prevent="$dispatch('open-global-search')"
     >
         <flux:main class="px-0 sm:px-2 md:px-4">
-            <div style="background:linear-gradient(135deg,#ff6a00,#ff9500); min-height:100vh;" class="-mx-4 px-4 py-6 sm:-mx-6 sm:px-6">
+            <div class="-mx-4 px-4 py-6 sm:-mx-6 sm:px-6 min-h-screen bg-zinc-100 dark:bg-zinc-800">
                 <div class="w-full md:mx-auto md:max-w-5xl">
 
                     @if(session('soporte_original_id'))

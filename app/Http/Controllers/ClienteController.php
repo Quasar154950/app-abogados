@@ -43,7 +43,7 @@ class ClienteController extends Controller
             'telefono' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:clientes,email',
             'direccion' => 'required|string|max:255',
-            'fecha_vencimiento_cuota' => 'nullable|date',
+            
         ], [
             'nombre.required' => 'El nombre es obligatorio.',
             'telefono.required' => 'El teléfono es obligatorio.',
@@ -267,7 +267,7 @@ class ClienteController extends Controller
             'telefono' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:clientes,email,' . $id,
             'direccion' => 'required|string|max:255',
-            'fecha_vencimiento_cuota' => 'nullable|date',
+            
         ], [
             'nombre.required' => 'El nombre es obligatorio.',
             'telefono.required' => 'El teléfono es obligatorio.',
@@ -282,10 +282,10 @@ class ClienteController extends Controller
             'telefono' => $request->telefono,
             'email' => $request->email,
             'direccion' => $request->direccion,
-            'fecha_vencimiento_cuota' => $request->fecha_vencimiento_cuota,
+            
         ]);
 
-        return redirect()->route('clientes.index')->with('success', 'Socio actualizado correctamente.');
+        return redirect()->route('clientes.index')->with('success', 'Cliente actualizado correctamente.');
     }
 
     public function destroy(string $id)
@@ -294,7 +294,7 @@ class ClienteController extends Controller
 
         $cliente->delete();
 
-        return redirect()->route('clientes.index')->with('success', 'Socio eliminado correctamente.');
+        return redirect()->route('clientes.index')->with('success', 'Cliente eliminado correctamente.');
     }
 
     public function archivar(string $id)
@@ -305,7 +305,7 @@ class ClienteController extends Controller
             'archivado' => true
         ]);
 
-        return redirect()->route('clientes.index')->with('success', 'Socio archivado correctamente.');
+        return redirect()->route('clientes.index')->with('success', 'Cliente archivado correctamente.');
     }
 
     public function desarchivar(string $id)
@@ -316,7 +316,7 @@ class ClienteController extends Controller
             'archivado' => false
         ]);
 
-        return redirect()->route('clientes.archivados')->with('success', 'Socio restaurado correctamente.');
+        return redirect()->route('clientes.archivados')->with('success', 'Cliente restaurado correctamente.');
     }
 
     public function pagos(string $id)

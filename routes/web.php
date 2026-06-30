@@ -8,7 +8,6 @@ use App\Http\Controllers\NotaController;
 use App\Http\Controllers\SeguimientoController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ActividadController;
-use App\Http\Controllers\TurnoController;
 use App\Http\Controllers\SaasPagoController;
 use App\Http\Controllers\MercadoPagoSaasWebhookController;
 use App\Models\User;
@@ -92,31 +91,14 @@ Route::middleware(['auth', 'verified', 'activo'])->group(function () {
 
         Route::get('historial', [ActividadController::class, 'index'])->name('actividades.index');
         Route::delete('historial/vaciar', [ActividadController::class, 'vaciar'])->name('actividades.vaciar');
-        Route::get('turnos', [TurnoController::class, 'index'])->name('turnos.index');
-        Route::post('turnos/{turno}/reservar', [TurnoController::class, 'reservar'])
-            ->name('turnos.reservar');
-// 👥 ASISTENCIAS
-        Route::get('asistencias', [\App\Http\Controllers\AsistenciaController::class, 'index'])
-          ->name('asistencias.index');
-
-        Route::post('asistencias/{cliente}/marcar', [\App\Http\Controllers\AsistenciaController::class, 'marcar'])
-          ->name('asistencias.marcar');
-
-        Route::get('clientes/{cliente}/qr', [\App\Http\Controllers\AsistenciaController::class, 'qr'])
-          ->name('clientes.qr');
-
-        Route::post('asistencias/{asistencia}/salida', [\App\Http\Controllers\AsistenciaController::class, 'salidaManual'])
-          ->name('asistencias.salida');
-    });
+     });
+        
 });
 
 // Panel cliente
 Route::middleware(['auth', 'role:cliente', 'activo'])->get('/cliente/dashboard', function () {
     return view('cliente.dashboard');
 })->name('cliente.dashboard');
-
-Route::middleware(['auth', 'role:cliente', 'activo'])->get('/cliente/turnos', [TurnoController::class, 'index'])
-    ->name('cliente.turnos');
 
 Route::middleware(['auth', 'role:cliente', 'activo'])->get('/cliente/cuota', function () {
 
@@ -126,11 +108,6 @@ Route::middleware(['auth', 'role:cliente', 'activo'])->get('/cliente/cuota', fun
 
 })->name('cliente.cuota');
 
-Route::middleware(['auth', 'role:cliente', 'activo'])->post('/cliente/turnos/{turno}/reservar', [TurnoController::class, 'reservar'])
-    ->name('cliente.turnos.reservar');
-
-Route::middleware(['auth', 'role:cliente', 'activo'])->delete('/cliente/reservas/{reserva}/cancelar', [TurnoController::class, 'cancelarReserva'])
-    ->name('cliente.reservas.cancelar');
 
 Route::middleware(['auth', 'role:cliente', 'activo'])->get('/cliente/expedientes/{expediente}/imprimir', [ExpedienteController::class, 'imprimir'])
     ->name('cliente.expedientes.imprimir');

@@ -46,15 +46,6 @@ Route::middleware(['auth', 'verified', 'activo'])->group(function () {
 
         Route::get('clientes/archivados', [ClienteController::class, 'archivados'])->name('clientes.archivados');
 
-        // 💰 PAGOS / CUOTAS GENERALES
-        Route::get('pagos', function () {
-        $clientes = \App\Models\Cliente::where('abogado_id', auth()->id())
-        ->where('archivado', false)
-        ->orderBy('nombre')
-        ->get();
-
-        return view('pagos.index', compact('clientes'));
-        })->name('pagos.index');
         
         Route::get('clientes/{cliente}/pagos', [ClienteController::class, 'pagos'])
             ->name('clientes.pagos');
@@ -99,15 +90,6 @@ Route::middleware(['auth', 'verified', 'activo'])->group(function () {
 Route::middleware(['auth', 'role:cliente', 'activo'])->get('/cliente/dashboard', function () {
     return view('cliente.dashboard');
 })->name('cliente.dashboard');
-
-Route::middleware(['auth', 'role:cliente', 'activo'])->get('/cliente/cuota', function () {
-
-    $cliente = \App\Models\Cliente::where('user_id', auth()->id())->first();
-
-    return view('cliente.cuota', compact('cliente'));
-
-})->name('cliente.cuota');
-
 
 Route::middleware(['auth', 'role:cliente', 'activo'])->get('/cliente/expedientes/{expediente}/imprimir', [ExpedienteController::class, 'imprimir'])
     ->name('cliente.expedientes.imprimir');

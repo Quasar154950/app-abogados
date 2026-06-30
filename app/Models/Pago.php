@@ -12,7 +12,7 @@ class Pago extends Model
         'metodo_pago',
         'observacion',
         'fecha_pago',
-        'vencimiento_cuota',
+        
     ];
 
     /*

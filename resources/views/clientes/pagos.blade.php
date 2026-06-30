@@ -10,7 +10,7 @@
             </h1>
 
             <p class="mt-2 text-sm text-stone-600">
-                Socio:
+                Cliente:
                 <span class="font-bold">
                     {{ $cliente->nombre }}
                 </span>
@@ -43,8 +43,7 @@
 
                             <th class="p-4 text-left">Observación</th>
 
-                            <th class="p-4 text-left">Vence</th>
-
+                            
                         </tr>
 
                     </thead>
@@ -71,11 +70,8 @@
                                     {{ $pago->observacion }}
                                 </td>
 
-                                <td class="p-4 text-sm text-stone-700">
-                                    {{ \Carbon\Carbon::parse($pago->vencimiento_cuota)->format('d/m/Y') }}
-                                </td>
-
-                            </tr>
+                                                                   
+                                </tr>
 
                         @endforeach
 

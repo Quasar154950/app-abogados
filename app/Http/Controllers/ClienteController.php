@@ -58,12 +58,11 @@ class ClienteController extends Controller
             'telefono' => $request->telefono,
             'email' => $request->email,
             'direccion' => $request->direccion,
-            'fecha_vencimiento_cuota' => $request->fecha_vencimiento_cuota,
             'archivado' => false,
             'abogado_id' => auth()->id(),
         ]);
 
-        return redirect()->route('clientes.index')->with('success', 'Socio creado correctamente.');
+        return redirect()->route('clientes.index')->with('success', 'Cliente creado correctamente.');
     }
 
     public function show(Request $request, string $id)

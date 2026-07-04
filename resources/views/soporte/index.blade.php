@@ -16,6 +16,13 @@
             </div>
         @endif
 
+        {{-- ✅ MENSAJE DE ÉXITO --}}
+@if(session('success'))
+    <div class="p-3 rounded bg-green-100 text-green-800 text-sm font-bold">
+        {{ session('success') }}
+    </div>
+@endif
+
         {{-- MÉTRICAS --}}
         @php
             $users = \App\Models\User::where('role', 'abogado')

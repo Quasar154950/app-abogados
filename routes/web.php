@@ -335,21 +335,25 @@ Route::get('/crear-slug', function () {
 Route::post('/webhooks/mercadopago/saas', [MercadoPagoSaasWebhookController::class, 'handle'])
     ->name('webhooks.mercadopago.saas');
 
-Route::get('/crear-columnas-suscripcion', function () {
+Route::get('/crear-tabla-saas-pagos', function () {
 
-    if (!Schema::hasColumn('users', 'plan')) {
-        Schema::table('users', function (Blueprint $table) {
+    if (!Schema::hasTable('saas_pagos')) {
+        Schema::create('saas_pagos', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('plan')->nullable();
+            $table->integer('monto')->default(0);
+            $table->string('estado')->default('pendiente');
+            $table->string('payment_id')->nullable();
+            $table->string('external_reference')->nullable();
+            $table->string('metodo_pago')->nullable();
+            $table->timestamp('fecha_pago')->nullable();
+            $table->text('checkout_url')->nullable();
+            $table->timestamps();
         });
     }
 
-    if (!Schema::hasColumn('users', 'precio_suscripcion')) {
-        Schema::table('users', function (Blueprint $table) {
-            $table->integer('precio_suscripcion')->default(0);
-        });
-    }
-
-    return 'Columnas plan y precio_suscripcion creadas correctamente';
+    return 'Tabla saas_pagos creada correctamente';
 });
     
 require __DIR__ . '/settings.php';

@@ -152,7 +152,7 @@ Route::middleware(['auth'])->get('/soporte/{user}/editar-vencimiento', function 
 
 })->name('soporte.editar.vencimiento');
 
-// 💾 GUARDAR VENCIMIENTO
+// 💾 GUARDAR SUSCRIPCIÓN
 Route::middleware(['auth'])->post('/soporte/{user}/guardar-vencimiento', function (User $user, \Illuminate\Http\Request $request) {
 
     $userAuth = auth()->user();
@@ -163,12 +163,16 @@ Route::middleware(['auth'])->post('/soporte/{user}/guardar-vencimiento', functio
 
     $request->validate([
         'fecha_vencimiento' => ['required', 'date'],
+        'plan' => ['nullable', 'string', 'max:50'],
+        'precio_suscripcion' => ['required', 'numeric', 'min:0'],
     ]);
 
     $user->fecha_vencimiento = $request->fecha_vencimiento;
+    $user->plan = $request->plan;
+    $user->precio_suscripcion = $request->precio_suscripcion;
     $user->save();
 
-    return redirect('/soporte')->with('success', 'Fecha de vencimiento actualizada correctamente.');
+    return redirect('/soporte')->with('success', 'Suscripción actualizada correctamente.');
 
 })->name('soporte.guardar.vencimiento');
 

@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\SaasPago;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use MercadoPago\Client\Preference\PreferenceClient;
 use MercadoPago\Exceptions\MPApiException;
 use MercadoPago\MercadoPagoConfig;
 
 class SaasPagoController extends Controller
 {
+    private string $baseUrl = 'https://rare-prosperity-production-a81a.up.railway.app';
+
     public function pagar(User $user)
     {
         $soporte = auth()->user();
@@ -44,50 +47,50 @@ class SaasPagoController extends Controller
 
         $client = new PreferenceClient();
 
+        $payload = [
+            'items' => [[
+                'title' => 'Suscripción SaaS MCTandil - ' . strtoupper($user->plan),
+                'quantity' => 1,
+                'currency_id' => 'ARS',
+                'unit_price' => (int) $user->precio_suscripcion,
+            ]],
+            'external_reference' => $pago->external_reference,
+            'back_urls' => [
+                'success' => $this->baseUrl . '/soporte/saas-pagos/exito',
+                'failure' => $this->baseUrl . '/soporte/saas-pagos/error',
+                'pending' => $this->baseUrl . '/soporte/saas-pagos/pendiente',
+            ],
+            'auto_return' => 'approved',
+            'notification_url' => $this->baseUrl . '/webhooks/mercadopago/saas',
+        ];
+
+        Log::info('MP SaaS payload soporte', $payload);
+
         try {
-
-            $preference = $client->create([
-
-                'items' => [
-                    [
-                        'title' => 'Suscripción SaaS MCTandil - ' . strtoupper($user->plan),
-                        'quantity' => 1,
-                        'currency_id' => 'ARS',
-                        'unit_price' => (float) $user->precio_suscripcion,
-                    ],
-                ],
-
-                'external_reference' => $pago->external_reference,
-
-                'back_urls' => [
-                    'success' => url('/soporte/saas-pagos/exito'),
-                    'failure' => url('/soporte/saas-pagos/error'),
-                    'pending' => url('/soporte/saas-pagos/pendiente'),
-                ],
-
-            ]);
-
-            $checkoutUrl = $preference->init_point;
+            $preference = $client->create($payload);
 
             $pago->update([
-                'checkout_url' => $checkoutUrl,
+                'checkout_url' => $preference->init_point,
             ]);
 
             return redirect('/soporte?success=Link de pago SaaS generado correctamente');
 
         } catch (MPApiException $e) {
-
-            $pago->update([
-                'estado' => 'error',
+            Log::error('MP SaaS API error soporte', [
+                'message' => $e->getMessage(),
+                'api_response' => method_exists($e, 'getApiResponse') ? $e->getApiResponse() : null,
             ]);
+
+            $pago->update(['estado' => 'error']);
 
             return redirect('/soporte?error=Mercado Pago respondió con error al crear el link');
 
         } catch (\Throwable $e) {
-
-            $pago->update([
-                'estado' => 'error',
+            Log::error('MP SaaS error general soporte', [
+                'message' => $e->getMessage(),
             ]);
+
+            $pago->update(['estado' => 'error']);
 
             return redirect('/soporte?error=No se pudo generar el link de pago');
         }
@@ -124,30 +127,25 @@ class SaasPagoController extends Controller
         $client = new PreferenceClient();
 
         $payload = [
-            'items' => [
-                [
-                    'title' => 'Suscripción SaaS MCTandil - ' . strtoupper($user->plan),
-                    'quantity' => 1,
-                    'currency_id' => 'ARS',
-                    'unit_price' => (int) $user->precio_suscripcion,
-                ],
-            ],
-
+            'items' => [[
+                'title' => 'Suscripción SaaS MCTandil - ' . strtoupper($user->plan),
+                'quantity' => 1,
+                'currency_id' => 'ARS',
+                'unit_price' => (int) $user->precio_suscripcion,
+            ]],
             'external_reference' => $pago->external_reference,
-
             'back_urls' => [
-                'success' => url('/suscripcion'),
-                'failure' => url('/suscripcion'),
-                'pending' => url('/suscripcion'),
+                'success' => $this->baseUrl . '/suscripcion',
+                'failure' => $this->baseUrl . '/suscripcion',
+                'pending' => $this->baseUrl . '/suscripcion',
             ],
-
             'auto_return' => 'approved',
-
-            'notification_url' => url('/webhooks/mercadopago/saas'),
+            'notification_url' => $this->baseUrl . '/webhooks/mercadopago/saas',
         ];
 
-        try {
+        Log::info('MP SaaS payload mi suscripcion', $payload);
 
+        try {
             $preference = $client->create($payload);
 
             $pago->update([
@@ -156,11 +154,22 @@ class SaasPagoController extends Controller
 
             return redirect($preference->init_point);
 
-        } catch (\Throwable $e) {
-
-            $pago->update([
-                'estado' => 'error',
+        } catch (MPApiException $e) {
+            Log::error('MP SaaS API error mi suscripcion', [
+                'message' => $e->getMessage(),
+                'api_response' => method_exists($e, 'getApiResponse') ? $e->getApiResponse() : null,
             ]);
+
+            $pago->update(['estado' => 'error']);
+
+            return redirect('/suscripcion?error=Mercado Pago respondió con error al crear el pago');
+
+        } catch (\Throwable $e) {
+            Log::error('MP SaaS error general mi suscripcion', [
+                'message' => $e->getMessage(),
+            ]);
+
+            $pago->update(['estado' => 'error']);
 
             return redirect('/suscripcion?error=No se pudo generar el pago');
         }
@@ -168,7 +177,7 @@ class SaasPagoController extends Controller
 
     public function exito()
     {
-        return redirect('/soporte?success=Pago iniciado correctamente. Luego conectaremos el webhook para renovar automático');
+        return redirect('/soporte?success=Pago iniciado correctamente');
     }
 
     public function error()

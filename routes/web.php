@@ -31,11 +31,6 @@ Route::middleware(['auth', 'verified', 'activo'])->group(function () {
         Route::post('/suscripcion/pagar', [SaasPagoController::class, 'pagarMiSuscripcion'])
         ->name('suscripcion.pagar');
 
-        Route::post('/renovar/{user}', function (User $user) {
-            $user->renovarSuscripcion();
-            return back()->with('ok', 'Suscripción renovada +30 días');
-        })->name('renovar.suscripcion');
-
         Route::post('/toggle-activo/{user}', function (User $user) {
             $user->activo = !$user->activo;
             $user->save();
@@ -318,5 +313,8 @@ Route::get('/crear-slug', function () {
 
     return 'Columna slug creada';
 });
-
+// 🔔 WEBHOOK MERCADO PAGO SAAS
+Route::post('/webhooks/mercadopago/saas', [MercadoPagoSaasWebhookController::class, 'handle'])
+    ->name('webhooks.mercadopago.saas');
+    
 require __DIR__ . '/settings.php';

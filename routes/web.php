@@ -334,5 +334,22 @@ Route::get('/crear-slug', function () {
 // 🔔 WEBHOOK MERCADO PAGO SAAS
 Route::post('/webhooks/mercadopago/saas', [MercadoPagoSaasWebhookController::class, 'handle'])
     ->name('webhooks.mercadopago.saas');
+
+Route::get('/crear-columnas-suscripcion', function () {
+
+    if (!Schema::hasColumn('users', 'plan')) {
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('plan')->nullable();
+        });
+    }
+
+    if (!Schema::hasColumn('users', 'precio_suscripcion')) {
+        Schema::table('users', function (Blueprint $table) {
+            $table->integer('precio_suscripcion')->default(0);
+        });
+    }
+
+    return 'Columnas plan y precio_suscripcion creadas correctamente';
+});
     
 require __DIR__ . '/settings.php';

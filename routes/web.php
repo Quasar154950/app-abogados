@@ -37,6 +37,20 @@ Route::middleware(['auth', 'verified', 'activo'])->group(function () {
             return back();
         })->name('toggle.activo');
 
+        Route::post('/renovar/{user}', function (User $user) {
+
+    $userAuth = auth()->user();
+
+    if (!$userAuth || $userAuth->email !== 'soporte@tuempresa.com') {
+        abort(403);
+    }
+
+    $user->renovarSuscripcion();
+
+    return back()->with('success', 'Suscripción renovada correctamente.');
+
+})->name('renovar.suscripcion');
+
         Route::get('search', [SearchController::class, 'index'])->name('global.search');
 
         Route::get('clientes/archivados', [ClienteController::class, 'archivados'])->name('clientes.archivados');

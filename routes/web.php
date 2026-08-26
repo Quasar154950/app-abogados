@@ -337,6 +337,7 @@ Route::post('/webhooks/mercadopago/saas', [MercadoPagoSaasWebhookController::cla
 
 Route::get('/migrar-sanctum-temporal', function () {
     \Illuminate\Support\Facades\Artisan::call('migrate', [
+        '--path' => 'database/migrations/2026_08_26_195804_create_personal_access_tokens_table.php',
         '--force' => true,
     ]);
 

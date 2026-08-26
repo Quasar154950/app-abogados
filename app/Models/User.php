@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\Cliente;
 use App\Models\MensajeCliente;
@@ -15,7 +16,7 @@ use App\Models\SaasPago;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, TwoFactorAuthenticatable;
+    use HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.

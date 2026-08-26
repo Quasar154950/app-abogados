@@ -335,13 +335,4 @@ Route::get('/crear-slug', function () {
 Route::post('/webhooks/mercadopago/saas', [MercadoPagoSaasWebhookController::class, 'handle'])
     ->name('webhooks.mercadopago.saas');
 
-Route::get('/migrar-sanctum-temporal', function () {
-    \Illuminate\Support\Facades\Artisan::call('migrate', [
-        '--path' => 'database/migrations/2026_08_26_195804_create_personal_access_tokens_table.php',
-        '--force' => true,
-    ]);
-
-    return '<pre>' . e(\Illuminate\Support\Facades\Artisan::output()) . '</pre>';
-});
-
 require __DIR__ . '/settings.php';

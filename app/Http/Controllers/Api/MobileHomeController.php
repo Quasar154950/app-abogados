@@ -38,6 +38,67 @@ if ($expedienteDestacado) {
         ->first();
 }
 
+$novedades = collect();
+
+// Movimientos
+$cliente->seguimientos()
+    ->with('expediente')
+    ->latest()
+    ->get()
+    ->each(function ($seguimiento) use ($novedades) {
+        $novedades->push([
+            'tipo' => 'movimiento',
+            'titulo' => 'Nuevo movimiento',
+            'descripcion' => $seguimiento->descripcion,
+            'fecha' => $seguimiento->created_at,
+            'fecha_humana' => optional($seguimiento->created_at)
+                ? $seguimiento->created_at->locale('es')->diffForHumans()
+                : null,
+            'expediente' => $seguimiento->expediente?->numero_expediente,
+        ]);
+    });
+
+// Documentos
+$cliente->getMedia('archivos')
+    ->each(function ($documento) use ($novedades) {
+        $novedades->push([
+            'tipo' => 'documento',
+            'titulo' => 'Documento disponible',
+            'descripcion' => $documento->name,
+            'fecha' => $documento->created_at,
+            'fecha_humana' => optional($documento->created_at)
+                ? $documento->created_at->locale('es')->diffForHumans()
+                : null,
+        ]);
+    });
+
+// Mensajes del estudio
+$cliente->mensajes()
+    ->where('remitente', 'estudio')
+    ->latest()
+    ->get()
+    ->each(function ($mensaje) use ($novedades) {
+        $novedades->push([
+            'tipo' => 'mensaje',
+            'titulo' => 'Nuevo mensaje',
+            'descripcion' => $mensaje->mensaje,
+            'fecha' => $mensaje->created_at,
+            'fecha_humana' => optional($mensaje->created_at)
+                ? $mensaje->created_at->locale('es')->diffForHumans()
+                : null,
+        ]);
+    });
+
+$novedades = $novedades
+    ->sortByDesc('fecha')
+    ->take(3)
+    ->values()
+    ->map(function ($novedad) {
+        $novedad['fecha'] = optional($novedad['fecha'])->format('Y-m-d H:i:s');
+
+        return $novedad;
+    });
+
 return response()->json([
     'cliente' => [
         'id' => $cliente->id,
@@ -71,6 +132,8 @@ return response()->json([
     ? $ultimoSeguimiento->created_at->locale('es')->diffForHumans()
     : null,
     ] : null,
+'ultimas_novedades' => $novedades,
+
 ]);
     }
 }

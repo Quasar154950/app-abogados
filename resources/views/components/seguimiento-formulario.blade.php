@@ -16,6 +16,7 @@ new class extends Component
     public $prioridad = 'media';
     public $etiqueta_id = null;
     public $fecha_recordatorio = null;
+    public $visible_para_cliente = false;
 
     public function mount(Cliente $cliente, $expediente = null)
     {
@@ -31,6 +32,7 @@ new class extends Component
             'prioridad' => 'required|in:baja,media,alta',
             'etiqueta_id' => 'nullable|exists:etiquetas,id',
             'fecha_recordatorio' => 'nullable|date',
+            'visible_para_cliente' => 'boolean',
         ]);
 
         Seguimiento::create([
@@ -41,6 +43,7 @@ new class extends Component
             'prioridad' => $this->prioridad,
             'etiqueta_id' => $this->etiqueta_id,
             'fecha_recordatorio' => $this->fecha_recordatorio ?: null,
+            'visible_para_cliente' => $this->visible_para_cliente,
         ]);
 
         $this->reset([
@@ -48,7 +51,8 @@ new class extends Component
             'estado',
             'prioridad',
             'etiqueta_id',
-            'fecha_recordatorio'
+            'fecha_recordatorio',
+            'visible_para_cliente'
         ]);
 
         $this->estado = 'pendiente';
@@ -129,6 +133,25 @@ new class extends Component
                     class="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm dark:bg-neutral-800 dark:text-neutral-200 cursor-pointer">
             </div>
         </div>
+
+        <div class="flex items-start gap-3 rounded-lg border border-neutral-200 p-3 dark:border-neutral-700">
+    <input
+        type="checkbox"
+        wire:model="visible_para_cliente"
+        id="visible_para_cliente"
+        class="mt-1 rounded border-neutral-300 text-green-600 focus:ring-green-500"
+    >
+
+    <label for="visible_para_cliente" class="cursor-pointer">
+        <div class="text-sm font-bold text-neutral-800 dark:text-neutral-200">
+            Mostrar esta actualización al cliente
+        </div>
+
+        <div class="text-xs text-neutral-500">
+            Si lo activás, esta tarea podrá aparecer como un nuevo movimiento en la app del cliente.
+        </div>
+    </label>
+</div>
 
         {{-- BOTÓN --}}
         <button type="button"

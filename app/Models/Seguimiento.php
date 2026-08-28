@@ -23,6 +23,7 @@ class Seguimiento extends Model implements HasMedia
         'estado',
         'fecha_recordatorio',
         'prioridad',
+        'visible_para_cliente',
     ];
 
     /**
@@ -63,6 +64,7 @@ class Seguimiento extends Model implements HasMedia
 
     protected $casts = [
         'fecha_recordatorio' => 'date',
+        'visible_para_cliente' => 'boolean',
     ];
 
     public function cliente()

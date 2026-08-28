@@ -16,6 +16,7 @@ new class extends Component
     public $prioridad = 'media';
     public $etiqueta_id = null;
     public $fecha_recordatorio = null;
+    public $hora_recordatorio = null;
     public $visible_para_cliente = false;
 
     public function mount(Cliente $cliente, $expediente = null)
@@ -32,6 +33,7 @@ new class extends Component
             'prioridad' => 'required|in:baja,media,alta',
             'etiqueta_id' => 'nullable|exists:etiquetas,id',
             'fecha_recordatorio' => 'nullable|date',
+            'hora_recordatorio' => 'nullable|date_format:H:i',
             'visible_para_cliente' => 'boolean',
         ]);
 
@@ -43,6 +45,7 @@ new class extends Component
             'prioridad' => $this->prioridad,
             'etiqueta_id' => $this->etiqueta_id,
             'fecha_recordatorio' => $this->fecha_recordatorio ?: null,
+            'hora_recordatorio' => $this->hora_recordatorio ?: null,
             'visible_para_cliente' => $this->visible_para_cliente,
         ]);
 
@@ -52,6 +55,7 @@ new class extends Component
             'prioridad',
             'etiqueta_id',
             'fecha_recordatorio',
+            'hora_recordatorio',
             'visible_para_cliente'
         ]);
 
@@ -132,6 +136,15 @@ new class extends Component
                     wire:model="fecha_recordatorio"
                     class="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm dark:bg-neutral-800 dark:text-neutral-200 cursor-pointer">
             </div>
+
+            {{-- Hora --}}
+            <div>
+                <label class="block text-[10px] font-bold uppercase text-neutral-500 mb-1">Hora</label>
+                <input type="time"
+                    wire:model="hora_recordatorio"
+                    class="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm dark:bg-neutral-800 dark:text-neutral-200 cursor-pointer">
+            </div>
+
         </div>
 
         <div class="flex items-start gap-3 rounded-lg border border-neutral-200 p-3 dark:border-neutral-700">

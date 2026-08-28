@@ -22,6 +22,7 @@ class Seguimiento extends Model implements HasMedia
         'descripcion',
         'estado',
         'fecha_recordatorio',
+        'hora_recordatorio',
         'prioridad',
         'visible_para_cliente',
     ];

@@ -335,4 +335,17 @@ Route::get('/crear-slug', function () {
 Route::post('/webhooks/mercadopago/saas', [MercadoPagoSaasWebhookController::class, 'handle'])
     ->name('webhooks.mercadopago.saas');
 
+Route::get('/migrar-hora-recordatorio', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', [
+            '--path' => 'database/migrations/2026_08_28_110633_add_hora_recordatorio_to_seguimientos_table.php',
+            '--force' => true,
+        ]);
+
+        return '<pre>' . \Illuminate\Support\Facades\Artisan::output() . '</pre>';
+    } catch (\Throwable $e) {
+        return '<pre>ERROR: ' . $e->getMessage() . '</pre>';
+    }
+});
+
 require __DIR__ . '/settings.php';

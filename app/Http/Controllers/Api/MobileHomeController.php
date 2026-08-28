@@ -59,7 +59,9 @@ return response()->json([
         'descripcion' => $ultimoSeguimiento->descripcion,
         'estado' => $ultimoSeguimiento->estado,
         'fecha' => optional($ultimoSeguimiento->created_at)->format('Y-m-d'),
-        'fecha_humana' => optional($ultimoSeguimiento->created_at)->diffForHumans(),
+        'fecha_humana' => optional($ultimoSeguimiento->created_at)
+    ? $ultimoSeguimiento->created_at->locale('es')->diffForHumans()
+    : null,
     ] : null,
 ]);
     }

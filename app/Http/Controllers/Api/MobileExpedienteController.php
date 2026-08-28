@@ -27,6 +27,7 @@ class MobileExpedienteController extends Controller
         }
 
         $expedientes = $cliente->expedientes()
+            ->where('estado', '!=', 'archivado')
             ->latest()
             ->get()
             ->map(function ($expediente) {

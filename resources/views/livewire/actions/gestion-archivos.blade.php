@@ -38,6 +38,17 @@
                 Máximo 10MB por archivo
                 (300 MB totales por cliente)
             </p>
+
+            @php
+                $totalBytes = $archivos->sum('size');
+                $totalMB = $totalBytes / 1024 / 1024;
+            @endphp
+
+           <p class="text-xs font-semibold text-gray-600 dark:text-neutral-300 mt-2">
+               Almacenamiento usado:
+               {{ number_format($totalMB, 2, ',', '.') }} MB de 300 MB
+           </p>
+
         </div>
 
         @error('archivo')

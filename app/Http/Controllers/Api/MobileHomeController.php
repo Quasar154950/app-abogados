@@ -45,6 +45,8 @@ return response()->json([
         'email' => $cliente->email,
     ],
 
+    'cantidad_expedientes' => $cliente->expedientes()->count(),
+
     'expediente_destacado' => $expedienteDestacado ? [
         'id' => $expedienteDestacado->id,
         'numero_expediente' => $expedienteDestacado->numero_expediente,

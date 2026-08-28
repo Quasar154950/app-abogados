@@ -51,6 +51,8 @@ return response()->json([
     ->where('leido', false)
     ->count(),
 
+    'cantidad_documentos' => $cliente->getMedia('archivos')->count(),
+
     'expediente_destacado' => $expedienteDestacado ? [
         'id' => $expedienteDestacado->id,
         'numero_expediente' => $expedienteDestacado->numero_expediente,

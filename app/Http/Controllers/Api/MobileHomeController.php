@@ -26,25 +26,41 @@ class MobileHomeController extends Controller
         }
 
         $expedienteDestacado = $cliente->expedientes()
-            ->latest()
-            ->first();
+    ->latest()
+    ->first();
 
-        return response()->json([
-            'cliente' => [
-                'id' => $cliente->id,
-                'nombre' => $cliente->nombre,
-                'email' => $cliente->email,
-            ],
+$ultimoSeguimiento = null;
 
-            'expediente_destacado' => $expedienteDestacado ? [
-                'id' => $expedienteDestacado->id,
-                'numero_expediente' => $expedienteDestacado->numero_expediente,
-                'caratula' => $expedienteDestacado->caratula,
-                'tipo' => $expedienteDestacado->tipo,
-                'estado' => $expedienteDestacado->estado,
-                'juzgado' => $expedienteDestacado->juzgado,
-                'fecha_inicio' => $expedienteDestacado->fecha_inicio,
-            ] : null,
-        ]);
+if ($expedienteDestacado) {
+    $ultimoSeguimiento = $expedienteDestacado
+        ->seguimientos()
+        ->latest()
+        ->first();
+}
+
+return response()->json([
+    'cliente' => [
+        'id' => $cliente->id,
+        'nombre' => $cliente->nombre,
+        'email' => $cliente->email,
+    ],
+
+    'expediente_destacado' => $expedienteDestacado ? [
+        'id' => $expedienteDestacado->id,
+        'numero_expediente' => $expedienteDestacado->numero_expediente,
+        'caratula' => $expedienteDestacado->caratula,
+        'tipo' => $expedienteDestacado->tipo,
+        'estado' => $expedienteDestacado->estado,
+        'juzgado' => $expedienteDestacado->juzgado,
+        'fecha_inicio' => $expedienteDestacado->fecha_inicio,
+    ] : null,
+
+    'ultimo_movimiento' => $ultimoSeguimiento ? [
+        'descripcion' => $ultimoSeguimiento->descripcion,
+        'estado' => $ultimoSeguimiento->estado,
+        'fecha' => optional($ultimoSeguimiento->created_at)->format('Y-m-d'),
+        'fecha_humana' => optional($ultimoSeguimiento->created_at)->diffForHumans(),
+    ] : null,
+]);
     }
 }

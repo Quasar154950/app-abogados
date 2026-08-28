@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\MobileExpedienteController;
 use App\Http\Controllers\Api\MobileHomeController;
+use App\Http\Controllers\Api\MobileMensajeController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('mobile')->group(function () {
@@ -39,6 +40,16 @@ Route::prefix('mobile')->group(function () {
         Route::get(
             '/expedientes',
             [MobileExpedienteController::class, 'index']
+        );
+
+        Route::get(
+            '/mensajes',
+            [MobileMensajeController::class, 'index']
+        );
+
+        Route::post(
+            '/mensajes',
+            [MobileMensajeController::class, 'store']
         );
 
         Route::post(

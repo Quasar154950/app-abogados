@@ -313,216 +313,385 @@
                 </form>
             </div>
 
-            @if($cliente->expedientes->isEmpty())
-                <div class="p-6 rounded-xl border-2 border-dashed border-neutral-200 dark:border-neutral-800">
-                    <p class="text-sm text-neutral-500 italic text-center">
-                        Este cliente todavía no tiene expedientes cargados.
-                    </p>
-                </div>
-            @else
-                <div class="space-y-3">
-                    @foreach($cliente->expedientes as $expediente)
-                        <div id="expediente-{{ $expediente->id }}" class="expediente-print rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 bg-neutral-50 dark:bg-neutral-800/40 shadow-sm">
-                            <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+            @php
+    $expedientesVisibles = $cliente->expedientes
+        ->where('estado', '!=', 'archivado');
 
-                                <div class="flex-1">
-                                    <div class="flex items-center gap-2 flex-wrap mb-2">
-                                        <h3 class="text-base font-bold text-neutral-800 dark:text-neutral-100">
-                                            {{ $expediente->caratula }}
-                                        </h3>
+    $expedientesArchivados = $cliente->expedientes
+        ->where('estado', 'archivado');
+@endphp
 
-                                        @php
-                                            $estadoExpediente = match($expediente->estado) {
-                                                'iniciado' => 'bg-blue-600 text-white',
-                                                'en_tramite' => 'bg-yellow-500 text-white',
-                                                'finalizado' => 'bg-green-600 text-white',
-                                                'archivado' => 'bg-neutral-700 text-white',
-                                                default => 'bg-blue-600 text-white',
-                                            };
 
-                                            $textoEstadoExpediente = match($expediente->estado) {
-                                                'iniciado' => 'Iniciado',
-                                                'en_tramite' => 'En trámite',
-                                                'finalizado' => 'Finalizado',
-                                                'archivado' => 'Archivado',
-                                                default => ucfirst(str_replace('_', ' ', $expediente->estado)),
-                                            };
-                                        @endphp
+{{-- EXPEDIENTES VISIBLES --}}
+@if($expedientesVisibles->isEmpty())
 
-                                        <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase shadow-sm {{ $estadoExpediente }}">
-                                            {{ $textoEstadoExpediente }}
-                                        </span>
-                                    </div>
+    @if($expedientesArchivados->isEmpty())
+        <div class="p-6 rounded-xl border-2 border-dashed border-neutral-200 dark:border-neutral-800">
+            <p class="text-sm text-neutral-500 italic text-center">
+                Este cliente todavía no tiene expedientes cargados.
+            </p>
+        </div>
+    @else
+        <div class="p-5 rounded-xl border-2 border-dashed border-neutral-200 dark:border-neutral-800">
+            <p class="text-sm text-neutral-500 italic text-center">
+                Este cliente no tiene expedientes activos o finalizados.
+            </p>
+        </div>
+    @endif
 
-                                    <div class="mt-3 flex flex-wrap gap-4 text-[11px] text-neutral-500 dark:text-neutral-400 font-semibold uppercase">
-                                        <span>
-                                            📁 Número:
-                                            {{ $expediente->numero_expediente ?: 'Sin cargar' }}
-                                        </span>
+@else
 
-                                        <span>
-                                            ⚖️ Juzgado:
-                                            {{ $expediente->juzgado ?: 'Sin cargar' }}
-                                        </span>
+    <div class="space-y-3">
 
-                                        <span>
-                                            🏛️ Tipo:
-                                            {{ $expediente->tipo ? ucfirst($expediente->tipo) : 'Sin definir' }}
-                                        </span>
+        @foreach($expedientesVisibles as $expediente)
 
-                                        <span>
-                                            📅 Inicio:
-                                            {{ $expediente->fecha_inicio ? \Carbon\Carbon::parse($expediente->fecha_inicio)->format('d/m/Y') : 'Sin fecha' }}
-                                        </span>
+            <div id="expediente-{{ $expediente->id }}"
+                 class="expediente-print rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 bg-neutral-50 dark:bg-neutral-800/40 shadow-sm">
 
-                                        <span>
-                                            🕒 Creado:
-                                            {{ $expediente->created_at->format('d/m/Y') }}
-                                        </span>
-                                    </div>
+                <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
 
-                                    @if($expediente->observaciones)
-                                        <p class="mt-3 text-xs text-neutral-500 dark:text-neutral-400 italic">
-                                            "{{ $expediente->observaciones }}"
-                                        </p>
-                                    @endif
+                    <div class="flex-1">
 
-                                    {{-- TAREAS DEL EXPEDIENTE --}}
-                                    <div class="mt-4 border-t border-neutral-200 dark:border-neutral-700 pt-4 no-print">
-                                        <h4 class="text-sm font-bold text-neutral-700 dark:text-neutral-200 mb-3">
-                                            ⚖️ Tareas vinculadas
-                                        </h4>
+                        <div class="flex items-center gap-2 flex-wrap mb-2">
 
-                                        @php
-                                            $tareasExpediente = $cliente->seguimientos->where('expediente_id', $expediente->id);
-                                        @endphp
+                            <h3 class="text-base font-bold text-neutral-800 dark:text-neutral-100">
+                                {{ $expediente->caratula }}
+                            </h3>
 
-                                        @if($tareasExpediente->isEmpty())
-                                            <div class="rounded-lg border border-dashed border-neutral-200 dark:border-neutral-700 px-4 py-3">
-                                                <p class="text-xs text-neutral-500 italic">
-                                                    Este expediente todavía no tiene tareas asociadas.
-                                                </p>
-                                            </div>
-                                        @else
-                                            <div class="space-y-2">
-                                                @foreach($tareasExpediente as $tarea)
-                                                    @php
-                                                        $estadoTarea = match($tarea->estado) {
-                                                            'pendiente' => 'bg-yellow-500 text-white',
-                                                            'en_curso' => 'bg-blue-600 text-white',
-                                                            'resuelto' => 'bg-green-600 text-white',
-                                                            default => 'bg-neutral-500 text-white',
-                                                        };
+                            @php
+                                $estadoExpediente = match($expediente->estado) {
+                                    'iniciado' => 'bg-blue-600 text-white',
+                                    'en_tramite' => 'bg-yellow-500 text-white',
+                                    'finalizado' => 'bg-green-600 text-white',
+                                    default => 'bg-blue-600 text-white',
+                                };
 
-                                                        $textoEstadoTarea = match($tarea->estado) {
-                                                            'pendiente' => 'Pendiente',
-                                                            'en_curso' => 'En curso',
-                                                            'resuelto' => 'Completada',
-                                                            default => ucfirst(str_replace('_', ' ', $tarea->estado)),
-                                                        };
+                                $textoEstadoExpediente = match($expediente->estado) {
+                                    'iniciado' => 'Iniciado',
+                                    'en_tramite' => 'En trámite',
+                                    'finalizado' => 'Finalizado',
+                                    default => ucfirst(str_replace('_', ' ', $expediente->estado)),
+                                };
+                            @endphp
 
-                                                        $prioridadTarea = match($tarea->prioridad) {
-                                                            'alta' => 'border-red-500 text-red-600',
-                                                            'media' => 'border-blue-500 text-blue-600',
-                                                            'baja' => 'border-neutral-400 text-neutral-500',
-                                                            default => 'border-neutral-400 text-neutral-500',
-                                                        };
-                                                    @endphp
+                            <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase shadow-sm {{ $estadoExpediente }}">
+                                {{ $textoEstadoExpediente }}
+                            </span>
 
-                                                    <div class="rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-3">
-                                                        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
-                                                            <div class="flex-1">
-                                                                <div class="flex items-center gap-2 flex-wrap mb-2">
-                                                                    <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase shadow-sm {{ $estadoTarea }}">
-                                                                        {{ $textoEstadoTarea }}
-                                                                    </span>
+                        </div>
 
-                                                                    <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded border {{ $prioridadTarea }}">
-                                                                        {{ $tarea->prioridad }}
-                                                                    </span>
 
-                                                                    @if($tarea->fecha_recordatorio && $tarea->estado !== 'resuelto')
-                                                                        @php
-                                                                            $hoy = \Carbon\Carbon::today();
-                                                                            $fecha = \Carbon\Carbon::parse($tarea->fecha_recordatorio);
-                                                                        @endphp
+                        <div class="mt-3 flex flex-wrap gap-4 text-[11px] text-neutral-500 dark:text-neutral-400 font-semibold uppercase">
 
-                                                                        @if($fecha->isPast() && !$fecha->isToday())
-                                                                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase text-white shadow-sm bg-red-600">
-                                                                                ⚠️ Vencida
-                                                                            </span>
-                                                                        @elseif($fecha->isToday())
-                                                                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase text-white shadow-sm bg-orange-500">
-                                                                                📅 Hoy
-                                                                            </span>
-                                                                        @elseif($fecha->diffInDays($hoy) <= 3)
-                                                                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase text-yellow-950 shadow-sm bg-yellow-400">
-                                                                                ⏳ Próxima
-                                                                            </span>
-                                                                        @endif
-                                                                    @endif
+                            <span>
+                                📁 Número:
+                                {{ $expediente->numero_expediente ?: 'Sin cargar' }}
+                            </span>
 
-                                                                    @if($tarea->etiqueta)
-                                                                        <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded text-white shadow-sm" style="background-color: {{ $tarea->etiqueta->color }};">
-                                                                            {{ $tarea->etiqueta->nombre }}
-                                                                        </span>
-                                                                    @endif
-                                                                </div>
+                            <span>
+                                ⚖️ Juzgado:
+                                {{ $expediente->juzgado ?: 'Sin cargar' }}
+                            </span>
 
-                                                                <p class="text-sm text-neutral-700 dark:text-neutral-200 leading-relaxed">
-                                                                    {{ $tarea->descripcion }}
-                                                                </p>
+                            <span>
+                                🏛️ Tipo:
+                                {{ $expediente->tipo ? ucfirst($expediente->tipo) : 'Sin definir' }}
+                            </span>
 
-                                                                @if($tarea->fecha_recordatorio)
-                                                                    <p class="mt-2 text-[10px] text-neutral-400 font-bold uppercase">
-                                                                        📅 Fecha límite: {{ \Carbon\Carbon::parse($tarea->fecha_recordatorio)->format('d/m/Y') }}
-                                                                    </p>
-                                                                @endif
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        @endif
-                                    </div>
+                            <span>
+                                📅 Inicio:
+                                {{ $expediente->fecha_inicio ? \Carbon\Carbon::parse($expediente->fecha_inicio)->format('d/m/Y') : 'Sin fecha' }}
+                            </span>
+
+                            <span>
+                                🕒 Creado:
+                                {{ $expediente->created_at->format('d/m/Y') }}
+                            </span>
+
+                        </div>
+
+
+                        @if($expediente->observaciones)
+
+                            <p class="mt-3 text-xs text-neutral-500 dark:text-neutral-400 italic">
+                                "{{ $expediente->observaciones }}"
+                            </p>
+
+                        @endif
+
+
+                        {{-- TAREAS DEL EXPEDIENTE --}}
+                        <div class="mt-4 border-t border-neutral-200 dark:border-neutral-700 pt-4 no-print">
+
+                            <h4 class="text-sm font-bold text-neutral-700 dark:text-neutral-200 mb-3">
+                                ⚖️ Tareas vinculadas
+                            </h4>
+
+                            @php
+                                $tareasExpediente = $cliente->seguimientos
+                                    ->where('expediente_id', $expediente->id);
+                            @endphp
+
+
+                            @if($tareasExpediente->isEmpty())
+
+                                <div class="rounded-lg border border-dashed border-neutral-200 dark:border-neutral-700 px-4 py-3">
+
+                                    <p class="text-xs text-neutral-500 italic">
+                                        Este expediente todavía no tiene tareas asociadas.
+                                    </p>
+
                                 </div>
 
-                                {{-- ACCIONES --}}
-<div class="flex items-center gap-2 shrink-0">
+                            @else
 
-{{-- VER --}}
-    <a href="{{ route('expedientes.show', $expediente->id) }}"
-       class="p-2 rounded-lg text-neutral-400 hover:text-blue-600 hover:bg-blue-50 transition"
-       title="Ver expediente">
-        👁️
-    </a>
+                                <div class="space-y-2">
 
-    {{-- IMPRIMIR --}}
-    <a href="{{ route('expedientes.imprimir', $expediente->id) }}"
-       target="_blank"
-       class="p-2 rounded-lg text-neutral-400 hover:text-green-600 hover:bg-green-50 transition"
-       title="Imprimir expediente">
-        🖨️
-    </a>
+                                    @foreach($tareasExpediente as $tarea)
 
-    {{-- WHATSAPP --}}
-    <a href="https://wa.me/549{{ preg_replace('/\D/', '', $cliente->telefono) }}?text={{ urlencode('Hola ' . $cliente->nombre . ', soy Marcela Vairo. Te comparto información sobre tu expediente: ' . $expediente->caratula) }}"
-       target="_blank"
-       class="p-2 rounded-lg hover:bg-green-50 transition"
-       title="Enviar WhatsApp">
+                                        @php
+                                            $estadoTarea = match($tarea->estado) {
+                                                'pendiente' => 'bg-yellow-500 text-white',
+                                                'en_curso' => 'bg-blue-600 text-white',
+                                                'resuelto' => 'bg-green-600 text-white',
+                                                default => 'bg-neutral-500 text-white',
+                                            };
 
-        <img src="/images/whatsapp.png" style="height:18px; margin-top:1px;">
-    </a>
+                                            $textoEstadoTarea = match($tarea->estado) {
+                                                'pendiente' => 'Pendiente',
+                                                'en_curso' => 'En curso',
+                                                'resuelto' => 'Completada',
+                                                default => ucfirst(str_replace('_', ' ', $tarea->estado)),
+                                            };
 
-</div>
+                                            $prioridadTarea = match($tarea->prioridad) {
+                                                'alta' => 'border-red-500 text-red-600',
+                                                'media' => 'border-blue-500 text-blue-600',
+                                                'baja' => 'border-neutral-400 text-neutral-500',
+                                                default => 'border-neutral-400 text-neutral-500',
+                                            };
+                                        @endphp
 
-</div>
-                            </div>
+
+                                        <div class="rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-3">
+
+                                            <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+
+                                                <div class="flex-1">
+
+                                                    <div class="flex items-center gap-2 flex-wrap mb-2">
+
+                                                        <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase shadow-sm {{ $estadoTarea }}">
+                                                            {{ $textoEstadoTarea }}
+                                                        </span>
+
+                                                        <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded border {{ $prioridadTarea }}">
+                                                            {{ $tarea->prioridad }}
+                                                        </span>
+
+
+                                                        @if($tarea->fecha_recordatorio && $tarea->estado !== 'resuelto')
+
+                                                            @php
+                                                                $hoy = \Carbon\Carbon::today();
+                                                                $fecha = \Carbon\Carbon::parse($tarea->fecha_recordatorio);
+                                                            @endphp
+
+
+                                                            @if($fecha->isPast() && !$fecha->isToday())
+
+                                                                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase text-white shadow-sm bg-red-600">
+                                                                    ⚠️ Vencida
+                                                                </span>
+
+                                                            @elseif($fecha->isToday())
+
+                                                                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase text-white shadow-sm bg-orange-500">
+                                                                    📅 Hoy
+                                                                </span>
+
+                                                            @elseif($fecha->diffInDays($hoy) <= 3)
+
+                                                                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase text-yellow-950 shadow-sm bg-yellow-400">
+                                                                    ⏳ Próxima
+                                                                </span>
+
+                                                            @endif
+
+                                                        @endif
+
+
+                                                        @if($tarea->etiqueta)
+
+                                                            <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded text-white shadow-sm"
+                                                                  style="background-color: {{ $tarea->etiqueta->color }};">
+                                                                {{ $tarea->etiqueta->nombre }}
+                                                            </span>
+
+                                                        @endif
+
+                                                    </div>
+
+
+                                                    <p class="text-sm text-neutral-700 dark:text-neutral-200 leading-relaxed">
+                                                        {{ $tarea->descripcion }}
+                                                    </p>
+
+
+                                                    @if($tarea->fecha_recordatorio)
+
+                                                        <p class="mt-2 text-[10px] text-neutral-400 font-bold uppercase">
+                                                            📅 Fecha límite:
+                                                            {{ \Carbon\Carbon::parse($tarea->fecha_recordatorio)->format('d/m/Y') }}
+                                                        </p>
+
+                                                    @endif
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    @endforeach
+
+                                </div>
+
+                            @endif
+
                         </div>
-                    @endforeach
+
+                    </div>
+
+
+                    {{-- ACCIONES --}}
+                    <div class="flex items-center gap-2 shrink-0">
+
+                        <a href="{{ route('expedientes.show', $expediente->id) }}"
+                           class="p-2 rounded-lg text-neutral-400 hover:text-blue-600 hover:bg-blue-50 transition"
+                           title="Ver expediente">
+                            👁️
+                        </a>
+
+                        <a href="{{ route('expedientes.imprimir', $expediente->id) }}"
+                           target="_blank"
+                           class="p-2 rounded-lg text-neutral-400 hover:text-green-600 hover:bg-green-50 transition"
+                           title="Imprimir expediente">
+                            🖨️
+                        </a>
+
+                        <a href="https://wa.me/549{{ preg_replace('/\D/', '', $cliente->telefono) }}?text={{ urlencode('Hola ' . $cliente->nombre . ', soy Marcela Vairo. Te comparto información sobre tu expediente: ' . $expediente->caratula) }}"
+                           target="_blank"
+                           class="p-2 rounded-lg hover:bg-green-50 transition"
+                           title="Enviar WhatsApp">
+
+                            <img src="/images/whatsapp.png" style="height:18px; margin-top:1px;">
+
+                        </a>
+
+                    </div>
+
                 </div>
-            @endif
-        </x-ui.panel>
+
+            </div>
+
+        @endforeach
+
+    </div>
+
+@endif
+
+
+
+{{-- EXPEDIENTES ARCHIVADOS --}}
+@if($expedientesArchivados->isNotEmpty())
+
+    <details class="mt-6 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800/40">
+
+        <summary class="cursor-pointer select-none px-4 py-3 font-bold text-sm text-neutral-700 dark:text-neutral-200 flex items-center justify-between">
+
+            <span>
+                📦 Expedientes archivados
+            </span>
+
+            <span class="rounded-full bg-neutral-700 text-white text-[11px] px-2.5 py-1">
+                {{ $expedientesArchivados->count() }}
+            </span>
+
+        </summary>
+
+
+        <div class="border-t border-neutral-200 dark:border-neutral-700 p-4 space-y-3">
+
+            @foreach($expedientesArchivados as $expediente)
+
+                <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 p-4">
+
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+                        <div class="flex-1">
+
+                            <div class="flex items-center gap-2 flex-wrap">
+
+                                <h3 class="font-bold text-neutral-800 dark:text-neutral-100">
+                                    {{ $expediente->caratula }}
+                                </h3>
+
+                                <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-neutral-700 text-white">
+                                    Archivado
+                                </span>
+
+                            </div>
+
+
+                            <div class="mt-3 flex flex-wrap gap-4 text-[11px] text-neutral-500 dark:text-neutral-400 font-semibold uppercase">
+
+                                <span>
+                                    📁 Número:
+                                    {{ $expediente->numero_expediente ?: 'Sin cargar' }}
+                                </span>
+
+                                <span>
+                                    ⚖️ Juzgado:
+                                    {{ $expediente->juzgado ?: 'Sin cargar' }}
+                                </span>
+
+                                <span>
+                                    📅 Inicio:
+                                    {{ $expediente->fecha_inicio ? \Carbon\Carbon::parse($expediente->fecha_inicio)->format('d/m/Y') : 'Sin fecha' }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="flex items-center gap-2">
+
+                            <a href="{{ route('expedientes.show', $expediente->id) }}"
+                               class="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-2 text-xs text-white font-bold hover:bg-blue-700 transition">
+                                👁️ Ver
+                            </a>
+
+                            <a href="{{ route('expedientes.edit', $expediente->id) }}"
+                               class="inline-flex items-center gap-1 rounded-lg bg-yellow-500 px-3 py-2 text-xs text-white font-bold hover:bg-yellow-600 transition">
+                                ✏️ Editar
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            @endforeach
+
+        </div>
+
+    </details>
+
+@endif
+</x-ui.panel>
 
 {{-- 6. BLOQUE: TAREAS GENERALES DEL CLIENTE --}}
 <x-ui.panel class="text-left">

@@ -100,6 +100,17 @@ $novedades = $novedades
         return $novedad;
     });
 
+    $proximaFechaImportante = $cliente->seguimientos()
+    ->where('visible_para_cliente', true)
+    ->whereNotNull('fecha_recordatorio')
+    ->where('estado', '!=', 'resuelto')
+    ->whereDate('fecha_recordatorio', '>=', now()->toDateString())
+    ->with(['etiqueta', 'expediente'])
+    ->orderBy('fecha_recordatorio')
+    ->orderByRaw('hora_recordatorio IS NULL')
+    ->orderBy('hora_recordatorio')
+    ->first();
+
 return response()->json([
     'cliente' => [
         'id' => $cliente->id,
@@ -134,6 +145,22 @@ return response()->json([
     : null,
     ] : null,
 'ultimas_novedades' => $novedades,
+
+'proxima_fecha_importante' => $proximaFechaImportante ? [
+    'id' => $proximaFechaImportante->id,
+    'fecha' => optional($proximaFechaImportante->fecha_recordatorio)->format('Y-m-d'),
+    'dia' => optional($proximaFechaImportante->fecha_recordatorio)->format('d'),
+    'mes' => optional($proximaFechaImportante->fecha_recordatorio)
+        ? strtoupper($proximaFechaImportante->fecha_recordatorio->locale('es')->translatedFormat('M'))
+        : null,
+    'hora' => $proximaFechaImportante->hora_recordatorio
+        ? substr($proximaFechaImportante->hora_recordatorio, 0, 5)
+        : null,
+    'titulo' => $proximaFechaImportante->etiqueta?->nombre ?? 'Próxima fecha importante',
+    'descripcion' => $proximaFechaImportante->descripcion,
+    'expediente' => $proximaFechaImportante->expediente?->numero_expediente,
+    'juzgado' => $proximaFechaImportante->expediente?->juzgado,
+] : null,
 
 ]);
     }

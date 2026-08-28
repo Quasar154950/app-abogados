@@ -47,6 +47,10 @@ return response()->json([
 
     'cantidad_expedientes' => $cliente->expedientes()->count(),
 
+    'cantidad_mensajes' => $cliente->mensajes()
+    ->where('leido', false)
+    ->count(),
+
     'expediente_destacado' => $expedienteDestacado ? [
         'id' => $expedienteDestacado->id,
         'numero_expediente' => $expedienteDestacado->numero_expediente,

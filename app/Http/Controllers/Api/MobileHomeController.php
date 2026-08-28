@@ -42,6 +42,7 @@ $novedades = collect();
 
 // Movimientos
 $cliente->seguimientos()
+    ->where('visible_para_cliente', true)
     ->with('expediente')
     ->latest()
     ->get()

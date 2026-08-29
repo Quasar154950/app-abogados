@@ -274,10 +274,12 @@ class MobileHomeController extends Controller
         | exclusivamente documentos nuevos/no abiertos.
         */
 
-        $cantidadDocumentosEstudio = $cliente
+        $cantidadDocumentosNoVistos = $cliente
             ->getMedia('archivos')
             ->filter(function ($documento) {
-                return $documento->getCustomProperty('subido_por') === 'estudio';
+                return
+                    $documento->getCustomProperty('subido_por') === 'estudio'
+                    && !$documento->getCustomProperty('abierto_por_cliente', false);
             })
             ->count();
 
@@ -313,7 +315,7 @@ class MobileHomeController extends Controller
             | Luego lo convertiremos en documentos no vistos.
             */
 
-            'cantidad_documentos' => $cantidadDocumentosEstudio,
+            'cantidad_documentos' => $cantidadDocumentosNoVistos,
 
             /*
             | Expediente destacado.

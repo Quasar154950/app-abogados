@@ -55,6 +55,8 @@ Route::prefix('mobile')->group(function () {
 
         Route::get('/documentos', [MobileDocumentoController::class, 'index']);
 
+        Route::post('/documentos', [MobileDocumentoController::class, 'store']);
+
         Route::post(
             '/documentos/{documentoId}/abrir',
             [MobileDocumentoController::class, 'marcarComoAbierto']

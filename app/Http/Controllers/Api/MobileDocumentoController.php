@@ -25,6 +25,15 @@ class MobileDocumentoController extends Controller
                 'documentos' => [],
             ], 404);
         }
+        
+        $totalBytes = $cliente
+            ->getMedia('archivos')
+            ->sum('size');
+
+        $espacioUsadoMb = round(
+            $totalBytes / 1024 / 1024,
+            1
+        );
 
         $documentos = $cliente
             ->getMedia('archivos')
@@ -50,9 +59,102 @@ class MobileDocumentoController extends Controller
 
         return response()->json([
             'cantidad' => $documentos->count(),
+            'espacio_usado_mb' => $espacioUsadoMb,
+            'espacio_limite_mb' => 300,
             'documentos' => $documentos,
         ]);
     }
+
+    public function store(Request $request)
+{
+    $user = $request->user();
+
+    if (!$user || $user->role !== 'cliente') {
+        return response()->json([
+            'message' => 'Acceso no autorizado.',
+        ], 403);
+    }
+
+    $cliente = $user->cliente;
+
+    if (!$cliente) {
+        return response()->json([
+            'message' => 'No se encontró un cliente vinculado a esta cuenta.',
+        ], 404);
+    }
+
+    $request->validate([
+        'archivo' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png,xls,xlsx|max:10240',
+    ]);
+
+    $totalBytes = $cliente
+        ->fresh()
+        ->getMedia('archivos')
+        ->sum('size');
+
+    $nuevoArchivo = $request
+        ->file('archivo')
+        ->getSize();
+
+    $limiteCliente = 300 * 1024 * 1024;
+
+    if (($totalBytes + $nuevoArchivo) > $limiteCliente) {
+        return response()->json([
+            'message' => 'Este cliente alcanzó el límite de 300 MB en documentos.',
+        ], 422);
+    }
+
+    $archivo = $request->file('archivo');
+
+    $nombreOriginal = $archivo->getClientOriginalName();
+
+    $nombreSinExtension = pathinfo(
+        $nombreOriginal,
+        PATHINFO_FILENAME
+    );
+
+    $extension = strtolower(
+        $archivo->getClientOriginalExtension()
+    );
+
+    $nombreLimpio = str($nombreSinExtension)
+        ->ascii()
+        ->replaceMatches('/[^A-Za-z0-9_\-]/', '_')
+        ->toString();
+
+    $esRaw = in_array(
+        $extension,
+        ['doc', 'docx', 'xls', 'xlsx']
+    );
+
+    $nombreFinal = $esRaw
+        ? $nombreLimpio . '.' . $extension
+        : $nombreLimpio;
+
+    $media = $cliente
+        ->addMedia($archivo->getRealPath())
+        ->usingName($nombreOriginal)
+        ->usingFileName($nombreFinal)
+        ->withCustomProperties([
+            'subido_por' => 'cliente',
+            'revisado_por_estudio' => false,
+        ])
+        ->toMediaCollection(
+            'archivos',
+            'cloudinary'
+        );
+
+    return response()->json([
+        'message' => 'Documento enviado al estudio con éxito.',
+        'documento' => [
+            'id' => $media->id,
+            'nombre' => $media->name,
+            'archivo' => $media->file_name,
+            'tamano' => $media->size,
+            'url' => $media->getUrl(),
+        ],
+    ], 201);
+}
 
     public function marcarComoAbierto(Request $request, $documentoId)
     {

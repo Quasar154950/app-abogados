@@ -335,18 +335,4 @@ Route::get('/crear-slug', function () {
 Route::post('/webhooks/mercadopago/saas', [MercadoPagoSaasWebhookController::class, 'handle'])
     ->name('webhooks.mercadopago.saas');
 
-Route::get('/tmp/cambiar-abogado-demo', function () {
-    $abogado = \App\Models\User::findOrFail(1);
-
-    $abogado->name = 'Martín Ferrero';
-    $abogado->save();
-
-    return [
-        'ok' => true,
-        'id' => $abogado->id,
-        'name' => $abogado->name,
-        'email' => $abogado->email,
-    ];
-});
-
 require __DIR__ . '/settings.php';

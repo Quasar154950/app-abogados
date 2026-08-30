@@ -57,6 +57,11 @@ Route::prefix('mobile')->group(function () {
 
         Route::post('/documentos', [MobileDocumentoController::class, 'store']);
 
+        Route::delete(
+            '/documentos/{documentoId}',
+            [MobileDocumentoController::class, 'destroy']
+        );
+
         Route::post(
             '/documentos/{documentoId}/abrir',
             [MobileDocumentoController::class, 'marcarComoAbierto']

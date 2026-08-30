@@ -184,6 +184,53 @@ class MobileDocumentoController extends Controller
     ], 201);
 }
 
+    public function destroy(Request $request, $documentoId)
+{
+    $user = $request->user();
+
+    if (!$user || $user->role !== 'cliente') {
+        return response()->json([
+            'message' => 'Acceso no autorizado.',
+        ], 403);
+    }
+
+    $cliente = $user->cliente;
+
+    if (!$cliente) {
+        return response()->json([
+            'message' => 'No se encontró un cliente vinculado a esta cuenta.',
+        ], 404);
+    }
+
+    $documento = $cliente
+        ->getMedia('archivos')
+        ->firstWhere('id', (int) $documentoId);
+
+    if (!$documento) {
+        return response()->json([
+            'message' => 'Documento no encontrado.',
+        ], 404);
+    }
+
+    if (
+        $documento->getCustomProperty(
+            'subido_por',
+            'estudio'
+        ) !== 'cliente'
+    ) {
+        return response()->json([
+            'message' => 'Solo podés eliminar documentos que hayas enviado vos.',
+        ], 403);
+    }
+
+    $documento->delete();
+
+    return response()->json([
+        'message' => 'Documento eliminado correctamente.',
+        'documento_id' => (int) $documentoId,
+    ]);
+}
+
     public function marcarComoAbierto(Request $request, $documentoId)
     {
         $user = $request->user();

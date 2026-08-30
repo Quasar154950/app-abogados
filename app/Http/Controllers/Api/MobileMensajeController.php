@@ -27,18 +27,39 @@ class MobileMensajeController extends Controller
             ], 404);
         }
 
-        $cliente->mensajes()
+        $mensajesPendientes = $cliente
+            ->mensajes()
             ->where('remitente', 'estudio')
-            ->where('leido', false)
-            ->update([
-                'leido' => true,
-                'leido_at' => now(),
-            ]);
+            ->where('leido', false);
 
-        $mensajes = $cliente->mensajes()
-            ->oldest()
+        if ($cliente->chat_borrado_cliente_at) {
+            $mensajesPendientes->where(
+                'created_at',
+                '>',
+                $cliente->chat_borrado_cliente_at
+            );
+        }
+
+        $mensajesPendientes->update([
+            'leido' => true,
+            'leido_at' => now(),
+        ]);
+
+        $query = $cliente
+            ->mensajes()
+            ->oldest();
+
+        if ($cliente->chat_borrado_cliente_at) {
+            $query->where(
+                'created_at',
+                '>',
+                $cliente->chat_borrado_cliente_at
+            );
+        }
+
+        $mensajes = $query
             ->get()
-            ->map(function ($mensaje) {
+            ->map(function (MensajeCliente $mensaje) {
                 return [
                     'id' => $mensaje->id,
                     'mensaje' => $mensaje->mensaje,
@@ -105,5 +126,31 @@ class MobileMensajeController extends Controller
                 'hora' => $mensaje->created_at?->format('H:i'),
             ],
         ], 201);
+    }
+
+    public function clear(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user || $user->role !== 'cliente') {
+            return response()->json([
+                'message' => 'Acceso no autorizado.',
+            ], 403);
+        }
+
+        $cliente = $user->cliente;
+
+        if (!$cliente) {
+            return response()->json([
+                'message' => 'No se encontró un cliente vinculado a esta cuenta.',
+            ], 404);
+        }
+
+        $cliente->chat_borrado_cliente_at = now();
+        $cliente->save();
+
+        return response()->json([
+            'message' => 'La conversación fue limpiada correctamente.',
+        ]);
     }
 }

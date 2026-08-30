@@ -335,15 +335,4 @@ Route::get('/crear-slug', function () {
 Route::post('/webhooks/mercadopago/saas', [MercadoPagoSaasWebhookController::class, 'handle'])
     ->name('webhooks.mercadopago.saas');
 
-Route::get('/migrar-chat-cliente-20260830', function () {
-    \Illuminate\Support\Facades\Artisan::call('migrate', [
-        '--path' => 'database/migrations/2026_08_30_102215_add_chat_borrado_cliente_at_to_clientes_table.php',
-        '--force' => true,
-    ]);
-
-    return nl2br(
-        \Illuminate\Support\Facades\Artisan::output()
-    );
-});
-
 require __DIR__ . '/settings.php';

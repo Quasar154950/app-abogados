@@ -53,6 +53,11 @@ Route::prefix('mobile')->group(function () {
             [MobileMensajeController::class, 'store']
         );
 
+        Route::delete(
+            '/mensajes',
+            [MobileMensajeController::class, 'clear']
+        );
+
         Route::get('/documentos', [MobileDocumentoController::class, 'index']);
 
         Route::post('/documentos', [MobileDocumentoController::class, 'store']);

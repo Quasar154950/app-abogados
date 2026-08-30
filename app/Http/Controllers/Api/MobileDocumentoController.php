@@ -48,7 +48,16 @@ class MobileDocumentoController extends Controller
             'archivo' => $documento->file_name,
             'mime_type' => $documento->mime_type,
             'tamano' => $documento->size,
-            'url' => $documento->getUrl(),
+            'url' => in_array(
+                strtolower(pathinfo($documento->file_name, PATHINFO_EXTENSION)),
+                ['doc', 'docx', 'xls', 'xlsx']
+            )
+                ? str_replace(
+                    '/image/upload/',
+                    '/raw/upload/',
+                    $documento->getUrl()
+                )
+                : $documento->getUrl(),
 
             'subido_por' => $subidoPor,
 

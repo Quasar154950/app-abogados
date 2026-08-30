@@ -335,4 +335,14 @@ Route::get('/crear-slug', function () {
 Route::post('/webhooks/mercadopago/saas', [MercadoPagoSaasWebhookController::class, 'handle'])
     ->name('webhooks.mercadopago.saas');
 
+Route::get('/migrar-chat-cliente-20260830', function () {
+    \Illuminate\Support\Facades\Artisan::call('migrate', [
+        '--force' => true,
+    ]);
+
+    return nl2br(
+        \Illuminate\Support\Facades\Artisan::output()
+    );
+});
+
 require __DIR__ . '/settings.php';

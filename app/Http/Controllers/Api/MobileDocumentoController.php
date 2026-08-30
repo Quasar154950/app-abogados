@@ -173,7 +173,13 @@ class MobileDocumentoController extends Controller
             'nombre' => $media->name,
             'archivo' => $media->file_name,
             'tamano' => $media->size,
-            'url' => $media->getUrl(),
+            'url' => $esRaw
+                ? str_replace(
+                    '/image/upload/',
+                    '/raw/upload/',
+                    $media->getUrl()
+                )
+                : $media->getUrl(),
         ],
     ], 201);
 }

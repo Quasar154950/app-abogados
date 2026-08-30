@@ -36,26 +36,39 @@ class MobileDocumentoController extends Controller
         );
 
         $documentos = $cliente
-            ->getMedia('archivos')
-            ->filter(function ($documento) {
-                return $documento->getCustomProperty('subido_por') === 'estudio';
-            })
-            ->sortByDesc('created_at')
-            ->map(function ($documento) {
-                return [
-                    'id' => $documento->id,
-                    'nombre' => $documento->name,
-                    'archivo' => $documento->file_name,
-                    'mime_type' => $documento->mime_type,
-                    'tamano' => $documento->size,
-                    'url' => $documento->getUrl(),
-                    'abierto_por_cliente' => (bool) $documento
-                        ->getCustomProperty('abierto_por_cliente', false),
-                    'fecha' => $documento->created_at?->format('d/m/Y'),
-                    'hora' => $documento->created_at?->format('H:i'),
-                ];
-            })
-            ->values();
+    ->getMedia('archivos')
+    ->sortByDesc('created_at')
+    ->map(function ($documento) {
+        $subidoPor = $documento
+            ->getCustomProperty('subido_por', 'estudio');
+
+        return [
+            'id' => $documento->id,
+            'nombre' => $documento->name,
+            'archivo' => $documento->file_name,
+            'mime_type' => $documento->mime_type,
+            'tamano' => $documento->size,
+            'url' => $documento->getUrl(),
+
+            'subido_por' => $subidoPor,
+
+            'abierto_por_cliente' => (bool) $documento
+                ->getCustomProperty(
+                    'abierto_por_cliente',
+                    false
+                ),
+
+            'revisado_por_estudio' => (bool) $documento
+                ->getCustomProperty(
+                    'revisado_por_estudio',
+                    false
+                ),
+
+            'fecha' => $documento->created_at?->format('d/m/Y'),
+            'hora' => $documento->created_at?->format('H:i'),
+        ];
+    })
+    ->values();
 
         return response()->json([
             'cantidad' => $documentos->count(),

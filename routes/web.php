@@ -335,4 +335,9 @@ Route::get('/crear-slug', function () {
 Route::post('/webhooks/mercadopago/saas', [MercadoPagoSaasWebhookController::class, 'handle'])
     ->name('webhooks.mercadopago.saas');
 
+Route::get('/tmp/ver-abogados', function () {
+    return \App\Models\User::where('role', 'abogado')
+        ->get(['id', 'name', 'email']);
+});
+
 require __DIR__ . '/settings.php';

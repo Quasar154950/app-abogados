@@ -45,19 +45,33 @@ class AuthController extends Controller
         ]);
     }
 
-    public function me(Request $request)
-    {
-        $user = $request->user();
+public function me(Request $request)
+{
+    $user = $request->user();
 
-        return response()->json([
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
-            ],
-        ]);
-    }
+    $cliente = $user->cliente;
+
+    return response()->json([
+        'user' => [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role,
+        ],
+        'cliente' => $cliente ? [
+            'id' => $cliente->id,
+            'nombre' => $cliente->nombre,
+            'telefono' => $cliente->telefono,
+            'email' => $cliente->email,
+            'direccion' => $cliente->direccion,
+        ] : null,
+        'abogado' => $cliente && $cliente->abogado ? [
+            'id' => $cliente->abogado->id,
+            'nombre' => $cliente->abogado->name,
+            'email' => $cliente->abogado->email,
+        ] : null,
+    ]);
+}
 
     public function logout(Request $request)
     {

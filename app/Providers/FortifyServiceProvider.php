@@ -89,31 +89,31 @@ class FortifyServiceProvider extends ServiceProvider
 
             if ($context === 'estudio') {
 
-    if (! $slugEstudio) {
-        return null;
-    }
+                $estudioId = session('estudio_id');
 
-    // Si entra un abogado, validamos su propio slug
-    if ($user->role === 'abogado') {
-        if ($user->slug_estudio !== $slugEstudio) {
-            return null;
-        }
+                if (! $estudioId) {
+                    return null;
+                }
 
-        return $user;
-    }
+               // ABOGADO:
+               // debe pertenecer al estudio desde el cual intenta ingresar
+               if ($user->role === 'abogado') {
 
-    // Si entra un cliente, validamos que pertenezca al estudio del slug
+                   if ((int) $user->estudio_id !== (int) $estudioId) {
+                      return null;
+                    }
+
+                   return $user;
+            }
+
+    // CLIENTE:
+    // su abogado debe pertenecer al mismo estudio
     if ($user->role === 'cliente') {
-        $abogado = User::where('role', 'abogado')
-            ->where('slug_estudio', $slugEstudio)
-            ->first();
-
-        if (! $abogado) {
-            return null;
-        }
 
         $cliente = \App\Models\Cliente::where('user_id', $user->id)
-            ->where('abogado_id', $abogado->id)
+            ->whereHas('abogado', function ($query) use ($estudioId) {
+                $query->where('estudio_id', $estudioId);
+            })
             ->first();
 
         if (! $cliente) {

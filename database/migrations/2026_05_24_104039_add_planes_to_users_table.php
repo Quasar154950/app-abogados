@@ -13,13 +13,15 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
 
-            $table->string('plan')
-                ->default('basico')
-                ->after('email');
+            if (!Schema::hasColumn('users', 'plan')) {
+                $table->string('plan')
+                    ->default('basico');
+            }
 
-            $table->integer('precio_suscripcion')
-                ->default(0)
-                ->after('plan');
+            if (!Schema::hasColumn('users', 'precio_suscripcion')) {
+                $table->integer('precio_suscripcion')
+                    ->default(0);
+            }
 
         });
     }
@@ -31,10 +33,13 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
 
-            $table->dropColumn([
-                'plan',
-                'precio_suscripcion',
-            ]);
+            if (Schema::hasColumn('users', 'precio_suscripcion')) {
+                $table->dropColumn('precio_suscripcion');
+            }
+
+            if (Schema::hasColumn('users', 'plan')) {
+                $table->dropColumn('plan');
+            }
 
         });
     }

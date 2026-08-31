@@ -11,36 +11,39 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('saas_pagos', function (Blueprint $table) {
+        if (!Schema::hasTable('saas_pagos')) {
 
-            $table->id();
+            Schema::create('saas_pagos', function (Blueprint $table) {
 
-            // CLIENTE SaaS
-            $table->foreignId('user_id')
-                ->constrained()
-                ->cascadeOnDelete();
+                $table->id();
 
-            // DATOS DEL PAGO
-            $table->string('plan')->nullable();
+                // CLIENTE SaaS
+                $table->foreignId('user_id')
+                    ->constrained()
+                    ->cascadeOnDelete();
 
-            $table->integer('monto');
+                // DATOS DEL PAGO
+                $table->string('plan')->nullable();
 
-            $table->string('estado')
-                ->default('pendiente');
+                $table->integer('monto');
 
-            // MERCADO PAGO
-            $table->string('payment_id')->nullable();
+                $table->string('estado')
+                    ->default('pendiente');
 
-            $table->string('external_reference')->nullable();
+                // MERCADO PAGO
+                $table->string('payment_id')->nullable();
 
-            $table->string('metodo_pago')->nullable();
+                $table->string('external_reference')->nullable();
 
-            // FECHAS
-            $table->timestamp('fecha_pago')->nullable();
+                $table->string('metodo_pago')->nullable();
 
-            $table->timestamps();
+                // FECHAS
+                $table->timestamp('fecha_pago')->nullable();
 
-        });
+                $table->timestamps();
+
+            });
+        }
     }
 
     /**

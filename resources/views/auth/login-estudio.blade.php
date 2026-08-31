@@ -1,14 +1,26 @@
 <x-layouts::auth :title="__('Acceso al sistema')">
 
-    @php
-        $splashImage = match($userEstudio->slug_estudio ?? null) {
-            'demo' => 'images/splash-demo.png',
-            'vairo' => 'images/splash-vairo.png',
-            default => $userEstudio->logo_estudio ?: 'images/logo.png',
-        };
+@php
+    // Compatible con la nueva tabla estudios y con el sistema anterior
+    $slugEstudio = $userEstudio->slug ?? $userEstudio->slug_estudio ?? null;
 
-        $splashName = strtoupper($userEstudio->name ?? $userEstudio->nombre_estudio ?? 'ESTUDIO JURÍDICO');
-    @endphp
+    $nombreEstudio = $userEstudio->nombre
+        ?? $userEstudio->nombre_estudio
+        ?? $userEstudio->name
+        ?? 'Estudio Jurídico';
+
+    $logoEstudio = $userEstudio->logo
+        ?? $userEstudio->logo_estudio
+        ?? 'images/logo.png';
+
+    $splashImage = match($slugEstudio) {
+        'demo' => 'images/splash-demo.png',
+        'vairo' => 'images/splash-vairo.png',
+        default => $logoEstudio,
+    };
+
+    $splashName = strtoupper($nombreEstudio);
+@endphp
 
     {{-- SPLASH PWA / APP --}}
     <div 
@@ -27,7 +39,7 @@
             <div class="splash-logo-wrap">
                 <img
                     src="{{ asset($splashImage) }}"
-                    alt="{{ $userEstudio->nombre_estudio ?? 'Estudio Jurídico' }}"
+                    alt="{{ $nombreEstudio }}"
                     class="w-36 h-36 sm:w-44 sm:h-44 rounded-full object-cover"
                 >
             </div>
@@ -59,7 +71,7 @@
         {{-- LOGO DEL ESTUDIO --}}
         <div class="flex justify-center">
             <img 
-                src="{{ asset($userEstudio->logo_estudio ?: 'images/logo.png') }}" 
+                src="{{ asset($logoEstudio) }}" 
                 alt="Logo" 
                 style="height: 100px; width: auto;"
             >
@@ -67,7 +79,7 @@
 
         {{-- TITULO --}}
         <x-auth-header 
-            :title="$userEstudio->nombre_estudio ?? __('Acceso al sistema')" 
+            :title="$nombreEstudio" 
             :description="__('Ingresá con tu email y contraseña para continuar')" 
         />
 

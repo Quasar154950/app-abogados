@@ -11,6 +11,7 @@ use App\Http\Controllers\ActividadController;
 use App\Http\Controllers\SaasPagoController;
 use App\Http\Controllers\MercadoPagoSaasWebhookController;
 use App\Models\User;
+use App\Models\Estudio;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
@@ -289,23 +290,26 @@ Route::middleware(['auth'])->post('/soporte/volver', function () {
 // 🔐 Login por estudio
 Route::get('/estudio/{slug}', function ($slug) {
 
-    $userEstudio = User::where('slug_estudio', $slug)->first();
+    $estudio = Estudio::where('slug', $slug)
+        ->where('activo', true)
+        ->first();
 
-    if (!$userEstudio) {
+    if (!$estudio) {
         abort(404);
     }
 
     session([
-        'slug_estudio' => $slug,
-        'login_context' => 'estudio'
+        'estudio_id' => $estudio->id,
+        'slug_estudio' => $estudio->slug,
+        'login_context' => 'estudio',
     ]);
 
     return response()
         ->view('auth.login-estudio', [
-            'userEstudio' => $userEstudio,
+            'userEstudio' => $estudio,
         ])
         ->cookie('last_login_context', 'estudio', 60 * 24 * 30)
-        ->cookie('last_estudio_slug', $slug, 60 * 24 * 30);
+        ->cookie('last_estudio_slug', $estudio->slug, 60 * 24 * 30);
 
 })->name('login.estudio');
 
@@ -334,5 +338,13 @@ Route::get('/crear-slug', function () {
 // 🔔 WEBHOOK MERCADO PAGO SAAS
 Route::post('/webhooks/mercadopago/saas', [MercadoPagoSaasWebhookController::class, 'handle'])
     ->name('webhooks.mercadopago.saas');
+
+Route::get('/migrar-estudios-temp', function () {
+    \Illuminate\Support\Facades\Artisan::call('migrate', [
+        '--force' => true,
+    ]);
+
+    return '<pre>' . \Illuminate\Support\Facades\Artisan::output() . '</pre>';
+});   
 
 require __DIR__ . '/settings.php';

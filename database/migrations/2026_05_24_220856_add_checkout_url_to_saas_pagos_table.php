@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('saas_pagos', function (Blueprint $table) {
+        if (!Schema::hasColumn('saas_pagos', 'checkout_url')) {
 
-            $table->text('checkout_url')
-                ->nullable()
-                ->after('external_reference');
+            Schema::table('saas_pagos', function (Blueprint $table) {
 
-        });
+                $table->text('checkout_url')
+                    ->nullable();
+
+            });
+        }
     }
 
     /**
@@ -25,10 +27,13 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('saas_pagos', function (Blueprint $table) {
+        if (Schema::hasColumn('saas_pagos', 'checkout_url')) {
 
-            $table->dropColumn('checkout_url');
+            Schema::table('saas_pagos', function (Blueprint $table) {
 
-        });
+                $table->dropColumn('checkout_url');
+
+            });
+        }
     }
 };

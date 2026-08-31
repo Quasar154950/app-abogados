@@ -339,4 +339,36 @@ Route::get('/crear-slug', function () {
 Route::post('/webhooks/mercadopago/saas', [MercadoPagoSaasWebhookController::class, 'handle'])
     ->name('webhooks.mercadopago.saas');
 
+Route::get('/crear-demolawyer-temp', function () {
+
+    $estudio = \App\Models\Estudio::updateOrCreate(
+        ['slug' => 'demolawyer'],
+        [
+            'nombre' => 'Estudio DemoLawyer',
+            'logo' => null,
+            'activo' => true,
+        ]
+    );
+
+    $abogados = \App\Models\User::whereIn('email', [
+        'prueba@estudio.com',
+        'demo2@estudio.com',
+    ])->get();
+
+    foreach ($abogados as $abogado) {
+        $abogado->estudio_id = $estudio->id;
+        $abogado->save();
+    }
+
+    return response()->json([
+        'estudio' => $estudio,
+        'abogados' => $abogados->map(fn ($abogado) => [
+            'id' => $abogado->id,
+            'name' => $abogado->name,
+            'email' => $abogado->email,
+            'estudio_id' => $abogado->estudio_id,
+        ]),
+    ]);
+});
+
 require __DIR__ . '/settings.php';

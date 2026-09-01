@@ -324,17 +324,6 @@ Route::get('/soporte/login', function () {
 
 })->name('login.soporte');
 
-// Ruta temporal
-Route::get('/crear-slug', function () {
-
-    if (!Schema::hasColumn('users', 'slug_estudio')) {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('slug_estudio')->nullable();
-        });
-    }
-
-    return 'Columna slug creada';
-});
 // 🔔 WEBHOOK MERCADO PAGO SAAS
 Route::post('/webhooks/mercadopago/saas', [MercadoPagoSaasWebhookController::class, 'handle'])
     ->name('webhooks.mercadopago.saas');

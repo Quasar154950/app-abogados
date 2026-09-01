@@ -4,7 +4,7 @@ namespace App\Livewire\Actions;
 
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use App\Models\Cliente;
 
 class GestionArchivos extends Component
 {
@@ -14,6 +14,31 @@ class GestionArchivos extends Component
     public $archivo;
     public $modo = 'estudio';
 
+    private function verificarAccesoModelo(): void
+{
+    abort_unless($this->model instanceof Cliente, 403);
+
+    $user = auth()->user();
+
+    abort_unless($user, 403);
+
+    if ($this->modo === 'cliente') {
+        abort_unless(
+            $user->role === 'cliente' &&
+            (int) $this->model->user_id === (int) $user->id,
+            403
+        );
+
+        return;
+    }
+
+    abort_unless(
+        $user->role === 'abogado' &&
+        (int) $this->model->abogado_id === (int) $user->id,
+        403
+    );
+}
+
     public function mount($model, $modo = 'estudio')
     {
         $this->model = $model;
@@ -22,6 +47,9 @@ class GestionArchivos extends Component
 
     public function guardarArchivo()
     {
+
+        $this->verificarAccesoModelo();
+
         $this->validate([
             'archivo' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png,xls,xlsx|max:10240',
         ]);
@@ -87,8 +115,12 @@ class GestionArchivos extends Component
     }
 
     public function eliminarArchivo($id)
-    {
-        $media = Media::find($id);
+{
+        $this->verificarAccesoModelo();
+
+        $media = $this->model
+            ->getMedia('archivos')
+            ->firstWhere('id', (int) $id);
 
         if ($media) {
             $media->delete();
@@ -104,7 +136,11 @@ class GestionArchivos extends Component
     
     public function marcarComoVisto($id)
 {
-    $media = Media::find($id);
+        $this->verificarAccesoModelo();
+
+        $media = $this->model
+            ->getMedia('archivos')
+            ->firstWhere('id', (int) $id);
 
     if (! $media) {
         return;
@@ -129,6 +165,9 @@ class GestionArchivos extends Component
 
     public function render()
     {
+
+        $this->verificarAccesoModelo();
+
         $modelActualizado = $this->model->fresh();
 
         return view('livewire.actions.gestion-archivos', [

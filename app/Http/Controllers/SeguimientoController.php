@@ -42,7 +42,7 @@ class SeguimientoController extends Controller
         if (!empty($filtros['vencimiento'])) {
             if ($filtros['vencimiento'] === 'vencido') {
                 $query->where('fecha_recordatorio', '<', now()->startOfDay())
-                      ->where('estado', '!=', 'resuelto');
+                    ->where('estado', '!=', 'resuelto');
             } elseif ($filtros['vencimiento'] === 'hoy') {
                 $query->whereDate('fecha_recordatorio', now()->today());
             }
@@ -53,8 +53,9 @@ class SeguimientoController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        // 🔥 SOLO datos del abogado
-        $clientes = Cliente::where('abogado_id', $abogadoId)->orderBy('nombre')->get();
+        $clientes = Cliente::where('abogado_id', $abogadoId)
+            ->orderBy('nombre')
+            ->get();
 
         $expedientes = Expediente::whereHas('cliente', function ($q) use ($abogadoId) {
             $q->where('abogado_id', $abogadoId);
@@ -85,13 +86,25 @@ class SeguimientoController extends Controller
             'fecha_recordatorio' => 'nullable|date',
         ]);
 
-        // 🔥 validar que el cliente pertenece al abogado
         $cliente = Cliente::where('abogado_id', $abogadoId)
             ->findOrFail($request->cliente_id);
 
+        $expedienteId = null;
+
+        if ($request->filled('expediente_id')) {
+            $expediente = Expediente::where('id', $request->expediente_id)
+                ->where('cliente_id', $cliente->id)
+                ->whereHas('cliente', function ($q) use ($abogadoId) {
+                    $q->where('abogado_id', $abogadoId);
+                })
+                ->firstOrFail();
+
+            $expedienteId = $expediente->id;
+        }
+
         Seguimiento::create([
             'cliente_id' => $cliente->id,
-            'expediente_id' => $request->expediente_id ?: null,
+            'expediente_id' => $expedienteId,
             'descripcion' => $request->descripcion,
             'estado' => $request->estado,
             'prioridad' => $request->prioridad,
@@ -107,9 +120,17 @@ class SeguimientoController extends Controller
         $this->checkOwnership($seguimiento);
 
         $etiquetas = Etiqueta::all();
-        $expedientes = $seguimiento->cliente->expedientes()->orderBy('caratula')->get();
 
-        return view('seguimientos.edit', compact('seguimiento', 'etiquetas', 'expedientes'));
+        $expedientes = $seguimiento->cliente
+            ->expedientes()
+            ->orderBy('caratula')
+            ->get();
+
+        return view('seguimientos.edit', compact(
+            'seguimiento',
+            'etiquetas',
+            'expedientes'
+        ));
     }
 
     public function update(Request $request, Seguimiento $seguimiento)
@@ -125,8 +146,21 @@ class SeguimientoController extends Controller
             'fecha_recordatorio' => 'nullable|date',
         ]);
 
+        $expedienteId = null;
+
+        if ($request->filled('expediente_id')) {
+            $expediente = Expediente::where('id', $request->expediente_id)
+                ->where('cliente_id', $seguimiento->cliente_id)
+                ->whereHas('cliente', function ($q) {
+                    $q->where('abogado_id', auth()->id());
+                })
+                ->firstOrFail();
+
+            $expedienteId = $expediente->id;
+        }
+
         $seguimiento->update([
-            'expediente_id' => $request->expediente_id ?: null,
+            'expediente_id' => $expedienteId,
             'descripcion' => $request->descripcion,
             'estado' => $request->estado,
             'prioridad' => $request->prioridad,
@@ -163,11 +197,14 @@ class SeguimientoController extends Controller
         return back()->with('success', 'Estado actualizado correctamente');
     }
 
-    // 🔥 FUNCIÓN CLAVE DE SEGURIDAD
-    private function checkOwnership(Seguimiento $seguimiento)
+    private function checkOwnership(Seguimiento $seguimiento): void
     {
-        if ($seguimiento->cliente->abogado_id !== auth()->id()) {
-            abort(403);
-        }
+        $seguimiento->loadMissing('cliente');
+
+        abort_unless(
+            $seguimiento->cliente &&
+            (int) $seguimiento->cliente->abogado_id === (int) auth()->id(),
+            403
+        );
     }
 }

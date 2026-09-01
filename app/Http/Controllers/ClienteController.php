@@ -76,7 +76,11 @@ class ClienteController extends Controller
             ->findOrFail($id);
 
         $etiquetas = Etiqueta::all();
-        $usuarios = User::where('role', 'cliente')->get();
+        $usuarios = User::where('role', 'cliente')
+            ->whereHas('cliente', function ($query) {
+                $query->where('abogado_id', auth()->id());
+            })
+            ->get();
 
         $estadoFiltro = $request->query('estado');
         $hoy = Carbon::today();
@@ -145,10 +149,24 @@ class ClienteController extends Controller
             'user_id' => 'nullable|exists:users,id',
         ]);
 
-        $cliente = Cliente::where('abogado_id', auth()->id())->findOrFail($id);
+        $cliente = Cliente::where('abogado_id', auth()->id())
+            ->findOrFail($id);
+
+        $userId = null;
+
+        if ($request->filled('user_id')) {
+            $usuario = User::where('id', $request->user_id)
+                ->where('role', 'cliente')
+                ->whereHas('cliente', function ($query) {
+                    $query->where('abogado_id', auth()->id());
+                })
+                ->firstOrFail();
+
+            $userId = $usuario->id;
+        }
 
         $cliente->update([
-            'user_id' => $request->user_id,
+            'user_id' => $userId,
         ]);
 
         return back()->with('success', 'Usuario asignado correctamente.');
@@ -321,7 +339,8 @@ class ClienteController extends Controller
 
     public function pagos(string $id)
     {
-        $cliente = Cliente::findOrFail($id);
+        $cliente = Cliente::where('abogado_id', auth()->id())
+            ->findOrFail($id);
 
         $pagos = Pago::where('cliente_id', $cliente->id)
             ->latest()

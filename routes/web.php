@@ -33,10 +33,19 @@ Route::middleware(['auth', 'verified', 'activo'])->group(function () {
         ->name('suscripcion.pagar');
 
         Route::post('/toggle-activo/{user}', function (User $user) {
-            $user->activo = !$user->activo;
-            $user->save();
-            return back();
-        })->name('toggle.activo');
+
+    $userAuth = auth()->user();
+
+    if (!$userAuth || $userAuth->email !== 'soporte@tuempresa.com') {
+        abort(403);
+    }
+
+    $user->activo = !$user->activo;
+    $user->save();
+
+    return back();
+
+})->name('toggle.activo');
 
         Route::post('/renovar/{user}', function (User $user) {
 

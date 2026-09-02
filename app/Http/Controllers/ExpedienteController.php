@@ -113,9 +113,27 @@ class ExpedienteController extends Controller
 
     // IMPRIMIR
     public function imprimir(Expediente $expediente)
-    {
-        $this->verificarExpediente($expediente);
+{
+    $expediente->loadMissing('cliente');
 
-        return view('expedientes.imprimir', compact('expediente'));
+    $user = auth()->user();
+
+    abort_unless($user && $expediente->cliente, 403);
+
+    if ($user->role === 'abogado') {
+        abort_unless(
+            (int) $expediente->cliente->abogado_id === (int) $user->id,
+            403
+        );
+    } elseif ($user->role === 'cliente') {
+        abort_unless(
+            (int) $expediente->cliente->user_id === (int) $user->id,
+            403
+        );
+    } else {
+        abort(403);
     }
+
+    return view('expedientes.imprimir', compact('expediente'));
+}
 }

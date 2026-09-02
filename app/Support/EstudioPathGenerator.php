@@ -20,8 +20,8 @@ class EstudioPathGenerator implements PathGenerator
             // BUSCAR ABOGADO DUEÑO
             $abogado = $cliente->abogado;
 
-            if ($abogado && $abogado->slug_estudio) {
-                $slug = $abogado->slug_estudio;
+            if ($abogado && $abogado->estudio && $abogado->estudio->slug) {
+                $slug = $abogado->estudio->slug;
             }
         }
 

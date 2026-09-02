@@ -113,16 +113,6 @@ Route::middleware(['auth', 'role:cliente', 'activo'])->get('/cliente/dashboard',
 Route::middleware(['auth', 'role:cliente', 'activo'])->get('/cliente/expedientes/{expediente}/imprimir', [ExpedienteController::class, 'imprimir'])
     ->name('cliente.expedientes.imprimir');
 
-// Test cloudinary
-Route::get('/test-cloudinary', function () {
-    $result = Storage::disk('cloudinary')->put(
-        'test-railway.jpg',
-        file_get_contents(public_path('favicon.ico'))
-    );
-
-    return $result ? 'OK' : 'ERROR';
-});
-
 // Panel soporte
 Route::middleware(['auth'])->get('/soporte', function () {
     $user = auth()->user();

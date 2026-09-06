@@ -1,5 +1,9 @@
 <x-layouts::app>
 
+    @php
+        $estudio = $user->estudio;
+    @endphp
+
     <div class="max-w-3xl mx-auto p-4 space-y-6">
 
         <h1 class="text-2xl font-bold" style="color: #111827 !important;">
@@ -14,7 +18,7 @@
                     Estado
                 </p>
 
-                @if($user->activo)
+                @if($estudio->activo)
                     <span class="text-green-600 font-semibold">
                         Activa
                     </span>
@@ -33,8 +37,8 @@
 
                 <p class="font-semibold"
                    style="color: #111827 !important;">
-                    {{ $user->fecha_vencimiento
-                        ? \Carbon\Carbon::parse($user->fecha_vencimiento)->format('d/m/Y')
+                    {{ $estudio->fecha_vencimiento
+                        ? \Carbon\Carbon::parse($estudio->fecha_vencimiento)->format('d/m/Y')
                         : 'Sin fecha' }}
                 </p>
             </div>
@@ -47,7 +51,7 @@
 
                 <p class="font-semibold"
                    style="color: #111827 !important;">
-                    {{ strtoupper($user->plan ?? 'Sin plan') }}
+                    {{ strtoupper($estudio->plan ?? 'Sin plan') }}
                 </p>
             </div>
 
@@ -59,7 +63,7 @@
 
                 <p class="font-semibold"
                    style="color: #111827 !important;">
-                    ${{ number_format($user->precio_suscripcion ?? 0, 0, ',', '.') }}
+                    ${{ number_format($estudio->precio_suscripcion ?? 0, 0, ',', '.') }}
                 </p>
             </div>
 
@@ -70,10 +74,10 @@
                 </p>
 
                 @php
-                    if ($user->fecha_vencimiento) {
+                    if ($estudio->fecha_vencimiento) {
                         $dias = \Carbon\Carbon::now()->startOfDay()
                             ->diffInDays(
-                                \Carbon\Carbon::parse($user->fecha_vencimiento)->startOfDay(),
+                                \Carbon\Carbon::parse($estudio->fecha_vencimiento)->startOfDay(),
                                 false
                             );
                     } else {
@@ -105,7 +109,7 @@
             </div>
 
             {{-- PAGAR SUSCRIPCIÓN --}}
-            @if($user->precio_suscripcion > 0)
+            @if($estudio->precio_suscripcion > 0)
 
                 <div class="pt-4">
 

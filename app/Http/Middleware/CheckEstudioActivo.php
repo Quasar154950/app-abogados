@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Carbon\Carbon;
 
 class CheckEstudioActivo
 {
@@ -16,7 +15,7 @@ class CheckEstudioActivo
     {
         $user = auth()->user();
 
-        // Permitir logout aunque esté suspendido
+        // Permitir logout aunque el estudio esté suspendido
         if ($request->routeIs('logout')) {
             return $next($request);
         }
@@ -31,13 +30,37 @@ class CheckEstudioActivo
             return $next($request);
         }
 
-        // Si está inactivo → lo bloqueamos
-        if (!$user->activo) {
+        $estudio = null;
+
+        // ABOGADO: toma su estudio directamente
+        if ($user->role === 'abogado') {
+            $estudio = $user->estudio;
+        }
+
+        // CLIENTE: toma el estudio de su abogado
+        if ($user->role === 'cliente') {
+            $cliente = $user->cliente;
+
+            if ($cliente && $cliente->abogado) {
+                $estudio = $cliente->abogado->estudio;
+            }
+        }
+
+        // Si no encontramos estudio, bloqueamos por seguridad
+        if (!$estudio) {
             return response()->view('suspendido');
         }
 
-        // Si tiene fecha de vencimiento y ya venció → lo bloqueamos
-        if ($user->fecha_vencimiento && now()->greaterThan($user->fecha_vencimiento)) {
+        // Si el estudio está inactivo
+        if (!$estudio->activo) {
+            return response()->view('suspendido');
+        }
+
+        // Si la suscripción del estudio venció
+        if (
+            $estudio->fecha_vencimiento &&
+            now()->greaterThan($estudio->fecha_vencimiento)
+        ) {
             return response()->view('suspendido');
         }
 

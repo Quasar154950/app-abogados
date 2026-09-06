@@ -32,34 +32,6 @@ Route::middleware(['auth', 'verified', 'activo'])->group(function () {
         Route::post('/suscripcion/pagar', [SaasPagoController::class, 'pagarMiSuscripcion'])
         ->name('suscripcion.pagar');
 
-        Route::post('/toggle-activo/{user}', function (User $user) {
-
-    $userAuth = auth()->user();
-
-    if (!$userAuth || $userAuth->email !== 'soporte@tuempresa.com') {
-        abort(403);
-    }
-
-    $user->activo = !$user->activo;
-    $user->save();
-
-    return back();
-
-})->name('toggle.activo');
-
-        Route::post('/renovar/{user}', function (User $user) {
-
-    $userAuth = auth()->user();
-
-    if (!$userAuth || $userAuth->email !== 'soporte@tuempresa.com') {
-        abort(403);
-    }
-
-    $user->renovarSuscripcion();
-
-    return back()->with('success', 'Suscripción renovada correctamente.');
-
-})->name('renovar.suscripcion');
 
         Route::get('search', [SearchController::class, 'index'])->name('global.search');
 
@@ -124,6 +96,46 @@ Route::middleware(['auth'])->get('/soporte', function () {
     return view('soporte.index');
 });
 
+Route::middleware(['auth'])->post('/toggle-activo-estudio/{estudio}', function (Estudio $estudio) {
+
+    $userAuth = auth()->user();
+
+    if (!$userAuth || $userAuth->email !== 'soporte@tuempresa.com') {
+        abort(403);
+    }
+
+    $estudio->activo = !$estudio->activo;
+    $estudio->save();
+
+    return back()->with(
+        'success',
+        $estudio->activo
+            ? 'Estudio activado correctamente.'
+            : 'Estudio suspendido correctamente.'
+    );
+
+})->name('toggle.activo');
+
+Route::middleware(['auth'])->post('/renovar-estudio/{estudio}', function (Estudio $estudio) {
+
+    $userAuth = auth()->user();
+
+    if (!$userAuth || $userAuth->email !== 'soporte@tuempresa.com') {
+        abort(403);
+    }
+
+    $fechaBase = $estudio->fecha_vencimiento && $estudio->fecha_vencimiento->isFuture()
+        ? $estudio->fecha_vencimiento
+        : now();
+
+    $estudio->fecha_vencimiento = $fechaBase->copy()->addDays(30);
+    $estudio->activo = true;
+    $estudio->save();
+
+    return back()->with('success', 'Suscripción del estudio renovada correctamente.');
+
+})->name('renovar.suscripcion');
+
 // 🔑 RESET PASSWORD (SOLO SOPORTE)
 Route::middleware(['auth'])->post('/soporte/reset-password/{user}', function (User $user) {
 
@@ -139,8 +151,8 @@ Route::middleware(['auth'])->post('/soporte/reset-password/{user}', function (Us
 
 })->name('soporte.reset.password');
 
-// ✏️ EDITAR VENCIMIENTO
-Route::middleware(['auth'])->get('/soporte/{user}/editar-vencimiento', function (User $user) {
+// ✏️ EDITAR VENCIMIENTO DEL ESTUDIO
+Route::middleware(['auth'])->get('/soporte/estudio/{estudio}/editar-vencimiento', function (Estudio $estudio) {
 
     $userAuth = auth()->user();
 
@@ -148,12 +160,12 @@ Route::middleware(['auth'])->get('/soporte/{user}/editar-vencimiento', function 
         abort(403);
     }
 
-    return view('soporte.editar-vencimiento', compact('user'));
+    return view('soporte.editar-vencimiento', compact('estudio'));
 
 })->name('soporte.editar.vencimiento');
 
-// 💾 GUARDAR SUSCRIPCIÓN
-Route::middleware(['auth'])->post('/soporte/{user}/guardar-vencimiento', function (User $user, \Illuminate\Http\Request $request) {
+// 💾 GUARDAR SUSCRIPCIÓN DEL ESTUDIO
+Route::middleware(['auth'])->post('/soporte/estudio/{estudio}/guardar-vencimiento', function (Estudio $estudio, \Illuminate\Http\Request $request) {
 
     $userAuth = auth()->user();
 
@@ -167,12 +179,12 @@ Route::middleware(['auth'])->post('/soporte/{user}/guardar-vencimiento', functio
         'precio_suscripcion' => ['required', 'numeric', 'min:0'],
     ]);
 
-    $user->fecha_vencimiento = $request->fecha_vencimiento;
-    $user->plan = $request->plan;
-    $user->precio_suscripcion = $request->precio_suscripcion;
-    $user->save();
+    $estudio->fecha_vencimiento = $request->fecha_vencimiento;
+    $estudio->plan = $request->plan;
+    $estudio->precio_suscripcion = $request->precio_suscripcion;
+    $estudio->save();
 
-    return redirect('/soporte')->with('success', 'Suscripción actualizada correctamente.');
+    return redirect('/soporte')->with('success', 'Suscripción del estudio actualizada correctamente.');
 
 })->name('soporte.guardar.vencimiento');
 
@@ -299,7 +311,6 @@ Route::get('/estudio/{slug}', function ($slug) {
 
     session([
         'estudio_id' => $estudio->id,
-        'slug_estudio' => $estudio->slug,
         'login_context' => 'estudio',
     ]);
 
@@ -326,5 +337,13 @@ Route::get('/soporte/login', function () {
 // 🔔 WEBHOOK MERCADO PAGO SAAS
 Route::post('/webhooks/mercadopago/saas', [MercadoPagoSaasWebhookController::class, 'handle'])
     ->name('webhooks.mercadopago.saas');
+
+Route::get('/migrar-produccion-temporal', function () {
+    \Illuminate\Support\Facades\Artisan::call('migrate', [
+        '--force' => true,
+    ]);
+
+    return '<pre>' . \Illuminate\Support\Facades\Artisan::output() . '</pre>';
+});
 
 require __DIR__ . '/settings.php';

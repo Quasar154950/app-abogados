@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Estudio;
 use App\Models\SaasPago;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
@@ -13,7 +14,7 @@ class SaasPagoController extends Controller
 {
     private string $baseUrl = 'https://rare-prosperity-production-a81a.up.railway.app';
 
-    public function pagar(User $user)
+    public function pagar(Estudio $estudio)
     {
         $soporte = auth()->user();
 
@@ -21,12 +22,8 @@ class SaasPagoController extends Controller
             abort(403);
         }
 
-        if ($user->email === 'soporte@tuempresa.com') {
-            abort(403);
-        }
-
-        if (!$user->precio_suscripcion || $user->precio_suscripcion <= 0) {
-            return redirect('/soporte?error=Este cliente no tiene precio de suscripción configurado');
+        if (!$estudio->precio_suscripcion || $estudio->precio_suscripcion <= 0) {
+            return redirect('/soporte?error=Este estudio no tiene precio de suscripción configurado');
         }
 
         $accessToken = env('MERCADOPAGO_SAAS_ACCESS_TOKEN');
@@ -36,11 +33,12 @@ class SaasPagoController extends Controller
         }
 
         $pago = SaasPago::create([
-            'user_id' => $user->id,
-            'plan' => $user->plan,
-            'monto' => $user->precio_suscripcion,
+            'user_id' => $soporte->id,
+            'estudio_id' => $estudio->id,
+            'plan' => $estudio->plan,
+            'monto' => $estudio->precio_suscripcion,
             'estado' => 'pendiente',
-            'external_reference' => 'saas_pago_' . $user->id . '_' . now()->timestamp,
+            'external_reference' => 'saas_estudio_' . $estudio->id . '_' . now()->timestamp,
         ]);
 
         MercadoPagoConfig::setAccessToken($accessToken);
@@ -49,10 +47,10 @@ class SaasPagoController extends Controller
 
         $payload = [
             'items' => [[
-                'title' => 'Suscripción SaaS MCTandil - ' . strtoupper($user->plan),
+                'title' => 'Suscripción SaaS MCTandil - ' . strtoupper($estudio->plan ?? 'PLAN'),
                 'quantity' => 1,
                 'currency_id' => 'ARS',
-                'unit_price' => (int) $user->precio_suscripcion,
+                'unit_price' => (int) $estudio->precio_suscripcion,
             ]],
             'external_reference' => $pago->external_reference,
             'back_urls' => [
@@ -104,7 +102,13 @@ class SaasPagoController extends Controller
             abort(403);
         }
 
-        if (!$user->precio_suscripcion || $user->precio_suscripcion <= 0) {
+        $estudio = $user->estudio;
+
+        if (!$estudio) {
+            return redirect('/suscripcion?error=Tu usuario no está asociado a un estudio');
+        }
+
+        if (!$estudio->precio_suscripcion || $estudio->precio_suscripcion <= 0) {
             return redirect('/suscripcion?error=No tenés precio de suscripción configurado');
         }
 
@@ -116,10 +120,11 @@ class SaasPagoController extends Controller
 
         $pago = SaasPago::create([
             'user_id' => $user->id,
-            'plan' => $user->plan,
-            'monto' => $user->precio_suscripcion,
+            'estudio_id' => $estudio->id,
+            'plan' => $estudio->plan,
+            'monto' => $estudio->precio_suscripcion,
             'estado' => 'pendiente',
-            'external_reference' => 'saas_pago_' . $user->id . '_' . now()->timestamp,
+            'external_reference' => 'saas_estudio_' . $estudio->id . '_' . now()->timestamp,
         ]);
 
         MercadoPagoConfig::setAccessToken($accessToken);
@@ -128,10 +133,10 @@ class SaasPagoController extends Controller
 
         $payload = [
             'items' => [[
-                'title' => 'Suscripción SaaS MCTandil - ' . strtoupper($user->plan),
+                'title' => 'Suscripción SaaS MCTandil - ' . strtoupper($estudio->plan ?? 'PLAN'),
                 'quantity' => 1,
                 'currency_id' => 'ARS',
-                'unit_price' => (int) $user->precio_suscripcion,
+                'unit_price' => (int) $estudio->precio_suscripcion,
             ]],
             'external_reference' => $pago->external_reference,
             'back_urls' => [

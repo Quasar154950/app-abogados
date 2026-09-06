@@ -9,6 +9,7 @@ class SaasPago extends Model
 {
     protected $fillable = [
         'user_id',
+        'estudio_id',
         'plan',
         'monto',
         'estado',
@@ -22,5 +23,10 @@ class SaasPago extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function estudio(): BelongsTo
+    {
+    return $this->belongsTo(Estudio::class);
     }
 }

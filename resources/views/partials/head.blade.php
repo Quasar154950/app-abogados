@@ -6,7 +6,7 @@
 </title>
 
 @php
-    $slug = auth()->check() ? auth()->user()->slug_estudio : null;
+    $slug = auth()->check() ? auth()->user()->estudio?->slug : null;
 
     $manifest = match($slug) {
         'demo' => '/manifest-demo.json',
@@ -15,11 +15,11 @@
     };
 
     $logo = auth()->check()
-        ? asset(auth()->user()->logo_estudio ?? 'images/logo.png')
+        ? asset(auth()->user()->estudio?->logo ?? 'images/logo.png')
         : asset('images/logo.png');
 
     $appName = auth()->check()
-        ? auth()->user()->nombre_estudio
+        ? (auth()->user()->estudio?->nombre ?? 'MCTandil Apps')
         : 'MCTandil Apps';
 @endphp
 

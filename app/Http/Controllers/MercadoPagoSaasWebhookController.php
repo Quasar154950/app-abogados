@@ -60,7 +60,18 @@ class MercadoPagoSaasWebhookController extends Controller
         ]);
 
         if ($status === 'approved' && !$yaEstabaAprobado) {
-            $pago->user->renovarSuscripcion(30);
+
+            $estudio = $pago->estudio;
+
+            if ($estudio) {
+                $fechaBase = $estudio->fecha_vencimiento && $estudio->fecha_vencimiento->isFuture()
+                    ? $estudio->fecha_vencimiento
+                    : now();
+
+                $estudio->fecha_vencimiento = $fechaBase->copy()->addDays(30);
+                $estudio->activo = true;
+                $estudio->save();
+            }
         }
 
         return response()->json(['ok' => true]);

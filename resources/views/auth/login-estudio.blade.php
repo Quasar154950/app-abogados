@@ -2,7 +2,7 @@
 
 @php
     // Compatible con la nueva tabla estudios y con el sistema anterior
-    $slugEstudio = $userEstudio->slug ?? $userEstudio->slug_estudio ?? null;
+    $slugEstudio = $userEstudio->slug ?? null;
 
     $nombreEstudio = $userEstudio->nombre
         ?? $userEstudio->nombre_estudio

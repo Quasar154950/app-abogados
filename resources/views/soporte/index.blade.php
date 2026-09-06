@@ -17,28 +17,40 @@
         @endif
 
         {{-- ✅ MENSAJE DE ÉXITO --}}
-@if(session('success'))
-    <div class="p-3 rounded bg-green-100 text-green-800 text-sm font-bold">
-        {{ session('success') }}
-    </div>
-@endif
+        @if(session('success'))
+            <div class="p-3 rounded bg-green-100 text-green-800 text-sm font-bold">
+                {{ session('success') }}
+            </div>
+        @endif
 
         {{-- MÉTRICAS --}}
         @php
-            $users = \App\Models\User::where('role', 'abogado')
-                ->where('email', '!=', 'soporte@tuempresa.com')
-                ->orderBy('email')
-                ->get();
+            $estudios = \App\Models\Estudio::with([
+                'abogados' => function ($query) {
+                    $query->where('role', 'abogado')
+                        ->orderBy('name');
+                }
+            ])->orderBy('nombre')->get();
 
-            $totalEstudios = $users->count();
-            $activos = $users->where('activo', true)->count();
-            $inactivos = $users->where('activo', false)->count();
+            $totalEstudios = $estudios->count();
+            $activos = $estudios->where('activo', true)->count();
+            $inactivos = $estudios->where('activo', false)->count();
 
-            $vencidos = $users->filter(fn ($u) => $u->fecha_vencimiento && now()->greaterThan($u->fecha_vencimiento))->count();
+            $vencidos = $estudios->filter(function ($estudio) {
+                return $estudio->fecha_vencimiento
+                    && now()->greaterThan($estudio->fecha_vencimiento);
+            })->count();
 
-            $porVencer = $users->filter(function ($u) {
-                if (!$u->fecha_vencimiento) return false;
-                $dias = max(0, now()->startOfDay()->diffInDays($u->fecha_vencimiento->startOfDay(), false));
+            $porVencer = $estudios->filter(function ($estudio) {
+                if (!$estudio->fecha_vencimiento) {
+                    return false;
+                }
+
+                $dias = now()->startOfDay()->diffInDays(
+                    $estudio->fecha_vencimiento->copy()->startOfDay(),
+                    false
+                );
+
                 return $dias > 0 && $dias <= 7;
             })->count();
         @endphp
@@ -72,20 +84,30 @@
 
         </div>
 
-        {{-- LISTADO --}}
+        {{-- LISTADO DE ESTUDIOS --}}
         <div class="rounded-xl border border-neutral-200 p-5 bg-white shadow-sm">
-            <h2 class="text-lg font-bold mb-4">Estudios / Abogados</h2>
 
-            <div class="space-y-3">
-                @foreach($users as $user)
+            <h2 class="text-lg font-bold mb-4">Estudios</h2>
+
+            <div class="space-y-4">
+
+                @forelse($estudios as $estudio)
+
                     @php
-                        $vencido = $user->fecha_vencimiento && now()->greaterThan($user->fecha_vencimiento);
+                        $vencido = $estudio->fecha_vencimiento
+                            && now()->greaterThan($estudio->fecha_vencimiento);
 
-                        $diasRestantes = $user->fecha_vencimiento
-                            ? max(0, now()->startOfDay()->diffInDays($user->fecha_vencimiento->startOfDay(), false))
+                        $diasRestantes = $estudio->fecha_vencimiento
+                            ? max(
+                                0,
+                                now()->startOfDay()->diffInDays(
+                                    $estudio->fecha_vencimiento->copy()->startOfDay(),
+                                    false
+                                )
+                            )
                             : null;
 
-                        if (!$user->activo) {
+                        if (!$estudio->activo) {
                             $estado = 'Inactivo';
                         } elseif ($vencido) {
                             $estado = 'Vencido';
@@ -104,100 +126,175 @@
                         }
                     @endphp
 
-                    <div class="p-4 border rounded-xl space-y-3 bg-white">
+                    <div class="p-4 border rounded-xl space-y-4 bg-white">
 
-                        {{-- INFO --}}
+                        {{-- INFORMACIÓN DEL ESTUDIO --}}
                         <div>
-                            <div class="font-semibold">{{ $user->email }}</div>
-
-                            <div class="text-xs text-gray-500">
-                                Vence:
-                                {{ $user->fecha_vencimiento ? $user->fecha_vencimiento->format('d/m/Y') : 'Sin fecha' }}
+                            <div class="text-lg font-bold">
+                                {{ $estudio->nombre }}
                             </div>
 
-                            <div class="text-xs font-bold" style="color: {{ $color }}">
+                            <div class="text-xs text-gray-500 mt-1">
+                                Acceso: /estudio/{{ $estudio->slug }}
+                            </div>
+
+                            <div class="text-xs text-gray-500 mt-1">
+                                Vence:
+                                {{ $estudio->fecha_vencimiento
+                                    ? $estudio->fecha_vencimiento->format('d/m/Y')
+                                    : 'Sin fecha' }}
+                            </div>
+
+                            <div class="text-xs font-bold mt-1" style="color: {{ $color }}">
                                 Días restantes:
                                 {{ is_null($diasRestantes) ? 'Sin fecha' : $diasRestantes }}
                             </div>
+
+                            <div class="text-xs text-gray-500 mt-1">
+                                Plan: {{ strtoupper($estudio->plan ?? 'Sin plan') }}
+                                · Precio:
+                                ${{ number_format($estudio->precio_suscripcion ?? 0, 0, ',', '.') }}
+                            </div>
+
+                            <div class="text-sm font-bold mt-2">
+                                {{ $estado }}
+                            </div>
                         </div>
 
-                        {{-- ESTADO --}}
-                        <div class="text-sm font-bold">
-                            {{ $estado }}
-                        </div>
+                        {{-- ACCIONES DEL ESTUDIO --}}
+                        <div class="flex gap-2 overflow-x-auto whitespace-nowrap pb-1">
 
-                        {{-- 🔥 BOTONES CON SCROLL SUAVE --}}
-                        <div class="flex gap-2 overflow-x-auto whitespace-nowrap pb-1 -mx-1 px-1">
-
-                            {{-- RENOVAR --}}
-                            <form method="POST" action="{{ route('renovar.suscripcion', $user) }}" class="shrink-0">
+                            <form method="POST"
+                                  action="{{ route('renovar.suscripcion', $estudio) }}"
+                                  class="shrink-0">
                                 @csrf
-                                <button onclick="return confirm('¿Seguro querés renovar 30 días?')"
+
+                                <button
+                                    onclick="return confirm('¿Seguro querés renovar 30 días al estudio completo?')"
                                     class="text-sm px-4 py-2 rounded bg-green-600 hover:bg-green-700 text-white cursor-pointer transition">
                                     🔄 Renovar
                                 </button>
                             </form>
 
-                            {{-- ACTIVAR / SUSPENDER --}}
-                            <form method="POST" action="{{ route('toggle.activo', $user) }}" class="shrink-0">
+                            <form method="POST"
+                                  action="{{ route('toggle.activo', $estudio) }}"
+                                  class="shrink-0">
                                 @csrf
-                                <button onclick="return confirm('¿Seguro querés cambiar el estado?')"
-                                    class="text-sm px-4 py-2 rounded {{ $user->activo ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700' }} text-white cursor-pointer transition">
-                                    {{ $user->activo ? '⛔ Suspender' : '✅ Activar' }}
+
+                                <button
+                                    onclick="return confirm('¿Seguro querés cambiar el estado del estudio completo?')"
+                                    class="text-sm px-4 py-2 rounded {{ $estudio->activo ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700' }} text-white cursor-pointer transition">
+                                    {{ $estudio->activo ? '⛔ Suspender' : '✅ Activar' }}
                                 </button>
                             </form>
 
-                            {{-- RESET --}}
-                            <form method="POST" action="{{ route('soporte.reset.password', $user) }}" class="shrink-0">
-                                @csrf
-                                <button onclick="return confirm('¿Resetear contraseña de este usuario?')"
-                                    class="text-sm px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white cursor-pointer transition">
-                                    🔑 Reset
-                                </button>
-                            </form>
-                            
-                            {{-- EDITAR VENCIMIENTO --}}
-                            <a href="{{ route('soporte.editar.vencimiento', $user) }}"
-                                   class="shrink-0 text-sm px-4 py-2 rounded bg-yellow-500 hover:bg-yellow-600 text-white transition">
-                                   ✏️ Editar vencimiento
-                             </a>
+                            <a href="{{ route('soporte.editar.vencimiento', $estudio) }}"
+                               class="shrink-0 text-sm px-4 py-2 rounded bg-yellow-500 hover:bg-yellow-600 text-white transition">
+                                ✏️ Editar suscripción
+                            </a>
 
-                             {{-- COPIAR ACCESO --}}
-                              <button
-                               type="button"
-                               onclick="navigator.clipboard.writeText('{{ url('/estudio/' . $user->slug_estudio) }}')"
-                              class="shrink-0 text-sm px-4 py-2 rounded bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer transition">
-                             📩 Copiar acceso
-                              </button>
+                            <button
+                                type="button"
+                                onclick="navigator.clipboard.writeText('{{ url('/estudio/' . $estudio->slug) }}')"
+                                class="shrink-0 text-sm px-4 py-2 rounded bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer transition">
+                                📩 Copiar acceso
+                            </button>
 
-                             {{-- VER COMO USUARIO --}}
-                           <form method="POST" action="{{ route('soporte.ver-como', $user) }}" class="shrink-0">
-                           @csrf
+                        </div>
 
-                          <button
-                           type="submit"
-                           onclick="return confirm('¿Entrar como este usuario?')"
-                         class="text-sm px-4 py-2 rounded bg-violet-600 hover:bg-violet-700 text-white cursor-pointer transition">
-                           👁 Ver usuario
-                          </button>
-                         </form>
+                        {{-- ABOGADOS DEL ESTUDIO --}}
+                        <div class="border-t pt-4">
 
-                         {{-- BACKUP --}}
-                        <form method="POST" action="{{ route('soporte.backup') }}" class="shrink-0">
-                        @csrf
+                            <div class="text-sm font-bold mb-3">
+                                Abogados ({{ $estudio->abogados->count() }})
+                            </div>
 
-                        <button
-                        type="submit"
-                        onclick="return confirm('¿Generar backup del sistema?')"
-                        class="text-sm px-4 py-2 rounded bg-cyan-600 hover:bg-cyan-700 text-white cursor-pointer transition">
-                        💾 Backup
-                      </button>
-                          </form>
+                            <div class="space-y-2">
+
+                                @forelse($estudio->abogados as $user)
+
+                                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 p-3 bg-gray-50 rounded-lg">
+
+                                        <div>
+                                            <div class="font-semibold">
+                                                {{ $user->name }}
+                                            </div>
+
+                                            <div class="text-xs text-gray-500">
+                                                {{ $user->email }}
+                                            </div>
+                                        </div>
+
+                                        <div class="flex gap-2 overflow-x-auto whitespace-nowrap">
+
+                                            <form method="POST"
+                                                  action="{{ route('soporte.reset.password', $user) }}"
+                                                  class="shrink-0">
+                                                @csrf
+
+                                                <button
+                                                    onclick="return confirm('¿Resetear contraseña de este abogado?')"
+                                                    class="text-sm px-3 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white cursor-pointer transition">
+                                                    🔑 Reset
+                                                </button>
+                                            </form>
+
+                                            <form method="POST"
+                                                  action="{{ route('soporte.ver-como', $user) }}"
+                                                  class="shrink-0">
+                                                @csrf
+
+                                                <button
+                                                    type="submit"
+                                                    onclick="return confirm('¿Entrar como este abogado?')"
+                                                    class="text-sm px-3 py-2 rounded bg-violet-600 hover:bg-violet-700 text-white cursor-pointer transition">
+                                                    👁 Ver usuario
+                                                </button>
+                                            </form>
+
+                                        </div>
+
+                                    </div>
+
+                                @empty
+
+                                    <div class="text-sm text-gray-500">
+                                        Este estudio todavía no tiene abogados.
+                                    </div>
+
+                                @endforelse
+
+                            </div>
+
                         </div>
 
                     </div>
-                @endforeach
+
+                @empty
+
+                    <div class="text-sm text-gray-500">
+                        No hay estudios registrados.
+                    </div>
+
+                @endforelse
+
             </div>
+        </div>
+
+        {{-- BACKUP GLOBAL --}}
+        <div class="rounded-xl border border-neutral-200 p-5 bg-white shadow-sm">
+
+            <form method="POST" action="{{ route('soporte.backup') }}">
+                @csrf
+
+                <button
+                    type="submit"
+                    onclick="return confirm('¿Generar backup del sistema?')"
+                    class="text-sm px-4 py-2 rounded bg-cyan-600 hover:bg-cyan-700 text-white cursor-pointer transition">
+                    💾 Backup del sistema
+                </button>
+            </form>
+
         </div>
 
     </div>

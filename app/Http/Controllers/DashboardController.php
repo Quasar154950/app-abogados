@@ -21,9 +21,10 @@ class DashboardController extends Controller
         $abogadoId = auth()->id();
 
         $usuario = auth()->user();
+        $estudio = $usuario->estudio;
 
-        $diasRestantes = $usuario->fecha_vencimiento
-            ? max(0, now()->startOfDay()->diffInDays($usuario->fecha_vencimiento->startOfDay(), false))
+        $diasRestantes = $estudio?->fecha_vencimiento
+            ? max(0, now()->startOfDay()->diffInDays($estudio->fecha_vencimiento->startOfDay(), false))
             : null;
 
         $totalClientesActivos = Cliente::where('abogado_id', $abogadoId)

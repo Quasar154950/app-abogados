@@ -76,7 +76,6 @@ class FortifyServiceProvider extends ServiceProvider
                 return null;
             }
 
-            $slugEstudio = session('slug_estudio');
             $context = session('login_context');
 
             if ($context === 'soporte') {

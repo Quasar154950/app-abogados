@@ -12,12 +12,17 @@ class Estudio extends Model
         'slug',
         'logo',
         'activo',
+        'fecha_vencimiento',
+        'plan',
+        'precio_suscripcion',
     ];
 
     protected function casts(): array
     {
         return [
             'activo' => 'boolean',
+            'fecha_vencimiento' => 'datetime',
+            'precio_suscripcion' => 'decimal:2',
         ];
     }
 

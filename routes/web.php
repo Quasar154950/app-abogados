@@ -338,12 +338,4 @@ Route::get('/soporte/login', function () {
 Route::post('/webhooks/mercadopago/saas', [MercadoPagoSaasWebhookController::class, 'handle'])
     ->name('webhooks.mercadopago.saas');
 
-Route::get('/migrar-produccion-temporal', function () {
-    \Illuminate\Support\Facades\Artisan::call('migrate', [
-        '--force' => true,
-    ]);
-
-    return '<pre>' . \Illuminate\Support\Facades\Artisan::output() . '</pre>';
-});
-
 require __DIR__ . '/settings.php';

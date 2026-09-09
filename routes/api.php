@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\MobileExpedienteController;
 use App\Http\Controllers\Api\MobileHomeController;
 use App\Http\Controllers\Api\MobileMensajeController;
 use App\Http\Controllers\Api\MobileDocumentoController;
+use App\Http\Controllers\Api\SoporteApiController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('mobile')->group(function () {
@@ -78,3 +79,15 @@ Route::prefix('mobile')->group(function () {
         );
     });
 });
+
+// 🛠 API SOPORTE MCTANDIL
+Route::prefix('soporte')
+    ->middleware('mctandil.support')
+    ->group(function () {
+
+        Route::get(
+            '/estudios',
+            [SoporteApiController::class, 'estudios']
+        );
+
+    });

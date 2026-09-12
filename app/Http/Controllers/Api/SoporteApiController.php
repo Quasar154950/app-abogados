@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Estudio;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class SoporteApiController extends Controller
 {
@@ -96,6 +97,39 @@ class SoporteApiController extends Controller
                 'id' => $estudio->id,
                 'nombre' => $estudio->nombre,
                 'activo' => $estudio->activo,
+            ],
+        ]);
+    }
+
+    /**
+     * Edita los datos de la suscripción de un estudio.
+     */
+    public function actualizarSuscripcion(
+        Request $request,
+        Estudio $estudio
+    ): JsonResponse {
+        $datos = $request->validate([
+            'fecha_vencimiento' => ['required', 'date'],
+            'plan' => ['nullable', 'string', 'max:50'],
+            'precio_suscripcion' => ['required', 'numeric', 'min:0'],
+        ]);
+
+        $estudio->fecha_vencimiento = $datos['fecha_vencimiento'];
+        $estudio->plan = $datos['plan'] ?? null;
+        $estudio->precio_suscripcion = $datos['precio_suscripcion'];
+        $estudio->save();
+
+        return response()->json([
+            'ok' => true,
+            'mensaje' => 'Suscripción del estudio actualizada correctamente.',
+            'estudio' => [
+                'id' => $estudio->id,
+                'nombre' => $estudio->nombre,
+                'fecha_vencimiento' => optional(
+                    $estudio->fecha_vencimiento
+                )->format('Y-m-d'),
+                'plan' => $estudio->plan,
+                'precio_suscripcion' => $estudio->precio_suscripcion,
             ],
         ]);
     }

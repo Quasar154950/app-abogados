@@ -107,4 +107,9 @@ Route::prefix('soporte')
             [SoporteApiController::class, 'toggleActivo']
         );
 
+        Route::post(
+            '/estudios/{estudio}/suscripcion',
+            [SoporteApiController::class, 'actualizarSuscripcion']
+        );
+
     });

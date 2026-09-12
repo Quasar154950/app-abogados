@@ -102,4 +102,9 @@ Route::prefix('soporte')
             [SoporteApiController::class, 'renovar']
         );
 
+        Route::post(
+            '/estudios/{estudio}/toggle-activo',
+            [SoporteApiController::class, 'toggleActivo']
+        );
+
     });

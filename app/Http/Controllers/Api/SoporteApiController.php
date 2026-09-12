@@ -78,4 +78,25 @@ class SoporteApiController extends Controller
             ],
         ]);
     }
+
+    /**
+     * Activa o suspende un estudio.
+     */
+    public function toggleActivo(Estudio $estudio): JsonResponse
+    {
+        $estudio->activo = !$estudio->activo;
+        $estudio->save();
+
+        return response()->json([
+            'ok' => true,
+            'mensaje' => $estudio->activo
+                ? 'Estudio activado correctamente.'
+                : 'Estudio suspendido correctamente.',
+            'estudio' => [
+                'id' => $estudio->id,
+                'nombre' => $estudio->nombre,
+                'activo' => $estudio->activo,
+            ],
+        ]);
+    }
 }

@@ -59,9 +59,15 @@ Route::prefix('mobile')->group(function () {
             [MobileMensajeController::class, 'clear']
         );
 
-        Route::get('/documentos', [MobileDocumentoController::class, 'index']);
+        Route::get(
+            '/documentos',
+            [MobileDocumentoController::class, 'index']
+        );
 
-        Route::post('/documentos', [MobileDocumentoController::class, 'store']);
+        Route::post(
+            '/documentos',
+            [MobileDocumentoController::class, 'store']
+        );
 
         Route::delete(
             '/documentos/{documentoId}',
@@ -80,6 +86,7 @@ Route::prefix('mobile')->group(function () {
     });
 });
 
+
 // 🛠 API SOPORTE MCTANDIL
 Route::prefix('soporte')
     ->middleware('mctandil.support')
@@ -88,6 +95,11 @@ Route::prefix('soporte')
         Route::get(
             '/estudios',
             [SoporteApiController::class, 'estudios']
+        );
+
+        Route::post(
+            '/estudios/{estudio}/renovar',
+            [SoporteApiController::class, 'renovar']
         );
 
     });

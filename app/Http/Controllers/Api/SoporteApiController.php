@@ -10,8 +10,6 @@ class SoporteApiController extends Controller
 {
     /**
      * Devuelve los estudios con sus abogados.
-     *
-     * Por ahora es SOLO LECTURA.
      */
     public function estudios(): JsonResponse
     {
@@ -50,6 +48,34 @@ class SoporteApiController extends Controller
                 fn ($estudio) => $estudio->abogados->count()
             ),
             'estudios' => $estudios,
+        ]);
+    }
+
+    /**
+     * Renueva la suscripción de un estudio por 30 días.
+     */
+    public function renovar(Estudio $estudio): JsonResponse
+    {
+        $fechaBase = $estudio->fecha_vencimiento
+            && $estudio->fecha_vencimiento->isFuture()
+                ? $estudio->fecha_vencimiento
+                : now();
+
+        $estudio->fecha_vencimiento = $fechaBase->copy()->addDays(30);
+        $estudio->activo = true;
+        $estudio->save();
+
+        return response()->json([
+            'ok' => true,
+            'mensaje' => 'Suscripción del estudio renovada correctamente.',
+            'estudio' => [
+                'id' => $estudio->id,
+                'nombre' => $estudio->nombre,
+                'activo' => $estudio->activo,
+                'fecha_vencimiento' => optional(
+                    $estudio->fecha_vencimiento
+                )->format('Y-m-d'),
+            ],
         ]);
     }
 }

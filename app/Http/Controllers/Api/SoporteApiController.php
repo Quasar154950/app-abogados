@@ -16,32 +16,37 @@ class SoporteApiController extends Controller
      */
     public function estudios(): JsonResponse
     {
-        $estudios = Estudio::query()
-            ->with([
-                'abogados' => function ($query) {
-                    $query
-                        ->where('role', 'abogado')
-                        ->select([
-                            'id',
-                            'name',
-                            'email',
-                            'role',
-                            'activo',
-                            'estudio_id',
-                        ])
-                        ->orderBy('name');
-                },
-            ])
-            ->orderBy('nombre')
-            ->get([
-                'id',
-                'nombre',
-                'slug',
-                'activo',
-                'fecha_vencimiento',
-                'plan',
-                'precio_suscripcion',
-            ]);
+                $estudios = Estudio::query()
+                    ->with([
+                        'abogados' => function ($query) {
+                            $query
+                                ->where('role', 'abogado')
+                                ->select([
+                                    'id',
+                                    'name',
+                                    'email',
+                                    'role',
+                                    'activo',
+                                    'estudio_id',
+                                ])
+                                ->orderBy('name');
+                        },
+                    ])
+                    ->orderBy('nombre')
+                    ->get([
+                        'id',
+                        'nombre',
+                        'slug',
+                        'activo',
+                        'fecha_vencimiento',
+                        'plan',
+                        'precio_suscripcion',
+                    ])
+                    ->map(function ($estudio) {
+                        $estudio->acceso_url = url('/estudio/' . $estudio->slug);
+
+                        return $estudio;
+                    });
 
         return response()->json([
             'ok' => true,

@@ -112,4 +112,9 @@ Route::prefix('soporte')
             [SoporteApiController::class, 'actualizarSuscripcion']
         );
 
+        Route::post(
+            '/abogados/{user}/administrador',
+            [SoporteApiController::class, 'actualizarAdministrador']
+        );
+
     });

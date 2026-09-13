@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Estudio;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class SoporteApiController extends Controller
 {
@@ -130,6 +132,51 @@ class SoporteApiController extends Controller
                 )->format('Y-m-d'),
                 'plan' => $estudio->plan,
                 'precio_suscripcion' => $estudio->precio_suscripcion,
+            ],
+        ]);
+    }
+
+    /**
+     * Actualiza nombre y email de un abogado desde soporte.
+     */
+    public function actualizarAdministrador(
+        Request $request,
+        User $user
+    ): JsonResponse {
+        if ($user->role !== 'abogado') {
+            return response()->json([
+                'ok' => false,
+                'mensaje' => 'El usuario seleccionado no es un abogado.',
+            ], 422);
+        }
+
+        $datos = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email')->ignore($user->id),
+            ],
+        ]);
+
+        $user->name = $datos['name'];
+        $user->email = $datos['email'];
+        $user->save();
+
+        return response()->json([
+            'ok' => true,
+            'mensaje' => 'Administrador actualizado correctamente.',
+            'usuario' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'estudio_id' => $user->estudio_id,
             ],
         ]);
     }

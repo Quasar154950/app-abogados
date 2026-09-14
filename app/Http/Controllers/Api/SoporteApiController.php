@@ -16,37 +16,37 @@ class SoporteApiController extends Controller
      */
     public function estudios(): JsonResponse
     {
-                $estudios = Estudio::query()
-                    ->with([
-                        'abogados' => function ($query) {
-                            $query
-                                ->where('role', 'abogado')
-                                ->select([
-                                    'id',
-                                    'name',
-                                    'email',
-                                    'role',
-                                    'activo',
-                                    'estudio_id',
-                                ])
-                                ->orderBy('name');
-                        },
-                    ])
-                    ->orderBy('nombre')
-                    ->get([
-                        'id',
-                        'nombre',
-                        'slug',
-                        'activo',
-                        'fecha_vencimiento',
-                        'plan',
-                        'precio_suscripcion',
-                    ])
-                    ->map(function ($estudio) {
-                        $estudio->acceso_url = url('/estudio/' . $estudio->slug);
+        $estudios = Estudio::query()
+            ->with([
+                'abogados' => function ($query) {
+                    $query
+                        ->where('role', 'abogado')
+                        ->select([
+                            'id',
+                            'name',
+                            'email',
+                            'role',
+                            'activo',
+                            'estudio_id',
+                        ])
+                        ->orderBy('name');
+                },
+            ])
+            ->orderBy('nombre')
+            ->get([
+                'id',
+                'nombre',
+                'slug',
+                'activo',
+                'fecha_vencimiento',
+                'plan',
+                'precio_suscripcion',
+            ])
+            ->map(function ($estudio) {
+                $estudio->acceso_url = url('/estudio/' . $estudio->slug);
 
-                        return $estudio;
-                    });
+                return $estudio;
+            });
 
         return response()->json([
             'ok' => true,
@@ -183,6 +183,33 @@ class SoporteApiController extends Controller
                 'email' => $user->email,
                 'estudio_id' => $user->estudio_id,
             ],
+        ]);
+    }
+
+    /**
+     * Restablece la contraseña de un abogado.
+     */
+    public function resetPassword(
+        User $user
+    ): JsonResponse {
+        if ($user->role !== 'abogado') {
+            return response()->json([
+                'ok' => false,
+                'mensaje' => 'El usuario seleccionado no es un abogado.',
+            ], 422);
+        }
+
+        $nuevaPassword = $user->resetearPassword();
+
+        return response()->json([
+            'ok' => true,
+            'mensaje' => 'Contraseña restablecida correctamente.',
+            'usuario' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
+            'password' => $nuevaPassword,
         ]);
     }
 }

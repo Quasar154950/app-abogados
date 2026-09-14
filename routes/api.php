@@ -117,4 +117,9 @@ Route::prefix('soporte')
             [SoporteApiController::class, 'actualizarAdministrador']
         );
 
+        Route::post(
+            '/abogados/{user}/reset-password',
+            [SoporteApiController::class, 'resetPassword']
+        );  
+
     });

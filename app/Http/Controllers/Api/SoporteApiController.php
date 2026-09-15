@@ -54,10 +54,16 @@ class SoporteApiController extends Controller
                 'precio_suscripcion',
             ])
             ->map(function ($estudio) {
-                $estudio->acceso_url = url('/estudio/' . $estudio->slug);
+    $estudio->acceso_url = url('/estudio/' . $estudio->slug);
 
-                return $estudio;
-            });
+    $estudio->checkout_url = SaasPago::query()
+        ->where('estudio_id', $estudio->id)
+        ->whereNotNull('checkout_url')
+        ->latest('id')
+        ->value('checkout_url');
+
+    return $estudio;
+});
 
         return response()->json([
             'ok' => true,

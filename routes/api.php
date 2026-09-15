@@ -132,4 +132,10 @@ Route::prefix('soporte')
             [SoporteApiController::class, 'verComo']
         );
 
+        // 💾 BACKUP COMPLETO DE ABOGADOS
+        Route::get(
+            '/backup',
+            [SoporteApiController::class, 'backup']
+        );
+
     });

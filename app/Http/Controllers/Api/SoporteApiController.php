@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rule;
 use MercadoPago\Client\Preference\PreferenceClient;
@@ -54,16 +55,16 @@ class SoporteApiController extends Controller
                 'precio_suscripcion',
             ])
             ->map(function ($estudio) {
-    $estudio->acceso_url = url('/estudio/' . $estudio->slug);
+                $estudio->acceso_url = url('/estudio/' . $estudio->slug);
 
-    $estudio->checkout_url = SaasPago::query()
-        ->where('estudio_id', $estudio->id)
-        ->whereNotNull('checkout_url')
-        ->latest('id')
-        ->value('checkout_url');
+                $estudio->checkout_url = SaasPago::query()
+                    ->where('estudio_id', $estudio->id)
+                    ->whereNotNull('checkout_url')
+                    ->latest('id')
+                    ->value('checkout_url');
 
-    return $estudio;
-});
+                return $estudio;
+            });
 
         return response()->json([
             'ok' => true,
@@ -387,6 +388,92 @@ class SoporteApiController extends Controller
             return response()->json([
                 'ok' => false,
                 'mensaje' => 'No se pudo generar el link de pago.',
+            ], 500);
+        }
+    }
+
+    /**
+     * Genera un backup completo de la base de datos de Abogados.
+     */
+    public function backup()
+    {
+        $directorio = storage_path('app/backups');
+
+        if (!is_dir($directorio)) {
+            mkdir($directorio, 0775, true);
+        }
+
+        $filename = 'backup-abogados-' . now()->format('Y-m-d-H-i-s') . '.sql';
+        $filepath = $directorio . DIRECTORY_SEPARATOR . $filename;
+
+        $host = env('DB_HOST');
+        $port = env('DB_PORT', 5432);
+        $database = env('DB_DATABASE');
+        $username = env('DB_USERNAME');
+        $password = env('DB_PASSWORD');
+
+        $command = [
+            'pg_dump',
+            '-h',
+            $host,
+            '-p',
+            (string) $port,
+            '-U',
+            $username,
+            '-d',
+            $database,
+            '-f',
+            $filepath,
+        ];
+
+        try {
+            $result = Process::env([
+                'PGPASSWORD' => $password,
+            ])
+                ->timeout(120)
+                ->run($command);
+
+            if ($result->failed()) {
+                Log::error('Error al generar backup de Abogados', [
+                    'error' => $result->errorOutput(),
+                    'salida' => $result->output(),
+                ]);
+
+                return response()->json([
+                    'ok' => false,
+                    'mensaje' => 'No se pudo generar el backup de Abogados.',
+                ], 500);
+            }
+
+            if (!file_exists($filepath) || filesize($filepath) === 0) {
+                return response()->json([
+                    'ok' => false,
+                    'mensaje' => 'El archivo de backup se generó vacío.',
+                ], 500);
+            }
+
+            return response()
+                ->download(
+                    $filepath,
+                    $filename,
+                    [
+                        'Content-Type' => 'application/sql',
+                    ]
+                )
+                ->deleteFileAfterSend(true);
+
+        } catch (\Throwable $e) {
+            Log::error('Error general al generar backup de Abogados', [
+                'message' => $e->getMessage(),
+            ]);
+
+            if (file_exists($filepath)) {
+                @unlink($filepath);
+            }
+
+            return response()->json([
+                'ok' => false,
+                'mensaje' => 'Ocurrió un error al generar el backup de Abogados.',
             ], 500);
         }
     }

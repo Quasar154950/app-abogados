@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\URL;
 
 class SoporteApiController extends Controller
 {
@@ -210,6 +211,39 @@ class SoporteApiController extends Controller
                 'email' => $user->email,
             ],
             'password' => $nuevaPassword,
+        ]);
+    }
+
+    /**
+     * Genera un acceso temporal para ver el sistema como un abogado.
+     */
+    public function verComo(
+        User $user
+    ): JsonResponse {
+        if ($user->role !== 'abogado') {
+            return response()->json([
+                'ok' => false,
+                'mensaje' => 'El usuario seleccionado no es un abogado.',
+            ], 422);
+        }
+
+        $url = URL::temporarySignedRoute(
+            'soporte.acceso-temporal',
+            now()->addMinutes(2),
+            [
+                'user' => $user->id,
+            ]
+        );
+
+        return response()->json([
+            'ok' => true,
+            'mensaje' => 'Acceso temporal generado correctamente.',
+            'usuario' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
+            'url' => $url,
         ]);
     }
 }

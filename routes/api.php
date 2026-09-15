@@ -122,4 +122,9 @@ Route::prefix('soporte')
             [SoporteApiController::class, 'resetPassword']
         );  
 
+        Route::post(
+            '/abogados/{user}/ver-como',
+            [SoporteApiController::class, 'verComo']
+        );
+
     });

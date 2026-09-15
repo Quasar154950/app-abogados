@@ -297,6 +297,34 @@ Route::middleware(['auth'])->post('/soporte/volver', function () {
 
 })->name('soporte.volver');
 
+// 👁 ACCESO TEMPORAL DESDE SOPORTE CENTRAL
+Route::get('/soporte/acceso-temporal/{user}', function (User $user) {
+
+    // El enlace debe tener firma válida y no estar vencido.
+    if (!request()->hasValidSignature()) {
+        abort(403, 'El acceso temporal no es válido o ha vencido.');
+    }
+
+    // Solo permitimos ingresar como abogados.
+    if ($user->role !== 'abogado') {
+        abort(403);
+    }
+
+    // Guardamos que esta sesión proviene del soporte central.
+    session([
+        'soporte_central_ver_como' => true,
+        'soporte_ver_como_id' => $user->id,
+    ]);
+
+    // Ingresamos como el abogado.
+    auth()->login($user);
+
+    // Regeneramos la sesión después del login.
+    request()->session()->regenerate();
+
+    return redirect('/dashboard');
+
+})->name('soporte.acceso-temporal');
 
 // 🔐 Login por estudio
 Route::get('/estudio/{slug}', function ($slug) {

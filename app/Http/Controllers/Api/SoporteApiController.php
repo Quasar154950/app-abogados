@@ -4,14 +4,24 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Estudio;
+use App\Models\SaasPago;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Validation\Rule;
+use MercadoPago\Client\Preference\PreferenceClient;
+use MercadoPago\Exceptions\MPApiException;
+use MercadoPago\MercadoPagoConfig;
 
 class SoporteApiController extends Controller
 {
+    /**
+     * URL pública de la aplicación Abogados.
+     */
+    private string $baseUrl = 'https://rare-prosperity-production-a81a.up.railway.app';
+
     /**
      * Devuelve los estudios con sus abogados.
      */
@@ -245,5 +255,133 @@ class SoporteApiController extends Controller
             ],
             'url' => $url,
         ]);
+    }
+
+    /**
+     * Genera un link de pago SaaS para un estudio desde soporte central.
+     */
+    public function cobrarSaas(
+        Estudio $estudio
+    ): JsonResponse {
+        if (!$estudio->precio_suscripcion || $estudio->precio_suscripcion <= 0) {
+            return response()->json([
+                'ok' => false,
+                'mensaje' => 'Este estudio no tiene precio de suscripción configurado.',
+            ], 422);
+        }
+
+        $abogado = $estudio->abogados()
+            ->where('role', 'abogado')
+            ->orderBy('id')
+            ->first();
+
+        if (!$abogado) {
+            return response()->json([
+                'ok' => false,
+                'mensaje' => 'Este estudio no tiene abogados asociados.',
+            ], 422);
+        }
+
+        $accessToken = env('MERCADOPAGO_SAAS_ACCESS_TOKEN');
+
+        if (!$accessToken) {
+            return response()->json([
+                'ok' => false,
+                'mensaje' => 'Falta configurar Mercado Pago SaaS.',
+            ], 500);
+        }
+
+        $pago = SaasPago::create([
+            'user_id' => $abogado->id,
+            'estudio_id' => $estudio->id,
+            'plan' => $estudio->plan,
+            'monto' => $estudio->precio_suscripcion,
+            'estado' => 'pendiente',
+            'external_reference' =>
+                'saas_estudio_' . $estudio->id . '_' . now()->timestamp,
+        ]);
+
+        MercadoPagoConfig::setAccessToken($accessToken);
+
+        $client = new PreferenceClient();
+
+        $payload = [
+            'items' => [[
+                'title' =>
+                    'Suscripción SaaS MCTandil - '
+                    . strtoupper($estudio->plan ?? 'PLAN'),
+                'quantity' => 1,
+                'currency_id' => 'ARS',
+                'unit_price' => (int) $estudio->precio_suscripcion,
+            ]],
+
+            'external_reference' => $pago->external_reference,
+
+            'back_urls' => [
+                'success' => $this->baseUrl . '/suscripcion',
+                'failure' => $this->baseUrl . '/suscripcion',
+                'pending' => $this->baseUrl . '/suscripcion',
+            ],
+
+            'auto_return' => 'approved',
+
+            'notification_url' =>
+                $this->baseUrl . '/webhooks/mercadopago/saas',
+        ];
+
+        Log::info('MP SaaS payload soporte central', $payload);
+
+        try {
+            $preference = $client->create($payload);
+
+            $pago->update([
+                'checkout_url' => $preference->init_point,
+            ]);
+
+            return response()->json([
+                'ok' => true,
+                'mensaje' => 'Link de pago SaaS generado correctamente.',
+                'pago' => [
+                    'id' => $pago->id,
+                    'estudio_id' => $estudio->id,
+                    'estudio' => $estudio->nombre,
+                    'plan' => $estudio->plan,
+                    'monto' => $estudio->precio_suscripcion,
+                    'estado' => $pago->estado,
+                    'checkout_url' => $preference->init_point,
+                ],
+            ]);
+
+        } catch (MPApiException $e) {
+            Log::error('MP SaaS API error soporte central', [
+                'message' => $e->getMessage(),
+                'api_response' => method_exists($e, 'getApiResponse')
+                    ? $e->getApiResponse()
+                    : null,
+            ]);
+
+            $pago->update([
+                'estado' => 'error',
+            ]);
+
+            return response()->json([
+                'ok' => false,
+                'mensaje' => 'Mercado Pago respondió con error al crear el link.',
+            ], 502);
+
+        } catch (\Throwable $e) {
+            Log::error('MP SaaS error general soporte central', [
+                'message' => $e->getMessage(),
+            ]);
+
+            $pago->update([
+                'estado' => 'error',
+            ]);
+
+            return response()->json([
+                'ok' => false,
+                'mensaje' => 'No se pudo generar el link de pago.',
+            ], 500);
+        }
     }
 }

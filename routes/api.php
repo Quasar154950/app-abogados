@@ -113,6 +113,11 @@ Route::prefix('soporte')
         );
 
         Route::post(
+            '/estudios/{estudio}/cobrar-saas',
+            [SoporteApiController::class, 'cobrarSaas']
+        );
+
+        Route::post(
             '/abogados/{user}/administrador',
             [SoporteApiController::class, 'actualizarAdministrador']
         );
@@ -120,7 +125,7 @@ Route::prefix('soporte')
         Route::post(
             '/abogados/{user}/reset-password',
             [SoporteApiController::class, 'resetPassword']
-        );  
+        );
 
         Route::post(
             '/abogados/{user}/ver-como',
